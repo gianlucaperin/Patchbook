@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { PatchbookCompletionProvider } from "./completionProvider";
 import { loadModules, openModulesFile } from "./moduleDatabase";
-import { exportJSON } from "./commands";
+import { exportJSON, newPatch } from "./commands";
 import { GraphViewProvider } from "./graphView";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -26,6 +26,9 @@ export function activate(context: vscode.ExtensionContext): void {
   const graphView = new GraphViewProvider(context.extensionUri);
 
   // Commands
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.newPatch", () => newPatch())
+  );
   context.subscriptions.push(
     vscode.commands.registerCommand("patchbook.exportJSON", exportJSON)
   );

@@ -37,6 +37,12 @@
     ],
     "commands": [
       {
+        "command": "patchbook.newPatch",
+        "title": "Patchbook: New Patch",
+        "icon": "$(new-file)",
+        "shortTitle": "Patchbook Patch"
+      },
+      {
         "command": "patchbook.exportJSON",
         "title": "Patchbook: Export to JSON",
         "icon": "$(json)"
@@ -56,6 +62,12 @@
       }
     ],
     "menus": {
+      "file/newFile": [
+        {
+          "command": "patchbook.newPatch",
+          "group": "file"
+        }
+      ],
       "editor/title": [
         {
           "command": "patchbook.exportJSON",
