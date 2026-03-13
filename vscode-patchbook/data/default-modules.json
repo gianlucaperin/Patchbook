@@ -1,0 +1,256 @@
+{
+  "modules": [
+    {
+      "name": "Braids",
+      "manufacturer": "Mutable Instruments",
+      "type": "Oscillator",
+      "description": "Macro oscillator with 47 synthesis models",
+      "inputs": ["1 V/Oct", "FM", "Timbre CV", "Color CV"],
+      "outputs": ["Out"],
+      "parameters": ["Mode", "Timbre", "Color", "FM"]
+    },
+    {
+      "name": "Plaits",
+      "manufacturer": "Mutable Instruments",
+      "type": "Oscillator",
+      "description": "Macro oscillator with 16 synthesis models, successor to Braids",
+      "inputs": ["V/Oct", "FM", "Timbre", "Morph", "Trigger", "Level"],
+      "outputs": ["Out", "Aux"],
+      "parameters": ["Model", "Frequency", "Harmonics", "Timbre", "Morph"]
+    },
+    {
+      "name": "Tides",
+      "manufacturer": "Mutable Instruments",
+      "type": "Function Generator / LFO / Oscillator",
+      "description": "Tidal modulator — looping/one-shot AD envelope, LFO or oscillator",
+      "inputs": ["V/Oct", "FM", "Shape", "Slope", "Smoothness", "Trigger", "Clk", "Freeze"],
+      "outputs": ["High Tide", "Low Tide", "Uni", "Bi"],
+      "parameters": ["Freq", "Shape", "Slope", "Smoothness", "Mode", "Range", "PLL Mode"]
+    },
+    {
+      "name": "Rings",
+      "manufacturer": "Mutable Instruments",
+      "type": "Resonator",
+      "description": "Modal resonator with sympathetic string models",
+      "inputs": ["V/Oct", "Strum", "In", "Structure", "Brightness", "Damping", "Position"],
+      "outputs": ["Odd", "Even"],
+      "parameters": ["Structure", "Brightness", "Damping", "Position", "Polyphony", "Model"]
+    },
+    {
+      "name": "Clouds",
+      "manufacturer": "Mutable Instruments",
+      "type": "Granular Processor",
+      "description": "Granular audio processor",
+      "inputs": ["In L", "In R", "V/Oct", "Density", "Texture", "Position", "Size", "Trigger", "Freeze"],
+      "outputs": ["Out L", "Out R"],
+      "parameters": ["Position", "Size", "Density", "Texture", "Pitch", "Blend", "Spread", "Feedback", "Reverb"]
+    },
+    {
+      "name": "Peaks",
+      "manufacturer": "Mutable Instruments",
+      "type": "Dual Function Generator",
+      "description": "Dual trigger processor — envelope, LFO, drum",
+      "inputs": ["Gate 1", "Gate 2"],
+      "outputs": ["Out 1", "Out 2"],
+      "parameters": ["Mode", "Param 1", "Param 2", "Param 3", "Param 4"]
+    },
+    {
+      "name": "Maths",
+      "manufacturer": "Make Noise",
+      "type": "Function Generator / Utility",
+      "description": "Dual analog function generator with mixing and logic",
+      "inputs": ["Ch 1 Trigger", "Ch 1 Signal", "Ch 4 Trigger", "Ch 4 Signal", "Signal", "Ch 2 CV", "Ch 3 CV"],
+      "outputs": ["Ch 1", "Ch 4", "Unity", "Sum", "Inv", "EOR", "EOC"],
+      "parameters": ["Ch 1 Rise", "Ch 1 Fall", "Ch 1 Curve", "Ch 4 Rise", "Ch 4 Fall", "Ch 4 Curve", "Ch 2 Attenuverter", "Ch 3 Attenuverter"]
+    },
+    {
+      "name": "Optomix",
+      "manufacturer": "Make Noise",
+      "type": "Low Pass Gate",
+      "description": "Dual low pass gate with vactrol-style response",
+      "inputs": ["Ch1 Signal", "Ch1 CV", "Ch2 Signal", "Ch2 CV", "Strike"],
+      "outputs": ["Out 1", "Out 2", "Sum Out"],
+      "parameters": ["Damp", "Control"]
+    },
+    {
+      "name": "DPO",
+      "manufacturer": "Make Noise",
+      "type": "Dual Oscillator",
+      "description": "Dual Prismatic Oscillator with FM and waveshaping",
+      "inputs": ["1 V/Oct A", "1 V/Oct B", "FM A", "FM B", "Shape A", "Shape B", "Angle", "Follow"],
+      "outputs": ["Sine A", "Saw A", "Square A", "Final A", "Sine B", "Saw B", "Square B", "Final B"],
+      "parameters": ["Freq A", "Freq B", "FM A", "FM B", "Shape A", "Shape B", "Angle"]
+    },
+    {
+      "name": "Wogglebug",
+      "manufacturer": "Make Noise",
+      "type": "Random Source",
+      "description": "Random voltage generator based on Wiard Wogglebug",
+      "inputs": ["Clock", "CV"],
+      "outputs": ["Clock Out", "Stepped", "Smooth", "Woggle", "Burst"],
+      "parameters": ["Clock Rate", "Smooth Speed", "Woggle Range"]
+    },
+    {
+      "name": "Metropolis",
+      "manufacturer": "Intellijel",
+      "type": "Sequencer",
+      "description": "Pitched step sequencer inspired by the Ryk M-185",
+      "inputs": ["Clock In", "Reset"],
+      "outputs": ["Pitch", "Gate", "Clock", "Reset"],
+      "parameters": ["BPM", "Root", "Scale", "Mode", "Stages", "Swing", "Slide Time"]
+    },
+    {
+      "name": "uVCA",
+      "manufacturer": "Intellijel",
+      "type": "VCA",
+      "description": "Dual linear/exponential VCA",
+      "inputs": ["Ch1 Input", "Ch1 CV", "Ch2 Input", "Ch2 CV"],
+      "outputs": ["Ch1 Output", "Ch2 Output"],
+      "parameters": ["Ch1 Level", "Ch2 Level", "Response"]
+    },
+    {
+      "name": "Polaris",
+      "manufacturer": "Intellijel",
+      "type": "Filter",
+      "description": "Multi-mode resonant filter",
+      "inputs": ["Input", "CV 1", "CV 2", "FM", "1 V/Oct"],
+      "outputs": ["LPF", "BPF", "HPF", "Notch"],
+      "parameters": ["Freq", "Resonance", "CV 1 Amt", "CV 2 Amt", "Mode", "Slope"]
+    },
+    {
+      "name": "Multifilter",
+      "manufacturer": "Steady State Fate",
+      "type": "Filter",
+      "description": "Multi-mode filter with CV control",
+      "inputs": ["Input", "CV Input", "1 V/Oct"],
+      "outputs": ["LPF", "HPF", "BPF"],
+      "parameters": ["Freq", "Resonance", "CV Amount"]
+    },
+    {
+      "name": "Function",
+      "manufacturer": "Make Noise",
+      "type": "Function Generator",
+      "description": "Analog function generator (envelope, LFO, slew limiter)",
+      "inputs": ["Trigger", "Gate", "Rise CV", "Fall CV", "Signal"],
+      "outputs": ["+ Out", "- Out", "EOR", "EOC"],
+      "parameters": ["Rise", "Fall", "Curve"]
+    },
+    {
+      "name": "Pamela's Workout",
+      "manufacturer": "ALM Busy Circuits",
+      "type": "Clock / Modulation",
+      "description": "Programmable clock divider/multiplier with euclidean patterns",
+      "inputs": ["Clock In", "Run/Stop", "Reset"],
+      "outputs": ["1", "2", "3", "4", "5", "6", "7", "8"],
+      "parameters": ["BPM", "Div/Mult", "Phase", "Width", "Euclidean"]
+    },
+    {
+      "name": "Disting",
+      "manufacturer": "Expert Sleepers",
+      "type": "Multi-function",
+      "description": "Multi-algorithm precision utility module",
+      "inputs": ["X", "Y", "Z"],
+      "outputs": ["A", "B"],
+      "parameters": ["Algorithm", "Param 1", "Param 2"]
+    },
+    {
+      "name": "Mixer",
+      "manufacturer": "Generic",
+      "type": "Mixer",
+      "description": "Audio/CV mixer",
+      "inputs": ["Ch1", "Ch2", "Ch3", "Ch4"],
+      "outputs": ["Output"],
+      "parameters": ["Ch1 Level", "Ch2 Level", "Ch3 Level", "Ch4 Level"]
+    },
+    {
+      "name": "VCA",
+      "manufacturer": "Generic",
+      "type": "VCA",
+      "description": "Voltage Controlled Amplifier",
+      "inputs": ["Input", "CV"],
+      "outputs": ["Output"],
+      "parameters": ["Level", "Response"]
+    },
+    {
+      "name": "ADSR",
+      "manufacturer": "Generic",
+      "type": "Envelope Generator",
+      "description": "Attack-Decay-Sustain-Release envelope generator",
+      "inputs": ["Gate", "Retrigger"],
+      "outputs": ["Out", "Inv Out"],
+      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+    },
+    {
+      "name": "LFO",
+      "manufacturer": "Generic",
+      "type": "LFO",
+      "description": "Low Frequency Oscillator",
+      "inputs": ["Rate CV", "Reset"],
+      "outputs": ["Sine", "Triangle", "Saw", "Square"],
+      "parameters": ["Rate", "Shape", "Depth"]
+    },
+    {
+      "name": "MultiLFO",
+      "manufacturer": "4ms",
+      "type": "LFO",
+      "description": "Multi-channel LFO with multiple waveshapes",
+      "inputs": ["Rate CV 1", "Rate CV 2", "Rate CV 3"],
+      "outputs": ["LFO 1", "LFO 2", "LFO 2 Triangle", "LFO 3", "LFO 3 Triangle"],
+      "parameters": ["LFO 1 Freq", "LFO 1 Shape", "LFO 1 S&H", "LFO 2 Freq", "LFO 3 Freq"]
+    },
+    {
+      "name": "Z3000",
+      "manufacturer": "Tiptop Audio",
+      "type": "Oscillator",
+      "description": "Smart VCO with hard and soft sync",
+      "inputs": ["1 V/Oct", "FM", "PWM", "HSync", "SSync"],
+      "outputs": ["Sine", "Triangle", "Saw", "Square", "Sub"],
+      "parameters": ["Freq", "PW"]
+    },
+    {
+      "name": "Z4000",
+      "manufacturer": "Tiptop Audio",
+      "type": "Envelope Generator",
+      "description": "Voltage Controlled Envelope Generator",
+      "inputs": ["Gate", "Trigger", "CV"],
+      "outputs": ["Out", "Inv Out", "EOR"],
+      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+    },
+    {
+      "name": "e350",
+      "manufacturer": "Synthesis Technology",
+      "type": "Morphing Terrarium",
+      "description": "Dual morphing wavetable VCO",
+      "inputs": ["V/Oct", "X CV", "Y CV", "Z CV"],
+      "outputs": ["XY", "Z"],
+      "parameters": ["Bank", "X", "Y", "Z"]
+    },
+    {
+      "name": "A124",
+      "manufacturer": "Doepfer",
+      "type": "Filter",
+      "description": "Wasp filter — special 12dB multimode filter",
+      "inputs": ["Input", "CV1", "CV2"],
+      "outputs": ["LPF", "BPF", "HPF"],
+      "parameters": ["Freq", "Resonance"]
+    },
+    {
+      "name": "Penta",
+      "manufacturer": "4ms",
+      "type": "Clock Divider",
+      "description": "Five-step sequential switch / clock divider",
+      "inputs": ["Clk", "Reset"],
+      "outputs": ["1", "2", "3", "4", "5"],
+      "parameters": ["Steps"]
+    },
+    {
+      "name": "AUDIO INTERFACE",
+      "manufacturer": "External",
+      "type": "Audio Interface",
+      "description": "External audio interface (non-modular equipment)",
+      "inputs": ["In 1", "In 2", "In 3", "In 4", "In 5", "In 6", "In 7", "In 8", "input"],
+      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
+      "parameters": []
+    }
+  ]
+}

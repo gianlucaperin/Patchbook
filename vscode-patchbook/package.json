@@ -1,0 +1,112 @@
+{
+  "name": "patchbook",
+  "displayName": "Patchbook",
+  "description": "Syntax highlighting, autocompletion, JSON export, and graph visualization for Patchbook modular synth patches",
+  "version": "0.1.0",
+  "publisher": "spektroaudio",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onLanguage:patchbook"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "patchbook",
+        "aliases": [
+          "Patchbook",
+          "patchbook"
+        ],
+        "extensions": [
+          ".pb",
+          ".patchbook"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "patchbook",
+        "scopeName": "source.patchbook",
+        "path": "./syntaxes/patchbook.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "patchbook.exportJSON",
+        "title": "Patchbook: Export to JSON",
+        "icon": "$(json)"
+      },
+      {
+        "command": "patchbook.showGraph",
+        "title": "Patchbook: Show Signal Flow Graph",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "patchbook.editModules",
+        "title": "Patchbook: Edit Module Database"
+      },
+      {
+        "command": "patchbook.reloadModules",
+        "title": "Patchbook: Reload Module Database"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "patchbook.exportJSON",
+          "when": "editorLangId == patchbook",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.showGraph",
+          "when": "editorLangId == patchbook",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "patchbook.exportJSON",
+          "when": "editorLangId == patchbook",
+          "group": "patchbook"
+        },
+        {
+          "command": "patchbook.showGraph",
+          "when": "editorLangId == patchbook",
+          "group": "patchbook"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Patchbook",
+      "properties": {
+        "patchbook.graphDirection": {
+          "type": "string",
+          "default": "LR",
+          "enum": [
+            "LR",
+            "TB"
+          ],
+          "description": "Graph layout direction: LR (left-to-right) or TB (top-to-bottom)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}
