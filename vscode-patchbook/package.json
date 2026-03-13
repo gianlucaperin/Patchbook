@@ -2,7 +2,7 @@
   "name": "patchbook",
   "displayName": "Patchbook",
   "description": "Syntax highlighting, autocompletion, JSON export, and graph visualization for Patchbook modular synth patches",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "spektroaudio",
   "engines": {
     "vscode": "^1.85.0"

@@ -19,7 +19,7 @@ interface ModulesFile {
 let moduleMap: Map<string, ModuleInfo> = new Map();
 let modulesFilePath: string | undefined;
 
-/** Return the path to the user's modules JSON file, creating it from defaults if needed */
+/** Return the path to the user's modules JSON file, refreshing from defaults when the bundled catalog is updated */
 function getModulesPath(context: vscode.ExtensionContext): string {
   if (modulesFilePath) {
     return modulesFilePath;
@@ -29,13 +29,20 @@ function getModulesPath(context: vscode.ExtensionContext): string {
     fs.mkdirSync(storageDir, { recursive: true });
   }
   const userFile = path.join(storageDir, "modules.json");
+  const defaultFile = path.join(
+    context.extensionPath,
+    "data",
+    "default-modules.json"
+  );
+  // Re-copy defaults when the bundled file is newer than the cached copy
   if (!fs.existsSync(userFile)) {
-    const defaultFile = path.join(
-      context.extensionPath,
-      "data",
-      "default-modules.json"
-    );
     fs.copyFileSync(defaultFile, userFile);
+  } else {
+    const defaultMtime = fs.statSync(defaultFile).mtimeMs;
+    const userMtime = fs.statSync(userFile).mtimeMs;
+    if (defaultMtime > userMtime) {
+      fs.copyFileSync(defaultFile, userFile);
+    }
   }
   modulesFilePath = userFile;
   return userFile;
