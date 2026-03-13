@@ -2,7 +2,7 @@
   "name": "patchbook",
   "displayName": "Patchbook",
   "description": "Syntax highlighting, autocompletion, JSON export, and graph visualization for Patchbook modular synth patches",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "spektroaudio",
   "engines": {
     "vscode": "^1.85.0"
@@ -59,6 +59,16 @@
       {
         "command": "patchbook.reloadModules",
         "title": "Patchbook: Reload Module Database"
+      },
+      {
+        "command": "patchbook.addModule",
+        "title": "Patchbook: Add Module",
+        "icon": "$(add)"
+      },
+      {
+        "command": "patchbook.removeModule",
+        "title": "Patchbook: Remove Module",
+        "icon": "$(trash)"
       }
     ],
     "menus": {
@@ -69,6 +79,16 @@
         }
       ],
       "editor/title": [
+        {
+          "command": "patchbook.addModule",
+          "when": "editorLangId == patchbook",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.removeModule",
+          "when": "editorLangId == patchbook",
+          "group": "navigation"
+        },
         {
           "command": "patchbook.exportJSON",
           "when": "editorLangId == patchbook",

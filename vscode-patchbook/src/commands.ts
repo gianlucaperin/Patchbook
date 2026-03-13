@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { parse } from "./parser";
-import { getModules, ModuleInfo } from "./moduleDatabase";
+import { getModules, getModuleByName, ModuleInfo } from "./moduleDatabase";
 
 interface ModuleQuickPickItem extends vscode.QuickPickItem {
   mod: ModuleInfo;
@@ -139,4 +139,106 @@ export async function exportJSON(): Promise<void> {
     language: "json",
   });
   await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+}
+
+export async function addModule(): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor || editor.document.languageId !== "patchbook") {
+    vscode.window.showWarningMessage("Patchbook: Open a .pb or .patchbook file first.");
+    return;
+  }
+
+  const modules = getModules();
+  const byType = new Map<string, ModuleInfo[]>();
+  for (const [, mod] of modules) {
+    const list = byType.get(mod.type) ?? [];
+    list.push(mod);
+    byType.set(mod.type, list);
+  }
+  const sortedTypes = Array.from(byType.keys()).sort();
+  const items: vscode.QuickPickItem[] = [];
+  for (const type of sortedTypes) {
+    items.push({ label: type, kind: vscode.QuickPickItemKind.Separator });
+    const mods = byType.get(type)!.sort((a, b) => a.name.localeCompare(b.name));
+    for (const mod of mods) {
+      items.push({ label: mod.name, description: mod.manufacturer, detail: mod.description });
+    }
+  }
+
+  const picked = await vscode.window.showQuickPick(items, {
+    placeHolder: "Select a module to add",
+    matchOnDescription: true,
+    matchOnDetail: true,
+  });
+  if (!picked) { return; }
+
+  const modName = picked.label;
+  const catalog = getModuleByName(modName);
+  let block = `\n\n* ${modName}:`;
+  if (catalog && catalog.parameters.length > 0) {
+    for (const p of catalog.parameters) {
+      block += `\n| ${p} = `;
+    }
+  }
+
+  const doc = editor.document;
+  const lastLine = doc.lineAt(doc.lineCount - 1);
+  const edit = new vscode.WorkspaceEdit();
+  edit.insert(doc.uri, lastLine.range.end, block);
+  await vscode.workspace.applyEdit(edit);
+  await doc.save();
+}
+
+export async function removeModule(): Promise<void> {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor || editor.document.languageId !== "patchbook") {
+    vscode.window.showWarningMessage("Patchbook: Open a .pb or .patchbook file first.");
+    return;
+  }
+
+  const doc = editor.document;
+  const data = parse(doc.getText());
+  const moduleNames = Object.keys(data.modules);
+  if (moduleNames.length === 0) {
+    vscode.window.showInformationMessage("Patchbook: No modules found in this patch.");
+    return;
+  }
+
+  const picked = await vscode.window.showQuickPick(
+    moduleNames.map(m => ({ label: m })),
+    { placeHolder: "Select a module to remove" }
+  );
+  if (!picked) { return; }
+
+  const modLower = picked.label.toLowerCase();
+  const lines = doc.getText().split(/\r?\n/);
+  const toDelete: number[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i].trim().toLowerCase();
+    // Module header
+    if (l.startsWith("*") && l.includes(modLower + ":")) {
+      toDelete.push(i);
+      for (let j = i + 1; j < lines.length; j++) {
+        if (lines[j].trim().startsWith("|")) { toDelete.push(j); } else { break; }
+      }
+    }
+    // Connections involving this module
+    if (l.startsWith("-") && (l.includes(modLower + " (") || l.includes(modLower + "("))) {
+      toDelete.push(i);
+    }
+  }
+
+  if (toDelete.length === 0) {
+    vscode.window.showInformationMessage("Patchbook: No lines found for this module.");
+    return;
+  }
+
+  const wsEdit = new vscode.WorkspaceEdit();
+  const unique = [...new Set(toDelete)].sort((a, b) => b - a);
+  for (const lineIdx of unique) {
+    wsEdit.delete(doc.uri, doc.lineAt(lineIdx).rangeIncludingLineBreak);
+  }
+  await vscode.workspace.applyEdit(wsEdit);
+  await doc.save();
 }

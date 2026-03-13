@@ -3239,11 +3239,11 @@
         "CV 7",
         "CV 8",
         "Gate 7",
-        "Gate 8"
+        "Gate 8",
+        "Clock Out",
+        "Reset Out"
       ],
       "parameters": [
-        "Channel",
-        "Route"
       ]
     },
     {
@@ -3550,13 +3550,34 @@
         "Audio Out 1R"
       ],
       "outputs": [
-        "Out"
+        "Balance input L",
+        "Balance input R",
+        "Mult out 1",
+        "Mult out 2",
+        "Mult out 3",
+        "Mult out 4",
+        "Mult out 5",
+        "Mult out 6",
+        "Sum 1",
+        "Sum 2",
+        "S&H Out",
+        "LFO 1 Triangle",
+        "LFO 1 Square",
+        "LFO 2 Triangle",
+        "LFO 2 Square",
+        "Noise",
+        "Mix Out L",
+        "Mix Out R"
       ],
       "parameters": [
-        "Freq",
-        "Morph",
-        "Bank",
-        "Fine"
+        "LFO 1 Freq",
+        "LFO 2 Freq",
+        "Adder Volts",
+        "Mix Level 1",
+        "Mix Level 2",
+        "Input Gain L",
+        "Input Gain R", 
+        "Output Gain"
       ]
     },
     {

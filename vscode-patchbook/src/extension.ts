@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { PatchbookCompletionProvider } from "./completionProvider";
 import { loadModules, openModulesFile } from "./moduleDatabase";
-import { exportJSON, newPatch } from "./commands";
+import { exportJSON, newPatch, addModule, removeModule } from "./commands";
 import { GraphViewProvider } from "./graphView";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -49,6 +49,12 @@ export function activate(context: vscode.ExtensionContext): void {
         "Patchbook: Module database reloaded."
       );
     })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.addModule", () => addModule())
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.removeModule", () => removeModule())
   );
 }
 
