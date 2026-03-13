@@ -11,9 +11,7 @@
     "Programming Languages",
     "Visualization"
   ],
-  "activationEvents": [
-    "onLanguage:patchbook"
-  ],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "languages": [
