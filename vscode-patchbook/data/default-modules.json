@@ -5,134 +5,409 @@
       "manufacturer": "Mutable Instruments",
       "type": "Oscillator",
       "description": "Macro oscillator with 47 synthesis models",
-      "inputs": ["1 V/Oct", "FM", "Timbre CV", "Color CV"],
-      "outputs": ["Out"],
-      "parameters": ["Mode", "Timbre", "Color", "FM"]
+      "inputs": [
+        "1 V/Oct",
+        "FM",
+        "Timbre CV",
+        "Color CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Mode",
+        "Timbre",
+        "Color",
+        "FM"
+      ]
     },
     {
       "name": "Plaits",
       "manufacturer": "Mutable Instruments",
       "type": "Oscillator",
       "description": "Macro oscillator with 16 synthesis models, successor to Braids",
-      "inputs": ["V/Oct", "FM", "Timbre", "Morph", "Trigger", "Level"],
-      "outputs": ["Out", "Aux"],
-      "parameters": ["Model", "Frequency", "Harmonics", "Timbre", "Morph"]
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Timbre",
+        "Morph",
+        "Trigger",
+        "Level"
+      ],
+      "outputs": [
+        "Out",
+        "Aux"
+      ],
+      "parameters": [
+        "Model",
+        "Frequency",
+        "Harmonics",
+        "Timbre",
+        "Morph"
+      ]
     },
     {
       "name": "Tides",
       "manufacturer": "Mutable Instruments",
       "type": "Function Generator",
-      "description": "Tidal modulator — looping/one-shot AD envelope, LFO or oscillator",
-      "inputs": ["V/Oct", "FM", "Shape", "Slope", "Smoothness", "Trigger", "Clk", "Freeze"],
-      "outputs": ["High Tide", "Low Tide", "Uni", "Bi"],
-      "parameters": ["Freq", "Shape", "Slope", "Smoothness", "Mode", "Range", "PLL Mode"]
+      "description": "Tidal modulator \u2014 looping/one-shot AD envelope, LFO or oscillator",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Shape",
+        "Slope",
+        "Smoothness",
+        "Trigger",
+        "Clk",
+        "Freeze"
+      ],
+      "outputs": [
+        "High Tide",
+        "Low Tide",
+        "Uni",
+        "Bi"
+      ],
+      "parameters": [
+        "Freq",
+        "Shape",
+        "Slope",
+        "Smoothness",
+        "Mode",
+        "Range",
+        "PLL Mode"
+      ]
     },
     {
       "name": "Rings",
       "manufacturer": "Mutable Instruments",
       "type": "Resonator",
       "description": "Modal resonator with sympathetic string models",
-      "inputs": ["V/Oct", "Strum", "In", "Structure", "Brightness", "Damping", "Position"],
-      "outputs": ["Odd", "Even"],
-      "parameters": ["Structure", "Brightness", "Damping", "Position", "Polyphony", "Model"]
+      "inputs": [
+        "V/Oct",
+        "Strum",
+        "In",
+        "Structure",
+        "Brightness",
+        "Damping",
+        "Position"
+      ],
+      "outputs": [
+        "Odd",
+        "Even"
+      ],
+      "parameters": [
+        "Structure",
+        "Brightness",
+        "Damping",
+        "Position",
+        "Polyphony",
+        "Model"
+      ]
     },
     {
       "name": "Clouds",
       "manufacturer": "Mutable Instruments",
       "type": "Effect",
       "description": "Granular audio processor",
-      "inputs": ["In L", "In R", "V/Oct", "Density", "Texture", "Position", "Size", "Trigger", "Freeze"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Position", "Size", "Density", "Texture", "Pitch", "Blend", "Spread", "Feedback", "Reverb"]
+      "inputs": [
+        "In L",
+        "In R",
+        "V/Oct",
+        "Density",
+        "Texture",
+        "Position",
+        "Size",
+        "Trigger",
+        "Freeze"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Position",
+        "Size",
+        "Density",
+        "Texture",
+        "Pitch",
+        "Blend",
+        "Spread",
+        "Feedback",
+        "Reverb"
+      ]
     },
     {
       "name": "Peaks",
       "manufacturer": "Mutable Instruments",
       "type": "Envelope Generator",
-      "description": "Dual trigger processor — envelope, LFO, drum",
-      "inputs": ["Gate 1", "Gate 2"],
-      "outputs": ["Out 1", "Out 2"],
-      "parameters": ["Mode", "Param 1", "Param 2", "Param 3", "Param 4"]
+      "description": "Dual trigger processor \u2014 envelope, LFO, drum",
+      "inputs": [
+        "Gate 1",
+        "Gate 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Mode",
+        "Param 1",
+        "Param 2",
+        "Param 3",
+        "Param 4"
+      ]
     },
     {
       "name": "Warps",
       "manufacturer": "Mutable Instruments",
       "type": "Effect",
       "description": "Meta-modulator with crossfading, ring mod, vocoder, and more",
-      "inputs": ["Carrier", "Modulator", "Algorithm CV", "Timbre CV", "Level 1", "Level 2"],
-      "outputs": ["Out"],
-      "parameters": ["Algorithm", "Timbre"]
+      "inputs": [
+        "Carrier",
+        "Modulator",
+        "Algorithm CV",
+        "Timbre CV",
+        "Level 1",
+        "Level 2"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Algorithm",
+        "Timbre"
+      ]
     },
     {
       "name": "Elements",
       "manufacturer": "Mutable Instruments",
       "type": "Voice",
-      "description": "Modal synthesis voice — exciter into resonator",
-      "inputs": ["V/Oct", "FM", "Gate", "Strength", "Blow In", "Strike In", "Damping CV", "Position CV", "Geometry CV", "Brightness CV", "Space CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Contour", "Bow", "Blow", "Strike", "Flow", "Mallet", "Geometry", "Brightness", "Damping", "Position", "Space"]
+      "description": "Modal synthesis voice \u2014 exciter into resonator",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Gate",
+        "Strength",
+        "Blow In",
+        "Strike In",
+        "Damping CV",
+        "Position CV",
+        "Geometry CV",
+        "Brightness CV",
+        "Space CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Contour",
+        "Bow",
+        "Blow",
+        "Strike",
+        "Flow",
+        "Mallet",
+        "Geometry",
+        "Brightness",
+        "Damping",
+        "Position",
+        "Space"
+      ]
     },
     {
       "name": "Marbles",
       "manufacturer": "Mutable Instruments",
       "type": "Random Source",
-      "description": "Random sampler — generates random gates and voltages",
-      "inputs": ["T Clock", "X Clock", "Deja Vu CV", "Rate CV", "Steps CV", "Spread CV", "Bias CV"],
-      "outputs": ["T1", "T2", "T3", "X1", "X2", "X3", "Y"],
-      "parameters": ["T Rate", "T Bias", "T Jitter", "X Spread", "X Bias", "X Steps", "Deja Vu", "Deja Vu Length"]
+      "description": "Random sampler \u2014 generates random gates and voltages",
+      "inputs": [
+        "T Clock",
+        "X Clock",
+        "Deja Vu CV",
+        "Rate CV",
+        "Steps CV",
+        "Spread CV",
+        "Bias CV"
+      ],
+      "outputs": [
+        "T1",
+        "T2",
+        "T3",
+        "X1",
+        "X2",
+        "X3",
+        "Y"
+      ],
+      "parameters": [
+        "T Rate",
+        "T Bias",
+        "T Jitter",
+        "X Spread",
+        "X Bias",
+        "X Steps",
+        "Deja Vu",
+        "Deja Vu Length"
+      ]
     },
     {
       "name": "Stages",
       "manufacturer": "Mutable Instruments",
       "type": "Envelope Generator",
-      "description": "Six configurable segment generators — envelope, LFO, step sequencer",
-      "inputs": ["Gate 1", "Gate 2", "Gate 3", "Gate 4", "Gate 5", "Gate 6"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Out 5", "Out 6"],
-      "parameters": ["Shape 1", "Time 1", "Level 1", "Shape 2", "Time 2", "Level 2"]
+      "description": "Six configurable segment generators \u2014 envelope, LFO, step sequencer",
+      "inputs": [
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4",
+        "Gate 5",
+        "Gate 6"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Out 5",
+        "Out 6"
+      ],
+      "parameters": [
+        "Shape 1",
+        "Time 1",
+        "Level 1",
+        "Shape 2",
+        "Time 2",
+        "Level 2"
+      ]
     },
     {
       "name": "Beads",
       "manufacturer": "Mutable Instruments",
       "type": "Effect",
       "description": "Micro-looper and granular processor, successor to Clouds",
-      "inputs": ["In L", "In R", "Seed", "Density CV", "Time CV", "Size CV", "Shape CV", "Feedback CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Density", "Time", "Size", "Shape", "Feedback", "Dry/Wet", "Seed", "Quality"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Seed",
+        "Density CV",
+        "Time CV",
+        "Size CV",
+        "Shape CV",
+        "Feedback CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Density",
+        "Time",
+        "Size",
+        "Shape",
+        "Feedback",
+        "Dry/Wet",
+        "Seed",
+        "Quality"
+      ]
     },
     {
       "name": "Ripples",
       "manufacturer": "Mutable Instruments",
       "type": "Filter",
-      "description": "Liquid analog filter — 2-pole and 4-pole outputs",
-      "inputs": ["Input", "V/Oct", "FM", "Resonance CV"],
-      "outputs": ["BP2", "LP2", "LP4", "VCA"],
-      "parameters": ["Frequency", "Resonance", "FM Attenuverter"]
+      "description": "Liquid analog filter \u2014 2-pole and 4-pole outputs",
+      "inputs": [
+        "Input",
+        "V/Oct",
+        "FM",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "BP2",
+        "LP2",
+        "LP4",
+        "VCA"
+      ],
+      "parameters": [
+        "Frequency",
+        "Resonance",
+        "FM Attenuverter"
+      ]
     },
     {
       "name": "Veils",
       "manufacturer": "Mutable Instruments",
       "type": "VCA",
       "description": "Quad cascading VCA",
-      "inputs": ["In 1", "CV 1", "In 2", "CV 2", "In 3", "CV 3", "In 4", "CV 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Mix"],
-      "parameters": ["Gain 1", "Response 1", "Gain 2", "Response 2", "Gain 3", "Response 3", "Gain 4", "Response 4"]
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2",
+        "In 3",
+        "CV 3",
+        "In 4",
+        "CV 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Gain 1",
+        "Response 1",
+        "Gain 2",
+        "Response 2",
+        "Gain 3",
+        "Response 3",
+        "Gain 4",
+        "Response 4"
+      ]
     },
     {
       "name": "Blinds",
       "manufacturer": "Mutable Instruments",
       "type": "Utility",
       "description": "Quad polarizer / attenuverter",
-      "inputs": ["In 1", "In 2", "In 3", "In 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Level 1", "Level 2", "Level 3", "Level 4"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4"
+      ]
     },
     {
       "name": "Links",
       "manufacturer": "Mutable Instruments",
       "type": "Utility",
-      "description": "Multiples and mixing — 1:3, 2:1, 3:1",
-      "inputs": ["1:3 In", "2:1 In A", "2:1 In B", "3:1 In A", "3:1 In B", "3:1 In C"],
-      "outputs": ["1:3 Out A", "1:3 Out B", "1:3 Out C", "2:1 Out", "3:1 Out"],
+      "description": "Multiples and mixing \u2014 1:3, 2:1, 3:1",
+      "inputs": [
+        "1:3 In",
+        "2:1 In A",
+        "2:1 In B",
+        "3:1 In A",
+        "3:1 In B",
+        "3:1 In C"
+      ],
+      "outputs": [
+        "1:3 Out A",
+        "1:3 Out B",
+        "1:3 Out C",
+        "2:1 Out",
+        "3:1 Out"
+      ],
       "parameters": []
     },
     {
@@ -140,1025 +415,2703 @@
       "manufacturer": "Mutable Instruments",
       "type": "Utility",
       "description": "S&H, noise, logic, rectifier",
-      "inputs": ["Sign In", "Logic A", "Logic B", "S&H In", "S&H Gate"],
-      "outputs": ["Rectify +", "Rectify -", "AND", "OR", "XOR", "Min", "Max", "S&H", "Noise"],
+      "inputs": [
+        "Sign In",
+        "Logic A",
+        "Logic B",
+        "S&H In",
+        "S&H Gate"
+      ],
+      "outputs": [
+        "Rectify +",
+        "Rectify -",
+        "AND",
+        "OR",
+        "XOR",
+        "Min",
+        "Max",
+        "S&H",
+        "Noise"
+      ],
       "parameters": []
     },
     {
       "name": "Frames",
       "manufacturer": "Mutable Instruments",
       "type": "Utility",
-      "description": "Keyframer/mixer — 4 channels with animation",
-      "inputs": ["In 1", "In 2", "In 3", "In 4", "Frame CV"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Mix"],
-      "parameters": ["Frame", "Ch 1 Gain", "Ch 2 Gain", "Ch 3 Gain", "Ch 4 Gain"]
+      "description": "Keyframer/mixer \u2014 4 channels with animation",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "Frame CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Frame",
+        "Ch 1 Gain",
+        "Ch 2 Gain",
+        "Ch 3 Gain",
+        "Ch 4 Gain"
+      ]
     },
     {
       "name": "Maths",
       "manufacturer": "Make Noise",
       "type": "Function Generator",
       "description": "Dual analog function generator with mixing and logic",
-      "inputs": ["Ch 1 Trigger", "Ch 1 Signal", "Ch 4 Trigger", "Ch 4 Signal", "Signal", "Ch 2 CV", "Ch 3 CV"],
-      "outputs": ["Ch 1", "Ch 4", "Unity", "Sum", "Inv", "EOR", "EOC"],
-      "parameters": ["Ch 1 Rise", "Ch 1 Fall", "Ch 1 Curve", "Ch 4 Rise", "Ch 4 Fall", "Ch 4 Curve", "Ch 2 Attenuverter", "Ch 3 Attenuverter"]
+      "inputs": [
+        "Ch 1 Trigger",
+        "Ch 1 Signal",
+        "Ch 4 Trigger",
+        "Ch 4 Signal",
+        "Signal",
+        "Ch 2 CV",
+        "Ch 3 CV"
+      ],
+      "outputs": [
+        "Ch 1",
+        "Ch 4",
+        "Unity",
+        "Sum",
+        "Inv",
+        "EOR",
+        "EOC"
+      ],
+      "parameters": [
+        "Ch 1 Rise",
+        "Ch 1 Fall",
+        "Ch 1 Curve",
+        "Ch 4 Rise",
+        "Ch 4 Fall",
+        "Ch 4 Curve",
+        "Ch 2 Attenuverter",
+        "Ch 3 Attenuverter"
+      ]
     },
     {
       "name": "Optomix",
       "manufacturer": "Make Noise",
       "type": "Low Pass Gate",
       "description": "Dual low pass gate with vactrol-style response",
-      "inputs": ["Ch1 Signal", "Ch1 CV", "Ch2 Signal", "Ch2 CV", "Strike"],
-      "outputs": ["Out 1", "Out 2", "Sum Out"],
-      "parameters": ["Damp", "Control"]
+      "inputs": [
+        "Ch1 Signal",
+        "Ch1 CV",
+        "Ch2 Signal",
+        "Ch2 CV",
+        "Strike"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Sum Out"
+      ],
+      "parameters": [
+        "Damp",
+        "Control"
+      ]
     },
     {
       "name": "DPO",
       "manufacturer": "Make Noise",
       "type": "Oscillator",
       "description": "Dual Prismatic Oscillator with FM and waveshaping",
-      "inputs": ["1 V/Oct A", "1 V/Oct B", "FM A", "FM B", "Shape A", "Shape B", "Angle", "Follow"],
-      "outputs": ["Sine A", "Saw A", "Square A", "Final A", "Sine B", "Saw B", "Square B", "Final B"],
-      "parameters": ["Freq A", "Freq B", "FM A", "FM B", "Shape A", "Shape B", "Angle"]
+      "inputs": [
+        "1 V/Oct A",
+        "1 V/Oct B",
+        "FM A",
+        "FM B",
+        "Shape A",
+        "Shape B",
+        "Angle",
+        "Follow"
+      ],
+      "outputs": [
+        "Sine A",
+        "Saw A",
+        "Square A",
+        "Final A",
+        "Sine B",
+        "Saw B",
+        "Square B",
+        "Final B"
+      ],
+      "parameters": [
+        "Freq A",
+        "Freq B",
+        "FM A",
+        "FM B",
+        "Shape A",
+        "Shape B",
+        "Angle"
+      ]
     },
     {
       "name": "Wogglebug",
       "manufacturer": "Make Noise",
       "type": "Random Source",
       "description": "Random voltage generator based on Wiard Wogglebug",
-      "inputs": ["Clock", "CV"],
-      "outputs": ["Clock Out", "Stepped", "Smooth", "Woggle", "Burst"],
-      "parameters": ["Clock Rate", "Smooth Speed", "Woggle Range"]
+      "inputs": [
+        "Clock",
+        "CV"
+      ],
+      "outputs": [
+        "Clock Out",
+        "Stepped",
+        "Smooth",
+        "Woggle",
+        "Burst"
+      ],
+      "parameters": [
+        "Clock Rate",
+        "Smooth Speed",
+        "Woggle Range"
+      ]
     },
     {
       "name": "Function",
       "manufacturer": "Make Noise",
       "type": "Function Generator",
       "description": "Analog function generator (envelope, LFO, slew limiter)",
-      "inputs": ["Trigger", "Gate", "Rise CV", "Fall CV", "Signal"],
-      "outputs": ["+ Out", "- Out", "EOR", "EOC"],
-      "parameters": ["Rise", "Fall", "Curve"]
+      "inputs": [
+        "Trigger",
+        "Gate",
+        "Rise CV",
+        "Fall CV",
+        "Signal"
+      ],
+      "outputs": [
+        "+ Out",
+        "- Out",
+        "EOR",
+        "EOC"
+      ],
+      "parameters": [
+        "Rise",
+        "Fall",
+        "Curve"
+      ]
     },
     {
       "name": "Morphagene",
       "manufacturer": "Make Noise",
       "type": "Effect",
       "description": "Microsound tape and granular sampler",
-      "inputs": ["In L", "In R", "Gene Size CV", "Slide CV", "Varispeed CV", "Organize CV", "Clock"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Gene Size", "Slide", "Varispeed", "Organize", "Morph", "SOS"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Gene Size CV",
+        "Slide CV",
+        "Varispeed CV",
+        "Organize CV",
+        "Clock"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Gene Size",
+        "Slide",
+        "Varispeed",
+        "Organize",
+        "Morph",
+        "SOS"
+      ]
     },
     {
       "name": "Erbe-Verb",
       "manufacturer": "Make Noise",
       "type": "Effect",
       "description": "Continuously variable digital reverb",
-      "inputs": ["In L", "In R", "Absorb CV", "Decay CV", "Size CV", "Speed CV", "Tilt CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Absorb", "Decay", "Size", "Speed", "Depth", "Tilt", "Predelay"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Absorb CV",
+        "Decay CV",
+        "Size CV",
+        "Speed CV",
+        "Tilt CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Absorb",
+        "Decay",
+        "Size",
+        "Speed",
+        "Depth",
+        "Tilt",
+        "Predelay"
+      ]
     },
     {
       "name": "QPAS",
       "manufacturer": "Make Noise",
       "type": "Filter",
-      "description": "Quad Peak Animation System — stereo multi-peak filter",
-      "inputs": ["In L", "In R", "Freq CV", "Radiate CV", "!!!", "CV L", "CV R"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Freq", "Radiate", "Q"]
+      "description": "Quad Peak Animation System \u2014 stereo multi-peak filter",
+      "inputs": [
+        "In L",
+        "In R",
+        "Freq CV",
+        "Radiate CV",
+        "!!!",
+        "CV L",
+        "CV R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Freq",
+        "Radiate",
+        "Q"
+      ]
     },
     {
       "name": "Pressure Points",
       "manufacturer": "Make Noise",
       "type": "Controller",
       "description": "4-channel touch controller with pressure and gate outputs",
-      "inputs": ["Clock"],
-      "outputs": ["Gate", "Pressure", "CV A", "CV B", "CV C", "CV D"],
+      "inputs": [
+        "Clock"
+      ],
+      "outputs": [
+        "Gate",
+        "Pressure",
+        "CV A",
+        "CV B",
+        "CV C",
+        "CV D"
+      ],
       "parameters": []
     },
     {
       "name": "Rene",
       "manufacturer": "Make Noise",
       "type": "Sequencer",
-      "description": "Cartesian sequencer — X/Y/Z sequencing with quantizer",
-      "inputs": ["X Clk", "Y Clk", "Z Clk", "X CV", "Y CV"],
-      "outputs": ["CV A", "CV B", "Gate X", "Gate Y"],
-      "parameters": ["Mode", "Snake/Loop"]
+      "description": "Cartesian sequencer \u2014 X/Y/Z sequencing with quantizer",
+      "inputs": [
+        "X Clk",
+        "Y Clk",
+        "Z Clk",
+        "X CV",
+        "Y CV"
+      ],
+      "outputs": [
+        "CV A",
+        "CV B",
+        "Gate X",
+        "Gate Y"
+      ],
+      "parameters": [
+        "Mode",
+        "Snake/Loop"
+      ]
     },
     {
       "name": "STO",
       "manufacturer": "Make Noise",
       "type": "Oscillator",
-      "description": "Sub Timbral Oscillator — triangle core with wavefolder",
-      "inputs": ["1 V/Oct", "FM", "Shape CV"],
-      "outputs": ["Sine", "Sub", "Shape"],
-      "parameters": ["Freq", "Shape"]
+      "description": "Sub Timbral Oscillator \u2014 triangle core with wavefolder",
+      "inputs": [
+        "1 V/Oct",
+        "FM",
+        "Shape CV"
+      ],
+      "outputs": [
+        "Sine",
+        "Sub",
+        "Shape"
+      ],
+      "parameters": [
+        "Freq",
+        "Shape"
+      ]
     },
     {
       "name": "Telharmonic",
       "manufacturer": "Make Noise",
       "type": "Oscillator",
       "description": "Multi-voice additive oscillator with three synthesis modes",
-      "inputs": ["V/Oct", "N Cents", "D Degree", "H Harm", "Gate"],
-      "outputs": ["N", "D", "H"],
-      "parameters": ["Freq", "Interval N", "Interval D", "Interval H", "Tame/Wild"]
+      "inputs": [
+        "V/Oct",
+        "N Cents",
+        "D Degree",
+        "H Harm",
+        "Gate"
+      ],
+      "outputs": [
+        "N",
+        "D",
+        "H"
+      ],
+      "parameters": [
+        "Freq",
+        "Interval N",
+        "Interval D",
+        "Interval H",
+        "Tame/Wild"
+      ]
     },
     {
       "name": "Mimeophon",
       "manufacturer": "Make Noise",
       "type": "Effect",
-      "description": "Stereo multi-zone color audio repeater — delay/looper",
-      "inputs": ["In L", "In R", "Rate CV", "Repeats CV", "Halo CV", "Zone CV", "Flip", "Clock"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Rate", "Repeats", "Halo Saturation", "Zone", "Color", "Flip"]
+      "description": "Stereo multi-zone color audio repeater \u2014 delay/looper",
+      "inputs": [
+        "In L",
+        "In R",
+        "Rate CV",
+        "Repeats CV",
+        "Halo CV",
+        "Zone CV",
+        "Flip",
+        "Clock"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Rate",
+        "Repeats",
+        "Halo Saturation",
+        "Zone",
+        "Color",
+        "Flip"
+      ]
     },
     {
       "name": "Strega",
       "manufacturer": "Make Noise",
       "type": "Voice",
       "description": "Semi-modular desktop synth with delay, distortion, and touch",
-      "inputs": ["In", "Gate", "V/Oct", "Absorb CV", "Decay CV"],
-      "outputs": ["Out"],
-      "parameters": ["Time", "Absorb", "Decay", "Filter", "Activation"]
+      "inputs": [
+        "In",
+        "Gate",
+        "V/Oct",
+        "Absorb CV",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Time",
+        "Absorb",
+        "Decay",
+        "Filter",
+        "Activation"
+      ]
     },
     {
       "name": "Metropolis",
       "manufacturer": "Intellijel",
       "type": "Sequencer",
       "description": "Pitched step sequencer inspired by the Ryk M-185",
-      "inputs": ["Clock In", "Reset"],
-      "outputs": ["Pitch", "Gate", "Clock", "Reset"],
-      "parameters": ["BPM", "Root", "Scale", "Mode", "Stages", "Swing", "Slide Time"]
+      "inputs": [
+        "Clock In",
+        "Reset"
+      ],
+      "outputs": [
+        "Pitch",
+        "Gate",
+        "Clock",
+        "Reset"
+      ],
+      "parameters": [
+        "BPM",
+        "Root",
+        "Scale",
+        "Mode",
+        "Stages",
+        "Swing",
+        "Slide Time"
+      ]
     },
     {
       "name": "Metropolix",
       "manufacturer": "Intellijel",
       "type": "Sequencer",
       "description": "Dual-lane melodic sequencer, successor to Metropolis",
-      "inputs": ["Clock In", "Reset", "Mod A", "Mod B", "Pitch A CV", "Pitch B CV"],
-      "outputs": ["Pitch A", "Pitch B", "Gate A", "Gate B", "Mod 1", "Mod 2", "Clock Out"],
-      "parameters": ["BPM", "Root", "Scale", "Swing", "Track A Steps", "Track B Steps"]
+      "inputs": [
+        "Clock In",
+        "Reset",
+        "Mod A",
+        "Mod B",
+        "Pitch A CV",
+        "Pitch B CV"
+      ],
+      "outputs": [
+        "Pitch A",
+        "Pitch B",
+        "Gate A",
+        "Gate B",
+        "Mod 1",
+        "Mod 2",
+        "Clock Out"
+      ],
+      "parameters": [
+        "BPM",
+        "Root",
+        "Scale",
+        "Swing",
+        "Track A Steps",
+        "Track B Steps"
+      ]
     },
     {
       "name": "uVCA",
       "manufacturer": "Intellijel",
       "type": "VCA",
       "description": "Dual linear/exponential VCA",
-      "inputs": ["Ch1 Input", "Ch1 CV", "Ch2 Input", "Ch2 CV"],
-      "outputs": ["Ch1 Output", "Ch2 Output"],
-      "parameters": ["Ch1 Level", "Ch2 Level", "Response"]
+      "inputs": [
+        "Ch1 Input",
+        "Ch1 CV",
+        "Ch2 Input",
+        "Ch2 CV"
+      ],
+      "outputs": [
+        "Ch1 Output",
+        "Ch2 Output"
+      ],
+      "parameters": [
+        "Ch1 Level",
+        "Ch2 Level",
+        "Response"
+      ]
     },
     {
       "name": "Polaris",
       "manufacturer": "Intellijel",
       "type": "Filter",
       "description": "Multi-mode resonant filter",
-      "inputs": ["Input", "CV 1", "CV 2", "FM", "1 V/Oct"],
-      "outputs": ["LPF", "BPF", "HPF", "Notch"],
-      "parameters": ["Freq", "Resonance", "CV 1 Amt", "CV 2 Amt", "Mode", "Slope"]
+      "inputs": [
+        "Input",
+        "CV 1",
+        "CV 2",
+        "FM",
+        "1 V/Oct"
+      ],
+      "outputs": [
+        "LPF",
+        "BPF",
+        "HPF",
+        "Notch"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance",
+        "CV 1 Amt",
+        "CV 2 Amt",
+        "Mode",
+        "Slope"
+      ]
     },
     {
       "name": "Dixie II+",
       "manufacturer": "Intellijel",
       "type": "Oscillator",
       "description": "Full-featured analog VCO with sub oscillator",
-      "inputs": ["1V/Oct", "FM", "PWM", "Sync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square", "Sub"],
-      "parameters": ["Freq", "Fine", "PW"]
+      "inputs": [
+        "1V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square",
+        "Sub"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
     },
     {
       "name": "Rubicon2",
       "manufacturer": "Intellijel",
       "type": "Oscillator",
       "description": "Analog VCO with thru-zero FM and wavefolding",
-      "inputs": ["V/Oct", "FM", "Tzfm", "Symmetry CV", "Pulse Width CV", "Sync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square", "Pulse", "Warp"],
-      "parameters": ["Freq", "Fine", "FM", "Symmetry", "Pulse Width"]
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Tzfm",
+        "Symmetry CV",
+        "Pulse Width CV",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square",
+        "Pulse",
+        "Warp"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "FM",
+        "Symmetry",
+        "Pulse Width"
+      ]
     },
     {
       "name": "Shapeshifter",
       "manufacturer": "Intellijel",
       "type": "Oscillator",
       "description": "Complex digital oscillator with wavetables, FM, wavefold",
-      "inputs": ["V/Oct 1", "V/Oct 2", "Mod In", "Sync", "Fold CV", "Int FM", "Shape CV"],
-      "outputs": ["Osc 1", "Osc 2", "Combo"],
-      "parameters": ["Shape 1", "Shape 2", "Fold", "FM", "Combo Mode"]
+      "inputs": [
+        "V/Oct 1",
+        "V/Oct 2",
+        "Mod In",
+        "Sync",
+        "Fold CV",
+        "Int FM",
+        "Shape CV"
+      ],
+      "outputs": [
+        "Osc 1",
+        "Osc 2",
+        "Combo"
+      ],
+      "parameters": [
+        "Shape 1",
+        "Shape 2",
+        "Fold",
+        "FM",
+        "Combo Mode"
+      ]
     },
     {
       "name": "Quadrax",
       "manufacturer": "Intellijel",
       "type": "Envelope Generator",
       "description": "Quad function generator with cascading, CV-over-everything",
-      "inputs": ["Trig 1", "Trig 2", "Trig 3", "Trig 4", "CV 1", "CV 2", "CV 3", "CV 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "EOC 1", "EOC 2", "EOC 3", "EOC 4"],
-      "parameters": ["Rise 1", "Fall 1", "Rise 2", "Fall 2", "Rise 3", "Fall 3", "Rise 4", "Fall 4"]
+      "inputs": [
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4",
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "EOC 1",
+        "EOC 2",
+        "EOC 3",
+        "EOC 4"
+      ],
+      "parameters": [
+        "Rise 1",
+        "Fall 1",
+        "Rise 2",
+        "Fall 2",
+        "Rise 3",
+        "Fall 3",
+        "Rise 4",
+        "Fall 4"
+      ]
     },
     {
       "name": "Dual ADSR",
       "manufacturer": "Intellijel",
       "type": "Envelope Generator",
       "description": "Dual ADSR envelope generator with CV control",
-      "inputs": ["Gate 1", "Gate 2", "CV A", "CV D", "CV S", "CV R"],
-      "outputs": ["Out 1", "Out 2", "Inv 1", "Inv 2"],
-      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+      "inputs": [
+        "Gate 1",
+        "Gate 2",
+        "CV A",
+        "CV D",
+        "CV S",
+        "CV R"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Inv 1",
+        "Inv 2"
+      ],
+      "parameters": [
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
     },
     {
       "name": "Rainmaker",
       "manufacturer": "Intellijel",
       "type": "Effect",
       "description": "Dual delay with 16-tap stereo comb resonator",
-      "inputs": ["In", "Clock", "Tap CV", "Feedback CV"],
-      "outputs": ["Out L", "Out R", "Comb Out"],
-      "parameters": ["Time", "Feedback", "Mix", "Size", "Pitch"]
+      "inputs": [
+        "In",
+        "Clock",
+        "Tap CV",
+        "Feedback CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Comb Out"
+      ],
+      "parameters": [
+        "Time",
+        "Feedback",
+        "Mix",
+        "Size",
+        "Pitch"
+      ]
     },
     {
       "name": "Springray 2",
       "manufacturer": "Intellijel",
       "type": "Effect",
       "description": "Dual spring reverb driver with CV control",
-      "inputs": ["In A", "In B", "Tilt CV A", "Tilt CV B", "Mix CV"],
-      "outputs": ["Out A", "Out B", "Mix"],
-      "parameters": ["Drive A", "Drive B", "Tilt A", "Tilt B", "Mix"]
+      "inputs": [
+        "In A",
+        "In B",
+        "Tilt CV A",
+        "Tilt CV B",
+        "Mix CV"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B",
+        "Mix"
+      ],
+      "parameters": [
+        "Drive A",
+        "Drive B",
+        "Tilt A",
+        "Tilt B",
+        "Mix"
+      ]
     },
     {
       "name": "Scales",
       "manufacturer": "Intellijel",
       "type": "Quantizer",
       "description": "Dual quantizer with scale editing",
-      "inputs": ["In A", "In B", "Trigger A", "Trigger B", "Transpose"],
-      "outputs": ["Out A", "Out B", "Trigger A", "Trigger B"],
-      "parameters": ["Root", "Scale", "Transpose"]
+      "inputs": [
+        "In A",
+        "In B",
+        "Trigger A",
+        "Trigger B",
+        "Transpose"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B",
+        "Trigger A",
+        "Trigger B"
+      ],
+      "parameters": [
+        "Root",
+        "Scale",
+        "Transpose"
+      ]
     },
     {
       "name": "Pamela's NEW Workout",
       "manufacturer": "ALM Busy Circuits",
       "type": "Clock",
       "description": "Programmable clock with 8 outputs, euclidean, random, LFO",
-      "inputs": ["Clock In", "Run/Stop", "Reset"],
-      "outputs": ["1", "2", "3", "4", "5", "6", "7", "8"],
-      "parameters": ["BPM", "Div/Mult", "Phase", "Width", "Euclidean", "Logic", "Wave"]
+      "inputs": [
+        "Clock In",
+        "Run/Stop",
+        "Reset"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "parameters": [
+        "BPM",
+        "Div/Mult",
+        "Phase",
+        "Width",
+        "Euclidean",
+        "Logic",
+        "Wave"
+      ]
     },
     {
       "name": "Pip Slope",
       "manufacturer": "ALM Busy Circuits",
       "type": "Envelope Generator",
       "description": "Compact voltage controlled slope generator",
-      "inputs": ["Gate", "Rise CV", "Fall CV"],
-      "outputs": ["Out", "EOC"],
-      "parameters": ["Rise", "Fall", "Shape"]
+      "inputs": [
+        "Gate",
+        "Rise CV",
+        "Fall CV"
+      ],
+      "outputs": [
+        "Out",
+        "EOC"
+      ],
+      "parameters": [
+        "Rise",
+        "Fall",
+        "Shape"
+      ]
     },
     {
       "name": "Squid Salmple",
       "manufacturer": "ALM Busy Circuits",
       "type": "Sampler",
       "description": "8-channel sampler and looper",
-      "inputs": ["In L", "In R", "CV 1", "CV 2", "Gate 1", "Gate 2", "Gate 3", "Gate 4"],
-      "outputs": ["Out L", "Out R", "Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Level", "Pan", "Pitch", "Start", "Length", "Loop"]
+      "inputs": [
+        "In L",
+        "In R",
+        "CV 1",
+        "CV 2",
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Level",
+        "Pan",
+        "Pitch",
+        "Start",
+        "Length",
+        "Loop"
+      ]
     },
     {
       "name": "Tyso Daiko",
       "manufacturer": "ALM Busy Circuits",
       "type": "Voice",
       "description": "Analog drum voice",
-      "inputs": ["Trigger", "V/Oct", "Strike", "Decay CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Decay", "Tone", "Drive"]
+      "inputs": [
+        "Trigger",
+        "V/Oct",
+        "Strike",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Decay",
+        "Tone",
+        "Drive"
+      ]
     },
     {
       "name": "HPO",
       "manufacturer": "ALM Busy Circuits",
       "type": "Oscillator",
       "description": "High Performance VCO",
-      "inputs": ["V/Oct", "FM", "PWM", "Sync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Pulse", "Sub"],
-      "parameters": ["Freq", "Fine", "PW"]
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Pulse",
+        "Sub"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
     },
     {
       "name": "Pam's PRO Workout",
       "manufacturer": "ALM Busy Circuits",
       "type": "Clock",
       "description": "8-output programmable clock with advanced modulation",
-      "inputs": ["Clock In", "Run/Stop", "Reset"],
-      "outputs": ["1", "2", "3", "4", "5", "6", "7", "8"],
-      "parameters": ["BPM", "Div/Mult", "Phase", "Width", "Euclidean", "Swing"]
+      "inputs": [
+        "Clock In",
+        "Run/Stop",
+        "Reset"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "parameters": [
+        "BPM",
+        "Div/Mult",
+        "Phase",
+        "Width",
+        "Euclidean",
+        "Swing"
+      ]
     },
     {
       "name": "Disting",
       "manufacturer": "Expert Sleepers",
       "type": "Utility",
       "description": "Multi-algorithm precision utility module",
-      "inputs": ["X", "Y", "Z"],
-      "outputs": ["A", "B"],
-      "parameters": ["Algorithm", "Param 1", "Param 2"]
+      "inputs": [
+        "X",
+        "Y",
+        "Z"
+      ],
+      "outputs": [
+        "A",
+        "B"
+      ],
+      "parameters": [
+        "Algorithm",
+        "Param 1",
+        "Param 2"
+      ]
     },
     {
       "name": "Disting EX",
       "manufacturer": "Expert Sleepers",
       "type": "Utility",
       "description": "Dual-algorithm or single-algorithm utility with SD card",
-      "inputs": ["In 1", "In 2", "In 3", "In 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Algorithm A", "Algorithm B", "Param 1", "Param 2"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Algorithm A",
+        "Algorithm B",
+        "Param 1",
+        "Param 2"
+      ]
     },
     {
       "name": "ES-9",
       "manufacturer": "Expert Sleepers",
       "type": "Audio Interface",
-      "description": "USB audio interface for modular — 14 in / 8 out channels",
-      "inputs": ["In 1", "In 2", "In 3", "In 4", "In 5", "In 6", "In 7", "In 8"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Out 5", "Out 6", "Out 7", "Out 8"],
+      "description": "USB audio interface for modular \u2014 14 in / 8 out channels",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6",
+        "In 7",
+        "In 8"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Out 5",
+        "Out 6",
+        "Out 7",
+        "Out 8"
+      ],
       "parameters": []
     },
     {
       "name": "BIA",
       "manufacturer": "Noise Engineering",
       "type": "Voice",
-      "description": "Basimilus Iteritas Alter — digital bass/lead/percussion voice",
-      "inputs": ["Trigger", "V/Oct", "Morph CV", "Fold CV", "Spread CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Morph", "Fold", "Spread", "Skin/Liquid/Metal"]
+      "description": "Basimilus Iteritas Alter \u2014 digital bass/lead/percussion voice",
+      "inputs": [
+        "Trigger",
+        "V/Oct",
+        "Morph CV",
+        "Fold CV",
+        "Spread CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Morph",
+        "Fold",
+        "Spread",
+        "Skin/Liquid/Metal"
+      ]
     },
     {
       "name": "Manis Iteritas",
       "manufacturer": "Noise Engineering",
       "type": "Oscillator",
       "description": "Phase-distortion VCO for harsh industrial sounds",
-      "inputs": ["V/Oct", "Damp CV", "Fold CV", "Jag CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Model", "Damp", "Fold", "Jag"]
+      "inputs": [
+        "V/Oct",
+        "Damp CV",
+        "Fold CV",
+        "Jag CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Model",
+        "Damp",
+        "Fold",
+        "Jag"
+      ]
     },
     {
       "name": "Loquelic Iteritas",
       "manufacturer": "Noise Engineering",
       "type": "Oscillator",
       "description": "Complex digital oscillator with 3 pitch modulators",
-      "inputs": ["V/Oct", "Morph CV", "Damp CV", "Mod CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Morph", "Damp", "Mod"]
+      "inputs": [
+        "V/Oct",
+        "Morph CV",
+        "Damp CV",
+        "Mod CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Morph",
+        "Damp",
+        "Mod"
+      ]
     },
     {
       "name": "Clep Diaz",
       "manufacturer": "Noise Engineering",
       "type": "LFO",
       "description": "5-output voltage-controlled LFO / stepped random",
-      "inputs": ["Clock", "Rate CV"],
-      "outputs": ["1", "2", "3", "4", "5"],
-      "parameters": ["Rate", "Curve"]
+      "inputs": [
+        "Clock",
+        "Rate CV"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "parameters": [
+        "Rate",
+        "Curve"
+      ]
     },
     {
       "name": "Pons Asinorum",
       "manufacturer": "Noise Engineering",
       "type": "Envelope Generator",
       "description": "5-channel percussive decay envelope generator",
-      "inputs": ["Gate 1", "Gate 2", "Gate 3", "Gate 4", "Gate 5"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Out 5"],
-      "parameters": ["Decay"]
+      "inputs": [
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4",
+        "Gate 5"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Out 5"
+      ],
+      "parameters": [
+        "Decay"
+      ]
     },
     {
       "name": "Mimetic Digitalis",
       "manufacturer": "Noise Engineering",
       "type": "Sequencer",
       "description": "4-channel 16-step CV sequencer",
-      "inputs": ["Clock", "Reset", "CV"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Steps", "Glide"]
+      "inputs": [
+        "Clock",
+        "Reset",
+        "CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Steps",
+        "Glide"
+      ]
     },
     {
       "name": "Mimetic Sequent",
       "manufacturer": "Noise Engineering",
       "type": "Sequencer",
       "description": "4-output gate and trigger sequencer with probability",
-      "inputs": ["Clock", "Reset"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Pattern", "Fill", "Probability"]
+      "inputs": [
+        "Clock",
+        "Reset"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Pattern",
+        "Fill",
+        "Probability"
+      ]
     },
     {
       "name": "Cursus Iteritas Percido",
       "manufacturer": "Noise Engineering",
       "type": "Voice",
-      "description": "All-in-one VCO + VCA — oscillator with built-in LPG",
-      "inputs": ["V/Oct", "Trigger", "Morph CV", "Fold CV", "Damp CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Morph", "Fold", "Damp", "Skin/Liquid/Metal"]
+      "description": "All-in-one VCO + VCA \u2014 oscillator with built-in LPG",
+      "inputs": [
+        "V/Oct",
+        "Trigger",
+        "Morph CV",
+        "Fold CV",
+        "Damp CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Morph",
+        "Fold",
+        "Damp",
+        "Skin/Liquid/Metal"
+      ]
     },
     {
       "name": "Sisters",
       "manufacturer": "Mannequins",
       "type": "Filter",
       "description": "Stereo filter with center, low, and high outputs",
-      "inputs": ["In", "V/Oct", "FM", "Quality CV"],
-      "outputs": ["Low", "Center", "High", "All"],
-      "parameters": ["Freq", "Quality", "Span"]
+      "inputs": [
+        "In",
+        "V/Oct",
+        "FM",
+        "Quality CV"
+      ],
+      "outputs": [
+        "Low",
+        "Center",
+        "High",
+        "All"
+      ],
+      "parameters": [
+        "Freq",
+        "Quality",
+        "Span"
+      ]
     },
     {
       "name": "Mangrove",
       "manufacturer": "Mannequins",
       "type": "Oscillator",
       "description": "Formant oscillator with wavefold and sync",
-      "inputs": ["V/Oct", "FM", "Sync", "Air CV", "Barrel CV", "Formant CV"],
-      "outputs": ["Formant", "Square"],
-      "parameters": ["Pitch", "Air", "Barrel", "Formant"]
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Sync",
+        "Air CV",
+        "Barrel CV",
+        "Formant CV"
+      ],
+      "outputs": [
+        "Formant",
+        "Square"
+      ],
+      "parameters": [
+        "Pitch",
+        "Air",
+        "Barrel",
+        "Formant"
+      ]
     },
     {
       "name": "Just Friends",
       "manufacturer": "Mannequins",
       "type": "Function Generator",
-      "description": "6 channels — envelopes, LFOs, or oscillators depending on mode",
-      "inputs": ["V/Oct", "FM", "Run/Gate", "Time CV", "Intone CV"],
-      "outputs": ["1", "2", "3", "4", "5", "6", "Mix"],
-      "parameters": ["Time", "Intone", "Run/Sustain", "Curve", "Mode"]
+      "description": "6 channels \u2014 envelopes, LFOs, or oscillators depending on mode",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Run/Gate",
+        "Time CV",
+        "Intone CV"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "Mix"
+      ],
+      "parameters": [
+        "Time",
+        "Intone",
+        "Run/Sustain",
+        "Curve",
+        "Mode"
+      ]
     },
     {
       "name": "Cold Mac",
       "manufacturer": "Mannequins",
       "type": "Utility",
-      "description": "Cross-fading, panning, mixing, offset — macro controller",
-      "inputs": ["In 1", "In 2", "In 3", "In 4", "In 5", "In 6", "Survey"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Crease", "Slope", "OR", "AND"],
-      "parameters": ["Survey"]
+      "description": "Cross-fading, panning, mixing, offset \u2014 macro controller",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6",
+        "Survey"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Crease",
+        "Slope",
+        "OR",
+        "AND"
+      ],
+      "parameters": [
+        "Survey"
+      ]
     },
     {
       "name": "W/",
       "manufacturer": "Mannequins",
       "type": "Effect",
       "description": "Dual windowed looper / delay / VCO / tape-style effects",
-      "inputs": ["In", "That", "This", "Record"],
-      "outputs": ["Out"],
-      "parameters": ["This", "That", "Mode"]
+      "inputs": [
+        "In",
+        "That",
+        "This",
+        "Record"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "This",
+        "That",
+        "Mode"
+      ]
     },
     {
       "name": "Dual Borg",
       "manufacturer": "WMD",
       "type": "Filter",
       "description": "Dual analog filter with variable state",
-      "inputs": ["In 1", "In 2", "Freq CV 1", "Freq CV 2", "Resonance CV"],
-      "outputs": ["LPF 1", "HPF 1", "BPF 1", "LPF 2", "HPF 2", "BPF 2"],
-      "parameters": ["Freq 1", "Freq 2", "Resonance", "Mode"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "Freq CV 1",
+        "Freq CV 2",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "LPF 1",
+        "HPF 1",
+        "BPF 1",
+        "LPF 2",
+        "HPF 2",
+        "BPF 2"
+      ],
+      "parameters": [
+        "Freq 1",
+        "Freq 2",
+        "Resonance",
+        "Mode"
+      ]
     },
     {
       "name": "Chimera",
       "manufacturer": "WMD",
       "type": "Voice",
-      "description": "Percussion synthesis voice — metallic and tuned percussion",
-      "inputs": ["Trigger", "V/Oct", "Decay CV", "FM CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Decay", "FM", "Drive"]
+      "description": "Percussion synthesis voice \u2014 metallic and tuned percussion",
+      "inputs": [
+        "Trigger",
+        "V/Oct",
+        "Decay CV",
+        "FM CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Decay",
+        "FM",
+        "Drive"
+      ]
     },
     {
       "name": "Fracture",
       "manufacturer": "WMD",
       "type": "Voice",
-      "description": "Percussion synthesis voice — noise and snare sounds",
-      "inputs": ["Trigger", "Decay CV", "Body CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Decay", "Body", "Crack"]
+      "description": "Percussion synthesis voice \u2014 noise and snare sounds",
+      "inputs": [
+        "Trigger",
+        "Decay CV",
+        "Body CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Decay",
+        "Body",
+        "Crack"
+      ]
     },
     {
       "name": "Forbidden Planet",
       "manufacturer": "Steady State Fate",
       "type": "Filter",
       "description": "12dB multi-mode filter (Steiner-Parker topology)",
-      "inputs": ["Input", "CV", "V/Oct"],
-      "outputs": ["LPF", "BPF", "HPF"],
-      "parameters": ["Freq", "Resonance", "Mode"]
+      "inputs": [
+        "Input",
+        "CV",
+        "V/Oct"
+      ],
+      "outputs": [
+        "LPF",
+        "BPF",
+        "HPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance",
+        "Mode"
+      ]
     },
     {
       "name": "Multifilter",
       "manufacturer": "Steady State Fate",
       "type": "Filter",
       "description": "Multi-mode filter with CV control",
-      "inputs": ["Input", "CV Input", "1 V/Oct"],
-      "outputs": ["LPF", "HPF", "BPF"],
-      "parameters": ["Freq", "Resonance", "CV Amount"]
+      "inputs": [
+        "Input",
+        "CV Input",
+        "1 V/Oct"
+      ],
+      "outputs": [
+        "LPF",
+        "HPF",
+        "BPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance",
+        "CV Amount"
+      ]
     },
     {
       "name": "Lifeforms SV-1",
       "manufacturer": "Pittsburgh Modular",
       "type": "Voice",
-      "description": "Full analog synth voice — VCO, VCF, VCA, envelope, LFO",
-      "inputs": ["V/Oct", "FM", "Filter CV", "VCA CV", "Gate"],
-      "outputs": ["VCO Out", "VCF Out", "VCA Out", "Env Out", "LFO Out"],
-      "parameters": ["VCO Freq", "VCO Shape", "Filter Cutoff", "Filter Resonance", "Attack", "Decay", "Sustain", "Release", "LFO Rate"]
+      "description": "Full analog synth voice \u2014 VCO, VCF, VCA, envelope, LFO",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Filter CV",
+        "VCA CV",
+        "Gate"
+      ],
+      "outputs": [
+        "VCO Out",
+        "VCF Out",
+        "VCA Out",
+        "Env Out",
+        "LFO Out"
+      ],
+      "parameters": [
+        "VCO Freq",
+        "VCO Shape",
+        "Filter Cutoff",
+        "Filter Resonance",
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release",
+        "LFO Rate"
+      ]
     },
     {
       "name": "Ensemble Oscillator",
       "manufacturer": "4ms",
       "type": "Oscillator",
       "description": "16-oscillator polyphonic VCO with chords and clusters",
-      "inputs": ["V/Oct", "Root CV", "Spread CV", "Twist CV", "Warp CV", "Cross FM CV", "Balance CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Root", "Pitch", "Spread", "Twist", "Warp", "Cross FM", "Balance"]
+      "inputs": [
+        "V/Oct",
+        "Root CV",
+        "Spread CV",
+        "Twist CV",
+        "Warp CV",
+        "Cross FM CV",
+        "Balance CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Root",
+        "Pitch",
+        "Spread",
+        "Twist",
+        "Warp",
+        "Cross FM",
+        "Balance"
+      ]
     },
     {
       "name": "Spherical Wavetable Navigator",
       "manufacturer": "4ms",
       "type": "Oscillator",
       "description": "Wavetable VCO navigating 3D sphere of wavetables",
-      "inputs": ["V/Oct", "Longitude", "Latitude", "Depth"],
-      "outputs": ["Out A", "Out B"],
-      "parameters": ["Longitude", "Latitude", "Depth", "Warp"]
+      "inputs": [
+        "V/Oct",
+        "Longitude",
+        "Latitude",
+        "Depth"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B"
+      ],
+      "parameters": [
+        "Longitude",
+        "Latitude",
+        "Depth",
+        "Warp"
+      ]
     },
     {
       "name": "MultiLFO",
       "manufacturer": "4ms",
       "type": "LFO",
       "description": "Multi-channel LFO with multiple waveshapes",
-      "inputs": ["Rate CV 1", "Rate CV 2", "Rate CV 3"],
-      "outputs": ["LFO 1", "LFO 2", "LFO 2 Triangle", "LFO 3", "LFO 3 Triangle"],
-      "parameters": ["LFO 1 Freq", "LFO 1 Shape", "LFO 1 S&H", "LFO 2 Freq", "LFO 3 Freq"]
+      "inputs": [
+        "Rate CV 1",
+        "Rate CV 2",
+        "Rate CV 3"
+      ],
+      "outputs": [
+        "LFO 1",
+        "LFO 2",
+        "LFO 2 Triangle",
+        "LFO 3",
+        "LFO 3 Triangle"
+      ],
+      "parameters": [
+        "LFO 1 Freq",
+        "LFO 1 Shape",
+        "LFO 1 S&H",
+        "LFO 2 Freq",
+        "LFO 3 Freq"
+      ]
     },
     {
       "name": "Penta",
       "manufacturer": "4ms",
       "type": "Clock",
       "description": "Five-step sequential switch / clock divider",
-      "inputs": ["Clk", "Reset"],
-      "outputs": ["1", "2", "3", "4", "5"],
-      "parameters": ["Steps"]
+      "inputs": [
+        "Clk",
+        "Reset"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "parameters": [
+        "Steps"
+      ]
     },
     {
       "name": "Rotating Clock Divider",
       "manufacturer": "4ms",
       "type": "Clock",
       "description": "8 related clock divisions with rotation",
-      "inputs": ["Clock In", "Rotate CV", "Reset"],
-      "outputs": ["/1", "/2", "/3", "/4", "/5", "/6", "/7", "/8"],
-      "parameters": ["Rotate", "Spread"]
+      "inputs": [
+        "Clock In",
+        "Rotate CV",
+        "Reset"
+      ],
+      "outputs": [
+        "/1",
+        "/2",
+        "/3",
+        "/4",
+        "/5",
+        "/6",
+        "/7",
+        "/8"
+      ],
+      "parameters": [
+        "Rotate",
+        "Spread"
+      ]
     },
     {
       "name": "Spectral Multiband Resonator",
       "manufacturer": "4ms",
       "type": "Effect",
       "description": "6-band resonant filter bank with spectral morphing",
-      "inputs": ["In L", "In R", "Rotate CV", "Morph CV", "Freq CV", "Scale CV"],
-      "outputs": ["Out L", "Out R", "Odd", "Even"],
-      "parameters": ["Freq", "Morph", "Rotate", "Spread", "Scale"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Rotate CV",
+        "Morph CV",
+        "Freq CV",
+        "Scale CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Odd",
+        "Even"
+      ],
+      "parameters": [
+        "Freq",
+        "Morph",
+        "Rotate",
+        "Spread",
+        "Scale"
+      ]
     },
     {
       "name": "Z3000",
       "manufacturer": "Tiptop Audio",
       "type": "Oscillator",
       "description": "Smart VCO with hard and soft sync",
-      "inputs": ["1 V/Oct", "FM", "PWM", "HSync", "SSync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square", "Sub"],
-      "parameters": ["Freq", "PW"]
+      "inputs": [
+        "1 V/Oct",
+        "FM",
+        "PWM",
+        "HSync",
+        "SSync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square",
+        "Sub"
+      ],
+      "parameters": [
+        "Freq",
+        "PW"
+      ]
     },
     {
       "name": "Z4000",
       "manufacturer": "Tiptop Audio",
       "type": "Envelope Generator",
       "description": "Voltage Controlled Envelope Generator",
-      "inputs": ["Gate", "Trigger", "CV"],
-      "outputs": ["Out", "Inv Out", "EOR"],
-      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+      "inputs": [
+        "Gate",
+        "Trigger",
+        "CV"
+      ],
+      "outputs": [
+        "Out",
+        "Inv Out",
+        "EOR"
+      ],
+      "parameters": [
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
     },
     {
       "name": "Z-DSP",
       "manufacturer": "Tiptop Audio",
       "type": "Effect",
       "description": "Digital signal processor with interchangeable program cards",
-      "inputs": ["In L", "In R", "Param 1 CV", "Param 2 CV", "Clk"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Program", "Param 1", "Param 2"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Param 1 CV",
+        "Param 2 CV",
+        "Clk"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Program",
+        "Param 1",
+        "Param 2"
+      ]
     },
     {
       "name": "BD909",
       "manufacturer": "Tiptop Audio",
       "type": "Voice",
       "description": "Bass drum voice (TR-909 circuit adaptation)",
-      "inputs": ["Trigger", "Accent", "Tune CV", "Decay CV"],
-      "outputs": ["Out"],
-      "parameters": ["Tune", "Decay", "Attack", "Tone"]
+      "inputs": [
+        "Trigger",
+        "Accent",
+        "Tune CV",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Tune",
+        "Decay",
+        "Attack",
+        "Tone"
+      ]
     },
     {
       "name": "SD808",
       "manufacturer": "Tiptop Audio",
       "type": "Voice",
       "description": "Snare drum voice (TR-808 circuit adaptation)",
-      "inputs": ["Trigger", "Accent"],
-      "outputs": ["Out"],
-      "parameters": ["Tune", "Tone", "Snappy"]
+      "inputs": [
+        "Trigger",
+        "Accent"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Tune",
+        "Tone",
+        "Snappy"
+      ]
     },
     {
       "name": "Hats808",
       "manufacturer": "Tiptop Audio",
       "type": "Voice",
       "description": "Hi-hat voice (TR-808 circuit adaptation)",
-      "inputs": ["Trigger OH", "Trigger CH", "Accent"],
-      "outputs": ["Out"],
-      "parameters": ["Tone", "Decay"]
+      "inputs": [
+        "Trigger OH",
+        "Trigger CH",
+        "Accent"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Tone",
+        "Decay"
+      ]
     },
     {
       "name": "e350",
       "manufacturer": "Synthesis Technology",
       "type": "Oscillator",
       "description": "Dual morphing wavetable VCO",
-      "inputs": ["V/Oct", "X CV", "Y CV", "Z CV"],
-      "outputs": ["XY", "Z"],
-      "parameters": ["Bank", "X", "Y", "Z"]
+      "inputs": [
+        "V/Oct",
+        "X CV",
+        "Y CV",
+        "Z CV"
+      ],
+      "outputs": [
+        "XY",
+        "Z"
+      ],
+      "parameters": [
+        "Bank",
+        "X",
+        "Y",
+        "Z"
+      ]
     },
     {
       "name": "e352",
       "manufacturer": "Synthesis Technology",
       "type": "Oscillator",
-      "description": "Cloud Terrarium — morphing wavetable VCO with granular mode",
-      "inputs": ["V/Oct", "X CV", "Y CV", "Z CV", "Clock"],
-      "outputs": ["XY", "Z"],
-      "parameters": ["Bank", "X", "Y", "Z", "Cloud Density"]
+      "description": "Cloud Terrarium \u2014 morphing wavetable VCO with granular mode",
+      "inputs": [
+        "V/Oct",
+        "X CV",
+        "Y CV",
+        "Z CV",
+        "Clock"
+      ],
+      "outputs": [
+        "XY",
+        "Z"
+      ],
+      "parameters": [
+        "Bank",
+        "X",
+        "Y",
+        "Z",
+        "Cloud Density"
+      ]
     },
     {
       "name": "A-110",
       "manufacturer": "Doepfer",
       "type": "Oscillator",
       "description": "Standard VCO",
-      "inputs": ["V/Oct", "FM", "PWM", "Sync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square"],
-      "parameters": ["Freq", "Fine", "PW"]
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
     },
     {
       "name": "A-124",
       "manufacturer": "Doepfer",
       "type": "Filter",
-      "description": "Wasp filter — special 12dB multimode filter",
-      "inputs": ["Input", "CV1", "CV2"],
-      "outputs": ["LPF", "BPF", "HPF"],
-      "parameters": ["Freq", "Resonance"]
+      "description": "Wasp filter \u2014 special 12dB multimode filter",
+      "inputs": [
+        "Input",
+        "CV1",
+        "CV2"
+      ],
+      "outputs": [
+        "LPF",
+        "BPF",
+        "HPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
     },
     {
       "name": "A-140",
       "manufacturer": "Doepfer",
       "type": "Envelope Generator",
       "description": "ADSR envelope generator",
-      "inputs": ["Gate", "Retrigger"],
-      "outputs": ["Out", "Inv"],
-      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+      "inputs": [
+        "Gate",
+        "Retrigger"
+      ],
+      "outputs": [
+        "Out",
+        "Inv"
+      ],
+      "parameters": [
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
     },
     {
       "name": "A-138m",
       "manufacturer": "Doepfer",
       "type": "Mixer",
       "description": "4-channel miniature mixer",
-      "inputs": ["In 1", "In 2", "In 3", "In 4"],
-      "outputs": ["Out"],
-      "parameters": ["Level 1", "Level 2", "Level 3", "Level 4"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4"
+      ]
     },
     {
       "name": "Batumi",
       "manufacturer": "Xaoc Devices",
       "type": "LFO",
       "description": "Quad low-frequency oscillator with various sync modes",
-      "inputs": ["Reset 1", "Reset 2", "Reset 3", "Reset 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
-      "parameters": ["Rate 1", "Rate 2", "Rate 3", "Rate 4", "Shape", "Sync Mode"]
+      "inputs": [
+        "Reset 1",
+        "Reset 2",
+        "Reset 3",
+        "Reset 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Rate 1",
+        "Rate 2",
+        "Rate 3",
+        "Rate 4",
+        "Shape",
+        "Sync Mode"
+      ]
     },
     {
       "name": "Belgrad",
       "manufacturer": "Xaoc Devices",
       "type": "Filter",
       "description": "Dual filter with voltage-controlled routing and mixing",
-      "inputs": ["In 1", "In 2", "V/Oct", "Freq CV", "Q CV", "Mix CV", "Span CV"],
-      "outputs": ["Out 1", "Out 2", "Mix"],
-      "parameters": ["Freq", "Span", "Q", "Mix", "Mode"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "V/Oct",
+        "Freq CV",
+        "Q CV",
+        "Mix CV",
+        "Span CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Mix"
+      ],
+      "parameters": [
+        "Freq",
+        "Span",
+        "Q",
+        "Mix",
+        "Mode"
+      ]
     },
     {
       "name": "Odessa",
       "manufacturer": "Xaoc Devices",
       "type": "Oscillator",
       "description": "Variable spectrum harmonic cluster oscillator",
-      "inputs": ["V/Oct", "Tilt CV", "Spread CV", "Density CV", "Bite CV", "Phase CV"],
-      "outputs": ["Out", "Odd", "Even"],
-      "parameters": ["Root", "Tilt", "Spread", "Density", "Bite", "Phase"]
+      "inputs": [
+        "V/Oct",
+        "Tilt CV",
+        "Spread CV",
+        "Density CV",
+        "Bite CV",
+        "Phase CV"
+      ],
+      "outputs": [
+        "Out",
+        "Odd",
+        "Even"
+      ],
+      "parameters": [
+        "Root",
+        "Tilt",
+        "Spread",
+        "Density",
+        "Bite",
+        "Phase"
+      ]
     },
     {
       "name": "Rample",
       "manufacturer": "Squarp",
       "type": "Sampler",
       "description": "4-voice sample player with layering and FX",
-      "inputs": ["Trig 1", "Trig 2", "Trig 3", "Trig 4", "CV A", "CV B"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Mix L", "Mix R"],
-      "parameters": ["SP", "Pitch", "Volume", "FX", "Layer"]
+      "inputs": [
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4",
+        "CV A",
+        "CV B"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix L",
+        "Mix R"
+      ],
+      "parameters": [
+        "SP",
+        "Pitch",
+        "Volume",
+        "FX",
+        "Layer"
+      ]
     },
     {
       "name": "Hermod",
       "manufacturer": "Squarp",
       "type": "Sequencer",
       "description": "8-track CV/Gate sequencer with MIDI and USB",
-      "inputs": ["Clock In", "Reset", "CV A", "CV B"],
-      "outputs": ["CV 1", "CV 2", "CV 3", "CV 4", "Gate 1", "Gate 2", "Gate 3", "Gate 4"],
-      "parameters": ["BPM", "Track", "Length", "Quantize"]
+      "inputs": [
+        "Clock In",
+        "Reset",
+        "CV A",
+        "CV B"
+      ],
+      "outputs": [
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4",
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4"
+      ],
+      "parameters": [
+        "BPM",
+        "Track",
+        "Length",
+        "Quantize"
+      ]
     },
     {
       "name": "Data Bender",
       "manufacturer": "Qu-Bit",
       "type": "Effect",
-      "description": "Digital audio buffer manipulation — glitch, stutter, corrupt",
-      "inputs": ["In L", "In R", "Clock", "Bend CV", "Break CV", "Corrupt CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Bend", "Break", "Corrupt", "Gate"]
+      "description": "Digital audio buffer manipulation \u2014 glitch, stutter, corrupt",
+      "inputs": [
+        "In L",
+        "In R",
+        "Clock",
+        "Bend CV",
+        "Break CV",
+        "Corrupt CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Bend",
+        "Break",
+        "Corrupt",
+        "Gate"
+      ]
     },
     {
       "name": "Surface",
       "manufacturer": "Qu-Bit",
       "type": "Effect",
-      "description": "Multi-algorithm reverb — plate, hall, shimmer, modulated",
-      "inputs": ["In L", "In R", "Decay CV", "Tilt CV", "Mix CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Decay", "Tilt", "Dampen", "Mix", "Algorithm"]
+      "description": "Multi-algorithm reverb \u2014 plate, hall, shimmer, modulated",
+      "inputs": [
+        "In L",
+        "In R",
+        "Decay CV",
+        "Tilt CV",
+        "Mix CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Decay",
+        "Tilt",
+        "Dampen",
+        "Mix",
+        "Algorithm"
+      ]
     },
     {
       "name": "Nebulae v2",
       "manufacturer": "Qu-Bit",
       "type": "Effect",
       "description": "Granular sampler/looper running custom Pure Data/CSound code",
-      "inputs": ["In L", "In R", "Speed CV", "Density CV", "Size CV", "Overlap CV", "Freeze"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Speed", "Density", "Size", "Overlap", "Window", "Freeze"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Speed CV",
+        "Density CV",
+        "Size CV",
+        "Overlap CV",
+        "Freeze"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Speed",
+        "Density",
+        "Size",
+        "Overlap",
+        "Window",
+        "Freeze"
+      ]
     },
     {
       "name": "Bloom",
       "manufacturer": "Qu-Bit",
       "type": "Sequencer",
-      "description": "Fractal sequencer — self-generating melodic patterns",
-      "inputs": ["Clock", "Reset", "Path CV", "Mutation CV", "Shift"],
-      "outputs": ["CV", "Gate", "Clock Out"],
-      "parameters": ["Steps", "Path", "Mutation", "Branches"]
+      "description": "Fractal sequencer \u2014 self-generating melodic patterns",
+      "inputs": [
+        "Clock",
+        "Reset",
+        "Path CV",
+        "Mutation CV",
+        "Shift"
+      ],
+      "outputs": [
+        "CV",
+        "Gate",
+        "Clock Out"
+      ],
+      "parameters": [
+        "Steps",
+        "Path",
+        "Mutation",
+        "Branches"
+      ]
     },
     {
       "name": "Vector",
       "manufacturer": "Befaco",
       "type": "Mixer",
       "description": "Quad stereo VCA mixer with joystick CV control",
-      "inputs": ["In 1 L", "In 1 R", "In 2 L", "In 2 R", "In 3 L", "In 3 R", "In 4 L", "In 4 R", "X CV", "Y CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["X", "Y"]
+      "inputs": [
+        "In 1 L",
+        "In 1 R",
+        "In 2 L",
+        "In 2 R",
+        "In 3 L",
+        "In 3 R",
+        "In 4 L",
+        "In 4 R",
+        "X CV",
+        "Y CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "X",
+        "Y"
+      ]
     },
     {
       "name": "Percall",
       "manufacturer": "Befaco",
       "type": "VCA",
       "description": "4-channel VCA with built-in percussive decay envelopes",
-      "inputs": ["In 1", "In 2", "In 3", "In 4", "Trig 1", "Trig 2", "Trig 3", "Trig 4"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Mix"],
-      "parameters": ["Decay 1", "Decay 2", "Decay 3", "Decay 4", "Choke"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Decay 1",
+        "Decay 2",
+        "Decay 3",
+        "Decay 4",
+        "Choke"
+      ]
     },
     {
       "name": "Rampage",
       "manufacturer": "Befaco",
       "type": "Function Generator",
-      "description": "Dual function generator — slew, envelope, LFO, oscillator",
-      "inputs": ["Trigger A", "In A", "Trigger B", "In B"],
-      "outputs": ["A Out", "B Out", "A > B", "B > A", "Min", "Max"],
-      "parameters": ["A Rise", "A Fall", "B Rise", "B Fall", "A Range", "B Range"]
+      "description": "Dual function generator \u2014 slew, envelope, LFO, oscillator",
+      "inputs": [
+        "Trigger A",
+        "In A",
+        "Trigger B",
+        "In B"
+      ],
+      "outputs": [
+        "A Out",
+        "B Out",
+        "A > B",
+        "B > A",
+        "Min",
+        "Max"
+      ],
+      "parameters": [
+        "A Rise",
+        "A Fall",
+        "B Rise",
+        "B Fall",
+        "A Range",
+        "B Range"
+      ]
     },
     {
       "name": "Turing Machine",
       "manufacturer": "Music Thing Modular",
       "type": "Random Source",
-      "description": "Random looping sequencer — shift register with lock",
-      "inputs": ["Clock", "CV"],
-      "outputs": ["Out", "Pulse 1", "Pulse 2"],
-      "parameters": ["Length", "Probability"]
+      "description": "Random looping sequencer \u2014 shift register with lock",
+      "inputs": [
+        "Clock",
+        "CV"
+      ],
+      "outputs": [
+        "Out",
+        "Pulse 1",
+        "Pulse 2"
+      ],
+      "parameters": [
+        "Length",
+        "Probability"
+      ]
     },
     {
       "name": "Radio Music",
       "manufacturer": "Music Thing Modular",
       "type": "Sampler",
-      "description": "Raw sample playback — station tuning metaphor",
-      "inputs": ["Start CV", "Station CV", "Reset"],
-      "outputs": ["Out"],
-      "parameters": ["Station", "Start"]
+      "description": "Raw sample playback \u2014 station tuning metaphor",
+      "inputs": [
+        "Start CV",
+        "Station CV",
+        "Reset"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Station",
+        "Start"
+      ]
     },
     {
       "name": "Prism",
       "manufacturer": "Endorphin.es",
       "type": "Effect",
       "description": "Stereo multi-effect with delay, reverb, and pitch shift",
-      "inputs": ["In L", "In R", "Size CV", "Dense CV", "Decay CV", "V/Oct"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Size", "Dense", "Decay", "Tune", "Mode"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Size CV",
+        "Dense CV",
+        "Decay CV",
+        "V/Oct"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Size",
+        "Dense",
+        "Decay",
+        "Tune",
+        "Mode"
+      ]
     },
     {
       "name": "Ground Control",
       "manufacturer": "Endorphin.es",
       "type": "Sequencer",
       "description": "Performative 16-step CV and Gate sequencer",
-      "inputs": ["Clock In", "Reset"],
-      "outputs": ["CV A", "CV B", "Gate 1", "Gate 2"],
-      "parameters": ["Steps", "Root", "Scale", "Glide"]
+      "inputs": [
+        "Clock In",
+        "Reset"
+      ],
+      "outputs": [
+        "CV A",
+        "CV B",
+        "Gate 1",
+        "Gate 2"
+      ],
+      "parameters": [
+        "Steps",
+        "Root",
+        "Scale",
+        "Glide"
+      ]
     },
     {
       "name": "Magneto",
       "manufacturer": "Strymon",
       "type": "Effect",
       "description": "4-head tape echo and looper with spring reverb",
-      "inputs": ["In L", "In R", "Clock", "Speed CV", "Tone CV", "Mix CV", "Spring CV", "Rec"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Speed", "Tone", "Mechanics", "Mix", "Spring", "Spacing"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Clock",
+        "Speed CV",
+        "Tone CV",
+        "Mix CV",
+        "Spring CV",
+        "Rec"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Speed",
+        "Tone",
+        "Mechanics",
+        "Mix",
+        "Spring",
+        "Spacing"
+      ]
     },
     {
       "name": "Starlab",
       "manufacturer": "Strymon",
       "type": "Effect",
       "description": "Modulated reverb with Karplus-Strong, shimmer, and more",
-      "inputs": ["In L", "In R", "Size CV", "Glimmer CV", "Mix CV", "Mod CV", "Infinite"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Pre-Delay", "Size", "Density", "Decay", "Glimmer", "Mix"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Size CV",
+        "Glimmer CV",
+        "Mix CV",
+        "Mod CV",
+        "Infinite"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Pre-Delay",
+        "Size",
+        "Density",
+        "Decay",
+        "Glimmer",
+        "Mix"
+      ]
     },
     {
       "name": "FX Aid XL",
       "manufacturer": "Happy Nerding",
       "type": "Effect",
       "description": "Multi-effect processor with 200+ algorithms",
-      "inputs": ["In L", "In R", "Param 1 CV", "Param 2 CV", "Param 3 CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Program", "Param 1", "Param 2", "Param 3", "Mix"]
+      "inputs": [
+        "In L",
+        "In R",
+        "Param 1 CV",
+        "Param 2 CV",
+        "Param 3 CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Program",
+        "Param 1",
+        "Param 2",
+        "Param 3",
+        "Mix"
+      ]
     },
     {
       "name": "3xMIA",
       "manufacturer": "Happy Nerding",
       "type": "Utility",
       "description": "Triple attenuator/mixer/offset",
-      "inputs": ["In A1", "In A2", "In B1", "In B2", "In C1", "In C2"],
-      "outputs": ["Out A", "Out B", "Out C"],
-      "parameters": ["Level A1", "Level A2", "Level B1", "Level B2", "Level C1", "Level C2"]
+      "inputs": [
+        "In A1",
+        "In A2",
+        "In B1",
+        "In B2",
+        "In C1",
+        "In C2"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B",
+        "Out C"
+      ],
+      "parameters": [
+        "Level A1",
+        "Level A2",
+        "Level B1",
+        "Level B2",
+        "Level C1",
+        "Level C2"
+      ]
     },
     {
       "name": "Morgasmatron",
       "manufacturer": "Rossum Electro-Music",
       "type": "Filter",
       "description": "Dual analog multi-mode VCF with 68 filter types",
-      "inputs": ["In 1", "In 2", "Freq CV 1", "Freq CV 2", "Morph CV 1", "Morph CV 2"],
-      "outputs": ["Out 1", "Out 2"],
-      "parameters": ["Freq 1", "Freq 2", "Morph 1", "Morph 2", "Resonance 1", "Resonance 2"]
+      "inputs": [
+        "In 1",
+        "In 2",
+        "Freq CV 1",
+        "Freq CV 2",
+        "Morph CV 1",
+        "Morph CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Freq 1",
+        "Freq 2",
+        "Morph 1",
+        "Morph 2",
+        "Resonance 1",
+        "Resonance 2"
+      ]
     },
     {
       "name": "Assimil8or",
       "manufacturer": "Rossum Electro-Music",
       "type": "Sampler",
       "description": "8-channel sample playback with granular and wavetable modes",
-      "inputs": ["Gate 1", "Gate 2", "Gate 3", "Gate 4", "V/Oct 1", "V/Oct 2"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4", "Mix L", "Mix R"],
-      "parameters": ["Phase", "Pitch", "Slice", "Window"]
+      "inputs": [
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4",
+        "V/Oct 1",
+        "V/Oct 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix L",
+        "Mix R"
+      ],
+      "parameters": [
+        "Phase",
+        "Pitch",
+        "Slice",
+        "Window"
+      ]
     },
     {
       "name": "Panharmonium",
       "manufacturer": "Rossum Electro-Music",
       "type": "Effect",
       "description": "Spectral analysis and resynthesis processor",
-      "inputs": ["In", "V/Oct", "Freeze", "Slice CV", "Blur CV", "Feedback CV"],
-      "outputs": ["Out L", "Out R"],
-      "parameters": ["Slice", "Blur", "Feedback", "Voice Count", "Warp"]
+      "inputs": [
+        "In",
+        "V/Oct",
+        "Freeze",
+        "Slice CV",
+        "Blur CV",
+        "Feedback CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Slice",
+        "Blur",
+        "Feedback",
+        "Voice Count",
+        "Warp"
+      ]
     },
     {
       "name": "Pluck",
       "manufacturer": "2hp",
       "type": "Voice",
       "description": "Karplus-Strong string voice in 2hp",
-      "inputs": ["V/Oct", "Trigger", "Decay CV"],
-      "outputs": ["Out"],
-      "parameters": ["Pitch", "Decay", "Tone"]
+      "inputs": [
+        "V/Oct",
+        "Trigger",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Decay",
+        "Tone"
+      ]
     },
     {
       "name": "MMF",
       "manufacturer": "2hp",
       "type": "Filter",
       "description": "Multi-mode filter in 2hp",
-      "inputs": ["In", "Freq CV"],
-      "outputs": ["LPF", "BPF", "HPF"],
-      "parameters": ["Freq", "Resonance"]
+      "inputs": [
+        "In",
+        "Freq CV"
+      ],
+      "outputs": [
+        "LPF",
+        "BPF",
+        "HPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
     },
     {
       "name": "Arp",
       "manufacturer": "2hp",
       "type": "Sequencer",
       "description": "Arpeggiator in 2hp",
-      "inputs": ["CV In", "Gate In", "Clock"],
-      "outputs": ["CV Out", "Gate Out"],
-      "parameters": ["Pattern", "Octave Range"]
+      "inputs": [
+        "CV In",
+        "Gate In",
+        "Clock"
+      ],
+      "outputs": [
+        "CV Out",
+        "Gate Out"
+      ],
+      "parameters": [
+        "Pattern",
+        "Octave Range"
+      ]
     },
     {
       "name": "Verb",
       "manufacturer": "2hp",
       "type": "Effect",
       "description": "Reverb in 2hp",
-      "inputs": ["In", "Decay CV"],
-      "outputs": ["Out"],
-      "parameters": ["Decay", "Mix"]
+      "inputs": [
+        "In",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Decay",
+        "Mix"
+      ]
     },
     {
       "name": "Mixer",
       "manufacturer": "Generic",
       "type": "Mixer",
       "description": "Audio/CV mixer",
-      "inputs": ["Ch1", "Ch2", "Ch3", "Ch4"],
-      "outputs": ["Output"],
-      "parameters": ["Ch1 Level", "Ch2 Level", "Ch3 Level", "Ch4 Level"]
+      "inputs": [
+        "Ch1",
+        "Ch2",
+        "Ch3",
+        "Ch4"
+      ],
+      "outputs": [
+        "Output"
+      ],
+      "parameters": [
+        "Ch1 Level",
+        "Ch2 Level",
+        "Ch3 Level",
+        "Ch4 Level"
+      ]
     },
     {
       "name": "VCA",
       "manufacturer": "Generic",
       "type": "VCA",
       "description": "Voltage Controlled Amplifier",
-      "inputs": ["Input", "CV"],
-      "outputs": ["Output"],
-      "parameters": ["Level", "Response"]
+      "inputs": [
+        "Input",
+        "CV"
+      ],
+      "outputs": [
+        "Output"
+      ],
+      "parameters": [
+        "Level",
+        "Response"
+      ]
     },
     {
       "name": "ADSR",
       "manufacturer": "Generic",
       "type": "Envelope Generator",
       "description": "Attack-Decay-Sustain-Release envelope generator",
-      "inputs": ["Gate", "Retrigger"],
-      "outputs": ["Out", "Inv Out"],
-      "parameters": ["Attack", "Decay", "Sustain", "Release"]
+      "inputs": [
+        "Gate",
+        "Retrigger"
+      ],
+      "outputs": [
+        "Out",
+        "Inv Out"
+      ],
+      "parameters": [
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
     },
     {
       "name": "LFO",
       "manufacturer": "Generic",
       "type": "LFO",
       "description": "Low Frequency Oscillator",
-      "inputs": ["Rate CV", "Reset"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square"],
-      "parameters": ["Rate", "Shape", "Depth"]
+      "inputs": [
+        "Rate CV",
+        "Reset"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square"
+      ],
+      "parameters": [
+        "Rate",
+        "Shape",
+        "Depth"
+      ]
     },
     {
       "name": "Oscillator",
       "manufacturer": "Generic",
       "type": "Oscillator",
-      "description": "Generic VCO — voltage controlled oscillator",
-      "inputs": ["V/Oct", "FM", "PWM", "Sync"],
-      "outputs": ["Sine", "Triangle", "Saw", "Square"],
-      "parameters": ["Freq", "Fine", "PW"]
+      "description": "Generic VCO \u2014 voltage controlled oscillator",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
     },
     {
       "name": "Filter",
       "manufacturer": "Generic",
       "type": "Filter",
       "description": "Generic multi-mode VCF",
-      "inputs": ["Input", "Freq CV", "Resonance CV"],
-      "outputs": ["LPF", "BPF", "HPF"],
-      "parameters": ["Freq", "Resonance"]
+      "inputs": [
+        "Input",
+        "Freq CV",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "LPF",
+        "BPF",
+        "HPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
     },
     {
       "name": "Sequencer",
       "manufacturer": "Generic",
       "type": "Sequencer",
       "description": "Generic step sequencer",
-      "inputs": ["Clock", "Reset"],
-      "outputs": ["CV Out", "Gate Out"],
-      "parameters": ["Steps", "Sequence"]
+      "inputs": [
+        "Clock",
+        "Reset"
+      ],
+      "outputs": [
+        "CV Out",
+        "Gate Out"
+      ],
+      "parameters": [
+        "Steps",
+        "Sequence"
+      ]
     },
     {
       "name": "Quantizer",
       "manufacturer": "Generic",
       "type": "Quantizer",
       "description": "Generic pitch quantizer",
-      "inputs": ["In", "Trigger"],
-      "outputs": ["Out", "Trigger Out"],
-      "parameters": ["Root", "Scale"]
+      "inputs": [
+        "In",
+        "Trigger"
+      ],
+      "outputs": [
+        "Out",
+        "Trigger Out"
+      ],
+      "parameters": [
+        "Root",
+        "Scale"
+      ]
     },
     {
       "name": "Sample & Hold",
       "manufacturer": "Generic",
       "type": "Utility",
       "description": "Generic sample and hold",
-      "inputs": ["In", "Trigger"],
-      "outputs": ["Out"],
+      "inputs": [
+        "In",
+        "Trigger"
+      ],
+      "outputs": [
+        "Out"
+      ],
       "parameters": []
     },
     {
       "name": "Noise",
       "manufacturer": "Generic",
       "type": "Utility",
-      "description": "Noise source — white, pink, red",
+      "description": "Noise source \u2014 white, pink, red",
       "inputs": [],
-      "outputs": ["White", "Pink", "Red"],
-      "parameters": ["Color"]
+      "outputs": [
+        "White",
+        "Pink",
+        "Red"
+      ],
+      "parameters": [
+        "Color"
+      ]
     },
     {
       "name": "Clock",
       "manufacturer": "Generic",
       "type": "Clock",
       "description": "Master clock / tempo source",
-      "inputs": ["Reset"],
-      "outputs": ["Clock Out", "Run"],
-      "parameters": ["BPM", "Swing"]
+      "inputs": [
+        "Reset"
+      ],
+      "outputs": [
+        "Clock Out",
+        "Run"
+      ],
+      "parameters": [
+        "BPM",
+        "Swing"
+      ]
     },
     {
       "name": "MIDI-CV",
       "manufacturer": "Generic",
       "type": "Utility",
       "description": "MIDI to CV converter",
-      "inputs": ["MIDI In"],
-      "outputs": ["V/Oct", "Gate", "Velocity", "Mod Wheel", "Aftertouch", "Clock"],
-      "parameters": ["Channel", "Bend Range"]
+      "inputs": [
+        "MIDI In"
+      ],
+      "outputs": [
+        "V/Oct",
+        "Gate",
+        "Velocity",
+        "Mod Wheel",
+        "Aftertouch",
+        "Clock"
+      ],
+      "parameters": [
+        "Channel",
+        "Bend Range"
+      ]
     },
     {
       "name": "AUDIO INTERFACE",
       "manufacturer": "External",
       "type": "Audio Interface",
       "description": "External audio interface (non-modular equipment)",
-      "inputs": ["In 1", "In 2", "In 3", "In 4", "In 5", "In 6", "In 7", "In 8"],
-      "outputs": ["Out 1", "Out 2", "Out 3", "Out 4"],
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6",
+        "In 7",
+        "In 8"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
       "parameters": []
     },
     {
@@ -1167,17 +3120,2280 @@
       "type": "Controller",
       "description": "External MIDI controller",
       "inputs": [],
-      "outputs": ["V/Oct", "Gate", "Velocity", "Mod", "CC 1", "CC 2", "CC 3", "CC 4"],
-      "parameters": ["Channel"]
+      "outputs": [
+        "V/Oct",
+        "Gate",
+        "Velocity",
+        "Mod",
+        "CC 1",
+        "CC 2",
+        "CC 3",
+        "CC 4"
+      ],
+      "parameters": [
+        "Channel"
+      ]
     },
     {
       "name": "SPEAKERS",
       "manufacturer": "External",
       "type": "Audio Interface",
       "description": "External speakers or monitors",
-      "inputs": ["In L", "In R"],
+      "inputs": [
+        "In L",
+        "In R"
+      ],
       "outputs": [],
-      "parameters": ["Volume"]
+      "parameters": [
+        "Volume"
+      ]
+    },
+    {
+      "name": "OXI Coral",
+      "manufacturer": "OXI Instruments",
+      "type": "Sequencer",
+      "description": "8-track MIDI and CV sequencer with generative, euclidean and stochastic modes",
+      "inputs": [
+        "Clock In",
+        "Reset",
+        "CV A",
+        "CV B"
+      ],
+      "outputs": [
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4",
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4"
+      ],
+      "parameters": [
+        "BPM",
+        "Track",
+        "Length",
+        "Scale",
+        "Root",
+        "Mode"
+      ]
+    },
+    {
+      "name": "OXI One",
+      "manufacturer": "OXI Instruments",
+      "type": "Sequencer",
+      "description": "Portable 128-step sequencer with 4 CV/Gate outputs and MIDI",
+      "inputs": [
+        "Clock In",
+        "Reset"
+      ],
+      "outputs": [
+        "CV 1",
+        "CV 2",
+        "Gate 1",
+        "Gate 2",
+        "CV 3",
+        "CV 4",
+        "Gate 3",
+        "Gate 4"
+      ],
+      "parameters": [
+        "BPM",
+        "Steps",
+        "Scale",
+        "Root",
+        "Swing",
+        "Probability"
+      ]
+    },
+    {
+      "name": "OXI Pipe",
+      "manufacturer": "OXI Instruments",
+      "type": "Utility",
+      "description": "USB MIDI host and router for eurorack",
+      "inputs": [
+        "USB MIDI"
+      ],
+      "outputs": [
+        "MIDI Out 1",
+        "MIDI Out 2",
+        "MIDI Out 3",
+        "MIDI Out 4"
+      ],
+      "parameters": [
+        "Channel",
+        "Route"
+      ]
+    },
+    {
+      "name": "OXI Split",
+      "manufacturer": "OXI Instruments",
+      "type": "Utility",
+      "description": "CV/Gate output expander for OXI One",
+      "inputs": [
+        "Link"
+      ],
+      "outputs": [
+        "CV 5",
+        "CV 6",
+        "CV 7",
+        "CV 8",
+        "Gate 5",
+        "Gate 6",
+        "Gate 7",
+        "Gate 8"
+      ],
+      "parameters": []
+    },
+    {
+      "name": "Monsoon",
+      "manufacturer": "After Later Audio",
+      "type": "Effect",
+      "description": "Expanded Clouds clone with additional controls",
+      "inputs": [
+        "In L",
+        "In R",
+        "V/Oct",
+        "Density",
+        "Texture",
+        "Position",
+        "Size",
+        "Trigger",
+        "Freeze"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Position",
+        "Size",
+        "Density",
+        "Texture",
+        "Pitch",
+        "Blend",
+        "Spread",
+        "Feedback",
+        "Reverb"
+      ]
+    },
+    {
+      "name": "Rainier",
+      "manufacturer": "After Later Audio",
+      "type": "Effect",
+      "description": "Micro Clouds clone in 8hp",
+      "inputs": [
+        "In L",
+        "In R",
+        "V/Oct",
+        "Density",
+        "Texture",
+        "Position",
+        "Size",
+        "Freeze"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Position",
+        "Size",
+        "Density",
+        "Texture",
+        "Pitch",
+        "Blend"
+      ]
+    },
+    {
+      "name": "Cascade",
+      "manufacturer": "After Later Audio",
+      "type": "Effect",
+      "description": "Beads clone - micro-looper and granular processor",
+      "inputs": [
+        "In L",
+        "In R",
+        "Seed",
+        "Density CV",
+        "Time CV",
+        "Size CV",
+        "Shape CV",
+        "Feedback CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Density",
+        "Time",
+        "Size",
+        "Shape",
+        "Feedback",
+        "Dry/Wet",
+        "Quality"
+      ]
+    },
+    {
+      "name": "Quarantine",
+      "manufacturer": "After Later Audio",
+      "type": "Filter",
+      "description": "Ripples clone - liquid analog filter",
+      "inputs": [
+        "Input",
+        "V/Oct",
+        "FM",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "BP2",
+        "LP2",
+        "LP4",
+        "VCA"
+      ],
+      "parameters": [
+        "Frequency",
+        "Resonance"
+      ]
+    },
+    {
+      "name": "Tilt",
+      "manufacturer": "After Later Audio",
+      "type": "Utility",
+      "description": "Blinds clone - quad polarizer/attenuverter",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "Popple",
+      "manufacturer": "After Later Audio",
+      "type": "Function Generator",
+      "description": "Tides clone - tidal modulator",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Shape",
+        "Slope",
+        "Trigger",
+        "Clk",
+        "Freeze"
+      ],
+      "outputs": [
+        "High Tide",
+        "Low Tide",
+        "Uni",
+        "Bi"
+      ],
+      "parameters": [
+        "Freq",
+        "Shape",
+        "Slope",
+        "Smoothness",
+        "Mode"
+      ]
+    },
+    {
+      "name": "Benjolin",
+      "manufacturer": "After Later Audio",
+      "type": "Voice",
+      "description": "Rob Hordijk Benjolin clone - chaotic dual-oscillator synth voice",
+      "inputs": [
+        "CV 1",
+        "CV 2",
+        "Filter CV"
+      ],
+      "outputs": [
+        "Osc 1",
+        "Osc 2",
+        "Filter",
+        "Rungler",
+        "PWM",
+        "XOR"
+      ],
+      "parameters": [
+        "Freq 1",
+        "Freq 2",
+        "Filter Freq",
+        "Resonance",
+        "Rungler"
+      ]
+    },
+    {
+      "name": "Enamel",
+      "manufacturer": "After Later Audio",
+      "type": "Oscillator",
+      "description": "Plaits clone - macro oscillator with 16 models",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Timbre",
+        "Morph",
+        "Trigger",
+        "Level"
+      ],
+      "outputs": [
+        "Out",
+        "Aux"
+      ],
+      "parameters": [
+        "Model",
+        "Frequency",
+        "Harmonics",
+        "Timbre",
+        "Morph"
+      ]
+    },
+    {
+      "name": "Veils (ALA)",
+      "manufacturer": "After Later Audio",
+      "type": "VCA",
+      "description": "Veils clone - quad cascading VCA",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2",
+        "In 3",
+        "CV 3",
+        "In 4",
+        "CV 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Gain 1",
+        "Gain 2",
+        "Gain 3",
+        "Gain 4"
+      ]
+    },
+    {
+      "name": "Pique",
+      "manufacturer": "After Later Audio",
+      "type": "Envelope Generator",
+      "description": "Peaks clone - dual function generator",
+      "inputs": [
+        "Gate 1",
+        "Gate 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Mode",
+        "Param 1",
+        "Param 2",
+        "Param 3",
+        "Param 4"
+      ]
+    },
+    {
+      "name": "Font",
+      "manufacturer": "Nano Modules",
+      "type": "Oscillator",
+      "description": "Digital wavetable VCO with 8 banks and morphing",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Morph CV",
+        "Bank CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Morph",
+        "Bank",
+        "Fine"
+      ]
+    },
+    {
+      "name": "Quart",
+      "manufacturer": "Nano Modules",
+      "type": "Quantizer",
+      "description": "Quad quantizer with scale selection",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "Trigger"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Scale",
+        "Root"
+      ]
+    },
+    {
+      "name": "Alt",
+      "manufacturer": "Nano Modules",
+      "type": "Utility",
+      "description": "Quad attenuator/offset/mixer",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "Ona",
+      "manufacturer": "Nano Modules",
+      "type": "Oscillator",
+      "description": "Precision analog VCO with triangle core",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
+    },
+    {
+      "name": "Medusa",
+      "manufacturer": "Nano Modules",
+      "type": "Random Source",
+      "description": "Random voltage generator and sample & hold",
+      "inputs": [
+        "Clock",
+        "Trigger"
+      ],
+      "outputs": [
+        "Smooth",
+        "Stepped",
+        "Noise",
+        "S&H"
+      ],
+      "parameters": [
+        "Rate",
+        "Slew"
+      ]
+    },
+    {
+      "name": "Stir",
+      "manufacturer": "Nano Modules",
+      "type": "Mixer",
+      "description": "4-channel stereo mixer",
+      "inputs": [
+        "In 1L",
+        "In 1R",
+        "In 2L",
+        "In 2R",
+        "In 3L",
+        "In 3R",
+        "In 4L",
+        "In 4R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "A-111-4",
+      "manufacturer": "Doepfer",
+      "type": "Voice",
+      "description": "Quad precision VCO with ADSR and VCA",
+      "inputs": [
+        "V/Oct",
+        "Gate",
+        "FM",
+        "PWM"
+      ],
+      "outputs": [
+        "VCO Out",
+        "ADSR Out",
+        "VCA Out"
+      ],
+      "parameters": [
+        "Freq",
+        "PW",
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
+    },
+    {
+      "name": "A-106-5 SEM",
+      "manufacturer": "Doepfer",
+      "type": "Filter",
+      "description": "SEM type 12dB multimode filter",
+      "inputs": [
+        "Input",
+        "CV1",
+        "CV2"
+      ],
+      "outputs": [
+        "LPF",
+        "HPF",
+        "BPF",
+        "Notch"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance",
+        "Mode"
+      ]
+    },
+    {
+      "name": "A-132-3",
+      "manufacturer": "Doepfer",
+      "type": "VCA",
+      "description": "Dual linear/exponential VCA",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Gain 1",
+        "Gain 2",
+        "Response"
+      ]
+    },
+    {
+      "name": "A-145",
+      "manufacturer": "Doepfer",
+      "type": "LFO",
+      "description": "Standard LFO with multiple waveshapes",
+      "inputs": [
+        "Reset",
+        "Rate CV"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square"
+      ],
+      "parameters": [
+        "Rate",
+        "Shape"
+      ]
+    },
+    {
+      "name": "A-150",
+      "manufacturer": "Doepfer",
+      "type": "Utility",
+      "description": "Dual Voltage Controlled Switch",
+      "inputs": [
+        "In A1",
+        "In A2",
+        "CV A",
+        "In B1",
+        "In B2",
+        "CV B"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B"
+      ],
+      "parameters": []
+    },
+    {
+      "name": "A-160-2",
+      "manufacturer": "Doepfer",
+      "type": "Clock",
+      "description": "Clock/trigger divider with 8 division outputs",
+      "inputs": [
+        "Clock In",
+        "Reset"
+      ],
+      "outputs": [
+        "/2",
+        "/4",
+        "/8",
+        "/16",
+        "/32",
+        "/64",
+        "/128",
+        "/256"
+      ],
+      "parameters": []
+    },
+    {
+      "name": "A-148",
+      "manufacturer": "Doepfer",
+      "type": "Utility",
+      "description": "Dual sample & hold / track & hold",
+      "inputs": [
+        "In 1",
+        "Trigger 1",
+        "In 2",
+        "Trigger 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Mode"
+      ]
+    },
+    {
+      "name": "A-118-2",
+      "manufacturer": "Doepfer",
+      "type": "Utility",
+      "description": "Noise / Random - white and colored noise with S&H",
+      "inputs": [
+        "Clock"
+      ],
+      "outputs": [
+        "White",
+        "Blue",
+        "Red",
+        "S&H"
+      ],
+      "parameters": [
+        "Color"
+      ]
+    },
+    {
+      "name": "A-185-2",
+      "manufacturer": "Doepfer",
+      "type": "Utility",
+      "description": "Precision CV adder with selectable voltages",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3"
+      ],
+      "outputs": [
+        "Sum"
+      ],
+      "parameters": [
+        "Offset 1",
+        "Offset 2",
+        "Offset 3"
+      ]
+    },
+    {
+      "name": "A-156",
+      "manufacturer": "Doepfer",
+      "type": "Quantizer",
+      "description": "Dual quantizer - semitone and scale quantization",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "Trigger 1",
+        "Trigger 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Scale",
+        "Root"
+      ]
+    },
+    {
+      "name": "A-196",
+      "manufacturer": "Doepfer",
+      "type": "Utility",
+      "description": "Phase locked loop (PLL)",
+      "inputs": [
+        "In"
+      ],
+      "outputs": [
+        "Out",
+        "Lock",
+        "Compare"
+      ],
+      "parameters": [
+        "Range"
+      ]
+    },
+    {
+      "name": "A-101-2",
+      "manufacturer": "Doepfer",
+      "type": "Filter",
+      "description": "Vactrol-based low pass gate",
+      "inputs": [
+        "Input",
+        "CV",
+        "Offset"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Cutoff",
+        "Resonance",
+        "Mode"
+      ]
+    },
+    {
+      "name": "A-138s",
+      "manufacturer": "Doepfer",
+      "type": "Mixer",
+      "description": "Stereo mini mixer",
+      "inputs": [
+        "In 1L",
+        "In 1R",
+        "In 2L",
+        "In 2R",
+        "In 3L",
+        "In 3R",
+        "In 4L",
+        "In 4R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Aux"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "A-147-2 VCDLFO",
+      "manufacturer": "Doepfer",
+      "type": "LFO",
+      "description": "Voltage controlled delayed LFO",
+      "inputs": [
+        "Gate",
+        "Rate CV",
+        "Delay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Rate",
+        "Delay",
+        "Shape"
+      ]
+    },
+    {
+      "name": "A-135-2",
+      "manufacturer": "Doepfer",
+      "type": "VCA",
+      "description": "Quad VCA/Mixer",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2",
+        "In 3",
+        "CV 3",
+        "In 4",
+        "CV 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Mix"
+      ],
+      "parameters": [
+        "Gain 1",
+        "Gain 2",
+        "Gain 3",
+        "Gain 4"
+      ]
+    },
+    {
+      "name": "T43",
+      "manufacturer": "vpme.de",
+      "type": "Clock",
+      "description": "Tap tempo clock with multiple divisions and euclidean patterns",
+      "inputs": [
+        "Tap",
+        "Reset",
+        "Rate CV"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "parameters": [
+        "BPM",
+        "Div 1",
+        "Div 2",
+        "Div 3",
+        "Div 4"
+      ]
+    },
+    {
+      "name": "QD",
+      "manufacturer": "vpme.de",
+      "type": "Envelope Generator",
+      "description": "Quad Drum Envelope - 4-channel percussive envelope generator",
+      "inputs": [
+        "Trigger 1",
+        "Trigger 2",
+        "Trigger 3",
+        "Trigger 4",
+        "CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Attack 1",
+        "Decay 1",
+        "Attack 2",
+        "Decay 2",
+        "Curve"
+      ]
+    },
+    {
+      "name": "TRSQ43",
+      "manufacturer": "vpme.de",
+      "type": "Sequencer",
+      "description": "4-channel trigger/gate sequencer with polymetric patterns",
+      "inputs": [
+        "Clock",
+        "Reset"
+      ],
+      "outputs": [
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4"
+      ],
+      "parameters": [
+        "Pattern 1",
+        "Pattern 2",
+        "Pattern 3",
+        "Pattern 4",
+        "Length",
+        "Probability"
+      ]
+    },
+    {
+      "name": "HDB",
+      "manufacturer": "vpme.de",
+      "type": "Voice",
+      "description": "Hats, Drums, Bass - 3-voice percussion synthesis",
+      "inputs": [
+        "Trigger Hat",
+        "Trigger Drum",
+        "Trigger Bass",
+        "V/Oct"
+      ],
+      "outputs": [
+        "Hat Out",
+        "Drum Out",
+        "Bass Out",
+        "Mix"
+      ],
+      "parameters": [
+        "Hat Tone",
+        "Hat Decay",
+        "Drum Pitch",
+        "Drum Decay",
+        "Bass Pitch",
+        "Bass Decay"
+      ]
+    },
+    {
+      "name": "VCEQ",
+      "manufacturer": "vpme.de",
+      "type": "Filter",
+      "description": "Voltage controlled parametric equalizer",
+      "inputs": [
+        "In",
+        "Freq CV",
+        "Gain CV",
+        "Q CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Band 1 Freq",
+        "Band 1 Gain",
+        "Band 1 Q",
+        "Band 2 Freq",
+        "Band 2 Gain",
+        "Band 2 Q"
+      ]
+    },
+    {
+      "name": "Chord v2",
+      "manufacturer": "Qu-Bit",
+      "type": "Oscillator",
+      "description": "4-voice polyphonic oscillator with chord mode",
+      "inputs": [
+        "V/Oct",
+        "Voicing CV",
+        "Strum",
+        "Shape CV",
+        "FM"
+      ],
+      "outputs": [
+        "Out",
+        "Sub Out"
+      ],
+      "parameters": [
+        "Root",
+        "Voicing",
+        "Shape",
+        "FM"
+      ]
+    },
+    {
+      "name": "Prism",
+      "manufacturer": "Qu-Bit",
+      "type": "Effect",
+      "description": "Multi-dimensional signal processor - filter, decimator, delay",
+      "inputs": [
+        "In",
+        "FM CV",
+        "Decimate CV",
+        "Phase CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Filter",
+        "Decimate",
+        "Phase",
+        "Mode"
+      ]
+    },
+    {
+      "name": "Chance",
+      "manufacturer": "Qu-Bit",
+      "type": "Random Source",
+      "description": "4-output random voltage generator with distribution control",
+      "inputs": [
+        "Clock",
+        "Trigger",
+        "CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Distribution",
+        "Range",
+        "Quantize"
+      ]
+    },
+    {
+      "name": "Nano Rand v2",
+      "manufacturer": "Qu-Bit",
+      "type": "Random Source",
+      "description": "Compact random voltage and noise source",
+      "inputs": [
+        "Clock",
+        "Rate CV"
+      ],
+      "outputs": [
+        "Stepped",
+        "Smooth",
+        "Noise",
+        "Clock Out"
+      ],
+      "parameters": [
+        "Rate",
+        "Slew"
+      ]
+    },
+    {
+      "name": "Cascade (QB)",
+      "manufacturer": "Qu-Bit",
+      "type": "Filter",
+      "description": "5-stage resonant filter with individual stage outputs",
+      "inputs": [
+        "Input",
+        "Freq CV",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "Stage 1",
+        "Stage 2",
+        "Stage 3",
+        "Stage 4",
+        "Stage 5"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
+    },
+    {
+      "name": "Pulsar",
+      "manufacturer": "Qu-Bit",
+      "type": "LFO",
+      "description": "Burst generator and LFO with tap tempo",
+      "inputs": [
+        "Tap",
+        "Clock",
+        "Rate CV"
+      ],
+      "outputs": [
+        "LFO",
+        "Burst",
+        "EOR",
+        "EOC"
+      ],
+      "parameters": [
+        "Rate",
+        "Shape",
+        "Burst Count"
+      ]
+    },
+    {
+      "name": "Synapse",
+      "manufacturer": "Qu-Bit",
+      "type": "Utility",
+      "description": "6-channel attenuverter/offset",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4",
+        "Out 5",
+        "Out 6"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4",
+        "Level 5",
+        "Level 6"
+      ]
+    },
+    {
+      "name": "Scanned",
+      "manufacturer": "Qu-Bit",
+      "type": "Oscillator",
+      "description": "Scanned wavetable synthesis VCO",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Scan CV",
+        "Shape CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Scan",
+        "Shape",
+        "Mass",
+        "Damping"
+      ]
+    },
+    {
+      "name": "Black Wavetable VCO",
+      "manufacturer": "Erica Synths",
+      "type": "Oscillator",
+      "description": "Wavetable VCO with morphing and FM",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "Wave CV",
+        "Morph CV",
+        "Sync"
+      ],
+      "outputs": [
+        "Out",
+        "Sub"
+      ],
+      "parameters": [
+        "Freq",
+        "Wave",
+        "Morph",
+        "FM"
+      ]
+    },
+    {
+      "name": "Black VCO2",
+      "manufacturer": "Erica Synths",
+      "type": "Oscillator",
+      "description": "Analog VCO with thru-zero FM",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync",
+        "Lin FM"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square",
+        "Sub"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW",
+        "FM"
+      ]
+    },
+    {
+      "name": "Pico VCO",
+      "manufacturer": "Erica Synths",
+      "type": "Oscillator",
+      "description": "Compact VCO in 3hp",
+      "inputs": [
+        "V/Oct",
+        "FM"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Wave"
+      ]
+    },
+    {
+      "name": "Black VCF",
+      "manufacturer": "Erica Synths",
+      "type": "Filter",
+      "description": "Dual multimode filter with series/parallel routing",
+      "inputs": [
+        "Input",
+        "Freq CV 1",
+        "Freq CV 2",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "LPF",
+        "HPF",
+        "BPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance",
+        "Mode",
+        "Drive"
+      ]
+    },
+    {
+      "name": "Pico VCF",
+      "manufacturer": "Erica Synths",
+      "type": "Filter",
+      "description": "Compact resonant low pass filter in 3hp",
+      "inputs": [
+        "Input",
+        "CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
+    },
+    {
+      "name": "Pico DSP",
+      "manufacturer": "Erica Synths",
+      "type": "Effect",
+      "description": "Compact digital effects processor in 3hp",
+      "inputs": [
+        "In",
+        "Param CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Program",
+        "Param",
+        "Mix"
+      ]
+    },
+    {
+      "name": "Black Hole DSP",
+      "manufacturer": "Erica Synths",
+      "type": "Effect",
+      "description": "Stereo digital effects - reverb, delay, chorus, pitch shift",
+      "inputs": [
+        "In L",
+        "In R",
+        "Param 1 CV",
+        "Param 2 CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Program",
+        "Param 1",
+        "Param 2",
+        "Mix"
+      ]
+    },
+    {
+      "name": "Black Hole DSP2",
+      "manufacturer": "Erica Synths",
+      "type": "Effect",
+      "description": "Advanced stereo effects processor with 24 algorithms",
+      "inputs": [
+        "In L",
+        "In R",
+        "Param 1 CV",
+        "Param 2 CV",
+        "Param 3 CV"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Program",
+        "Param 1",
+        "Param 2",
+        "Param 3",
+        "Mix"
+      ]
+    },
+    {
+      "name": "Black EG",
+      "manufacturer": "Erica Synths",
+      "type": "Envelope Generator",
+      "description": "Full ADSR envelope generator with CV control",
+      "inputs": [
+        "Gate",
+        "Retrigger",
+        "A CV",
+        "D CV",
+        "S CV",
+        "R CV"
+      ],
+      "outputs": [
+        "Out",
+        "Inv",
+        "EOC"
+      ],
+      "parameters": [
+        "Attack",
+        "Decay",
+        "Sustain",
+        "Release"
+      ]
+    },
+    {
+      "name": "Pico EG",
+      "manufacturer": "Erica Synths",
+      "type": "Envelope Generator",
+      "description": "Compact AR/ASR envelope in 3hp",
+      "inputs": [
+        "Gate"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Attack",
+        "Release"
+      ]
+    },
+    {
+      "name": "Pico LFO",
+      "manufacturer": "Erica Synths",
+      "type": "LFO",
+      "description": "Compact LFO in 3hp with multiple shapes",
+      "inputs": [
+        "Rate CV",
+        "Reset"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Rate",
+        "Shape"
+      ]
+    },
+    {
+      "name": "Black LFO",
+      "manufacturer": "Erica Synths",
+      "type": "LFO",
+      "description": "Dual precision LFO with sync and CV control",
+      "inputs": [
+        "Rate CV 1",
+        "Rate CV 2",
+        "Sync 1",
+        "Sync 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Rate 1",
+        "Rate 2",
+        "Shape 1",
+        "Shape 2"
+      ]
+    },
+    {
+      "name": "Black Sequencer",
+      "manufacturer": "Erica Synths",
+      "type": "Sequencer",
+      "description": "4-track CV/Gate/Mod sequencer with extensive modulation",
+      "inputs": [
+        "Clock In",
+        "Reset",
+        "CV A",
+        "CV B"
+      ],
+      "outputs": [
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4",
+        "Gate 1",
+        "Gate 2",
+        "Gate 3",
+        "Gate 4",
+        "Mod 1",
+        "Mod 2",
+        "Mod 3",
+        "Mod 4"
+      ],
+      "parameters": [
+        "BPM",
+        "Steps",
+        "Scale",
+        "Direction"
+      ]
+    },
+    {
+      "name": "Drum Sequencer",
+      "manufacturer": "Erica Synths",
+      "type": "Sequencer",
+      "description": "16-step trigger sequencer with probability and fills",
+      "inputs": [
+        "Clock",
+        "Reset",
+        "Fill"
+      ],
+      "outputs": [
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4",
+        "Accent"
+      ],
+      "parameters": [
+        "Pattern",
+        "Steps",
+        "Probability",
+        "Fill"
+      ]
+    },
+    {
+      "name": "Sample Drum",
+      "manufacturer": "Erica Synths",
+      "type": "Sampler",
+      "description": "16-bit sample player optimized for drums",
+      "inputs": [
+        "Trigger",
+        "V/Oct",
+        "Start CV",
+        "Decay CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Sample",
+        "Pitch",
+        "Start",
+        "Decay",
+        "Bit Depth"
+      ]
+    },
+    {
+      "name": "Pico Drums",
+      "manufacturer": "Erica Synths",
+      "type": "Voice",
+      "description": "Dual drum synth voice in 3hp",
+      "inputs": [
+        "Trigger 1",
+        "Trigger 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Pitch 1",
+        "Decay 1",
+        "Pitch 2",
+        "Decay 2"
+      ]
+    },
+    {
+      "name": "Black VCA",
+      "manufacturer": "Erica Synths",
+      "type": "VCA",
+      "description": "Dual high-quality VCA with linear/exponential response",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Gain 1",
+        "Gain 2",
+        "Response"
+      ]
+    },
+    {
+      "name": "Pico VCA",
+      "manufacturer": "Erica Synths",
+      "type": "VCA",
+      "description": "Compact dual VCA in 3hp",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Response"
+      ]
+    },
+    {
+      "name": "Pico Mixer",
+      "manufacturer": "Erica Synths",
+      "type": "Mixer",
+      "description": "3-input mixer in 3hp",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3"
+      ]
+    },
+    {
+      "name": "Black Mixer",
+      "manufacturer": "Erica Synths",
+      "type": "Mixer",
+      "description": "6-channel mixer/attenuator",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B",
+        "Mix"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4",
+        "Level 5",
+        "Level 6"
+      ]
+    },
+    {
+      "name": "Black Stereo Mixer V2",
+      "manufacturer": "Erica Synths",
+      "type": "Mixer",
+      "description": "4-channel stereo mixer with pan and aux",
+      "inputs": [
+        "In 1L",
+        "In 1R",
+        "In 2L",
+        "In 2R",
+        "In 3L",
+        "In 3R",
+        "In 4L",
+        "In 4R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Aux L",
+        "Aux R"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "Pico Noise",
+      "manufacturer": "Erica Synths",
+      "type": "Utility",
+      "description": "Noise and random source in 3hp",
+      "inputs": [
+        "Clock"
+      ],
+      "outputs": [
+        "White",
+        "Pink",
+        "S&H"
+      ],
+      "parameters": []
+    },
+    {
+      "name": "Black Octasource",
+      "manufacturer": "Erica Synths",
+      "type": "LFO",
+      "description": "8-output LFO with phase offsets",
+      "inputs": [
+        "Rate CV",
+        "Sync"
+      ],
+      "outputs": [
+        "0deg",
+        "45deg",
+        "90deg",
+        "135deg",
+        "180deg",
+        "225deg",
+        "270deg",
+        "315deg"
+      ],
+      "parameters": [
+        "Rate",
+        "Shape"
+      ]
+    },
+    {
+      "name": "Black Output V3",
+      "manufacturer": "Erica Synths",
+      "type": "Utility",
+      "description": "Stereo output module with headphone amp",
+      "inputs": [
+        "In L",
+        "In R",
+        "CV L",
+        "CV R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Headphones"
+      ],
+      "parameters": [
+        "Volume",
+        "Bass",
+        "Treble"
+      ]
+    },
+    {
+      "name": "Bassline",
+      "manufacturer": "Erica Synths",
+      "type": "Voice",
+      "description": "Complete bass synth voice - VCO, VCF, VCA, envelope",
+      "inputs": [
+        "V/Oct",
+        "Gate",
+        "Accent",
+        "Slide CV",
+        "Cutoff CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Wave",
+        "Cutoff",
+        "Resonance",
+        "Env Mod",
+        "Accent",
+        "Decay"
+      ]
+    },
+    {
+      "name": "Kickall",
+      "manufacturer": "Befaco",
+      "type": "Voice",
+      "description": "Analog kick drum synthesizer",
+      "inputs": [
+        "Trigger",
+        "V/Oct",
+        "Decay CV",
+        "Tone CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Pitch",
+        "Decay",
+        "Tone",
+        "Drive",
+        "Trigg Lvl"
+      ]
+    },
+    {
+      "name": "Even VCO",
+      "manufacturer": "Befaco",
+      "type": "Oscillator",
+      "description": "Precision analog VCO with even harmonics output",
+      "inputs": [
+        "V/Oct",
+        "FM",
+        "PWM",
+        "Sync"
+      ],
+      "outputs": [
+        "Sine",
+        "Triangle",
+        "Saw",
+        "Square",
+        "Even"
+      ],
+      "parameters": [
+        "Freq",
+        "Fine",
+        "PW"
+      ]
+    },
+    {
+      "name": "Hexmix",
+      "manufacturer": "Befaco",
+      "type": "Mixer",
+      "description": "6-channel performance mixer with mutes and aux",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6"
+      ],
+      "outputs": [
+        "Main L",
+        "Main R",
+        "Aux L",
+        "Aux R",
+        "Cue L",
+        "Cue R"
+      ],
+      "parameters": [
+        "Level 1",
+        "Level 2",
+        "Level 3",
+        "Level 4",
+        "Level 5",
+        "Level 6",
+        "Pan 1",
+        "Pan 2",
+        "Pan 3",
+        "Pan 4",
+        "Pan 5",
+        "Pan 6"
+      ]
+    },
+    {
+      "name": "STmix",
+      "manufacturer": "Befaco",
+      "type": "Mixer",
+      "description": "4-channel stereo mixer with pan",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4"
+      ]
+    },
+    {
+      "name": "Slew Limiter",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Dual voltage controlled slew limiter / portamento",
+      "inputs": [
+        "In 1",
+        "Rise CV 1",
+        "Fall CV 1",
+        "In 2",
+        "Rise CV 2",
+        "Fall CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Rise 1",
+        "Fall 1",
+        "Rise 2",
+        "Fall 2"
+      ]
+    },
+    {
+      "name": "A*B+C",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Dual four-quadrant multiplier with offset",
+      "inputs": [
+        "A1",
+        "B1",
+        "C1",
+        "A2",
+        "B2",
+        "C2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "B1 Level",
+        "C1 Level",
+        "B2 Level",
+        "C2 Level"
+      ]
+    },
+    {
+      "name": "Spring Reverb (Befaco)",
+      "manufacturer": "Befaco",
+      "type": "Effect",
+      "description": "Spring reverb tank driver with feedback",
+      "inputs": [
+        "In",
+        "Feedback CV",
+        "Mix CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Mix",
+        "Feedback",
+        "HPF"
+      ]
+    },
+    {
+      "name": "Morphader",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "4-channel voltage controlled crossfader",
+      "inputs": [
+        "A1",
+        "B1",
+        "A2",
+        "B2",
+        "A3",
+        "B3",
+        "A4",
+        "B4",
+        "Morph CV"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Morph"
+      ]
+    },
+    {
+      "name": "Burst",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Voltage controlled burst generator - trigger pattern creator",
+      "inputs": [
+        "Trigger",
+        "Tempo CV",
+        "Quantity CV",
+        "Probability CV"
+      ],
+      "outputs": [
+        "Gate",
+        "Trigger Out",
+        "EOB"
+      ],
+      "parameters": [
+        "Tempo",
+        "Quantity",
+        "Distribution",
+        "Probability"
+      ]
+    },
+    {
+      "name": "Chopping Kinky",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Dual waveshaper/wavefolder",
+      "inputs": [
+        "In A",
+        "In B",
+        "CV A",
+        "CV B"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B"
+      ],
+      "parameters": [
+        "Drive A",
+        "Drive B"
+      ]
+    },
+    {
+      "name": "Noise Plethora",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Triple noise source with 24 noise algorithms",
+      "inputs": [
+        "Param A CV",
+        "Param B CV",
+        "Clock"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B",
+        "Out C"
+      ],
+      "parameters": [
+        "Algorithm A",
+        "Algorithm B",
+        "Param A",
+        "Param B"
+      ]
+    },
+    {
+      "name": "Muxlicer",
+      "manufacturer": "Befaco",
+      "type": "Sequencer",
+      "description": "8-step gate sequencer and signal router with CV",
+      "inputs": [
+        "Clock",
+        "Reset",
+        "All In",
+        "Address CV"
+      ],
+      "outputs": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "All Out",
+        "Gate",
+        "Clock Out",
+        "EOC"
+      ],
+      "parameters": [
+        "Steps",
+        "Speed",
+        "Play Mode"
+      ]
+    },
+    {
+      "name": "Sampling Modulator",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Dual digital waveshaper/sample reducer/bitcrusher",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Rate 1",
+        "Depth 1",
+        "Rate 2",
+        "Depth 2"
+      ]
+    },
+    {
+      "name": "Ponics",
+      "manufacturer": "Befaco",
+      "type": "Utility",
+      "description": "Buffered multiple and precision adder",
+      "inputs": [
+        "In A",
+        "In B"
+      ],
+      "outputs": [
+        "A1",
+        "A2",
+        "A3",
+        "B1",
+        "B2",
+        "B3",
+        "Sum 1",
+        "Sum 2"
+      ],
+      "parameters": []
+    },
+    {
+      "name": "FM Aid",
+      "manufacturer": "Happy Nerding",
+      "type": "Oscillator",
+      "description": "4-operator FM synth in 6hp",
+      "inputs": [
+        "V/Oct",
+        "Gate",
+        "Mod CV",
+        "Ratio CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Algorithm",
+        "Ratio 1",
+        "Ratio 2",
+        "Ratio 3",
+        "Ratio 4",
+        "Mod Depth"
+      ]
+    },
+    {
+      "name": "Super Sawtor",
+      "manufacturer": "Happy Nerding",
+      "type": "Oscillator",
+      "description": "6-saw supersaw oscillator with spread and detune",
+      "inputs": [
+        "V/Oct",
+        "Spread CV",
+        "Detune CV"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Spread",
+        "Detune"
+      ]
+    },
+    {
+      "name": "PanMix Jr",
+      "manufacturer": "Happy Nerding",
+      "type": "Mixer",
+      "description": "6-channel mono-to-stereo panning mixer",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4",
+        "Pan 5",
+        "Level 5",
+        "Pan 6",
+        "Level 6"
+      ]
+    },
+    {
+      "name": "PanMix",
+      "manufacturer": "Happy Nerding",
+      "type": "Mixer",
+      "description": "6-channel stereo panning mixer with mutes and aux",
+      "inputs": [
+        "In 1",
+        "In 2",
+        "In 3",
+        "In 4",
+        "In 5",
+        "In 6"
+      ],
+      "outputs": [
+        "Main L",
+        "Main R",
+        "Aux L",
+        "Aux R"
+      ],
+      "parameters": [
+        "Pan 1",
+        "Level 1",
+        "Pan 2",
+        "Level 2",
+        "Pan 3",
+        "Level 3",
+        "Pan 4",
+        "Level 4",
+        "Pan 5",
+        "Level 5",
+        "Pan 6",
+        "Level 6"
+      ]
+    },
+    {
+      "name": "Isolator",
+      "manufacturer": "Happy Nerding",
+      "type": "Utility",
+      "description": "3-band stereo frequency isolator / DJ-style EQ",
+      "inputs": [
+        "In L",
+        "In R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R"
+      ],
+      "parameters": [
+        "Low",
+        "Mid",
+        "High"
+      ]
+    },
+    {
+      "name": "Out (HN)",
+      "manufacturer": "Happy Nerding",
+      "type": "Utility",
+      "description": "Stereo output module with headphone amp",
+      "inputs": [
+        "In L",
+        "In R"
+      ],
+      "outputs": [
+        "Out L",
+        "Out R",
+        "Headphones"
+      ],
+      "parameters": [
+        "Volume"
+      ]
+    },
+    {
+      "name": "2xSAM",
+      "manufacturer": "Happy Nerding",
+      "type": "Utility",
+      "description": "Dual stereo attenuator/mixer",
+      "inputs": [
+        "In A1",
+        "In A2",
+        "In B1",
+        "In B2"
+      ],
+      "outputs": [
+        "Out A",
+        "Out B"
+      ],
+      "parameters": [
+        "Level A1",
+        "Level A2",
+        "Level B1",
+        "Level B2"
+      ]
+    },
+    {
+      "name": "MMM VCF",
+      "manufacturer": "Happy Nerding",
+      "type": "Filter",
+      "description": "Multi-mode filter with OTA core - 12dB LP/HP/BP",
+      "inputs": [
+        "Input",
+        "Freq CV",
+        "Resonance CV"
+      ],
+      "outputs": [
+        "LPF",
+        "HPF",
+        "BPF"
+      ],
+      "parameters": [
+        "Freq",
+        "Resonance"
+      ]
+    },
+    {
+      "name": "VCA (HN)",
+      "manufacturer": "Happy Nerding",
+      "type": "VCA",
+      "description": "Dual precision VCA",
+      "inputs": [
+        "In 1",
+        "CV 1",
+        "In 2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Response"
+      ]
+    },
+    {
+      "name": "Dual Xfade",
+      "manufacturer": "Happy Nerding",
+      "type": "Utility",
+      "description": "Dual voltage controlled crossfader",
+      "inputs": [
+        "A1",
+        "B1",
+        "CV 1",
+        "A2",
+        "B2",
+        "CV 2"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2"
+      ],
+      "parameters": [
+        "Mix 1",
+        "Mix 2"
+      ]
     }
   ]
 }
