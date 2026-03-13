@@ -3179,10 +3179,10 @@
       ]
     },
     {
-      "name": "OXI One",
+      "name": "OXI One MKII",
       "manufacturer": "OXI Instruments",
       "type": "Sequencer",
-      "description": "Portable 128-step sequencer with 4 CV/Gate outputs and MIDI",
+      "description": "Portable 128-step sequencer with 8 CV/Gate outputs and MIDI",
       "inputs": [
         "Clock In",
         "Reset"
@@ -3195,7 +3195,16 @@
         "CV 3",
         "CV 4",
         "Gate 3",
-        "Gate 4"
+        "Gate 4",
+        "CV 5",
+        "CV 6",
+        "Gate 5",
+        "Gate 6",
+        "CV 7",
+        "CV 8",
+        "Gate 7",
+        "Gate 8",
+        "HDMI out"
       ],
       "parameters": [
         "BPM",
@@ -3207,18 +3216,30 @@
       ]
     },
     {
-      "name": "OXI Pipe",
+      "name": "OXI Pipe II",
       "manufacturer": "OXI Instruments",
       "type": "Utility",
       "description": "USB MIDI host and router for eurorack",
       "inputs": [
-        "USB MIDI"
+        "HDMI In"
       ],
       "outputs": [
-        "MIDI Out 1",
-        "MIDI Out 2",
-        "MIDI Out 3",
-        "MIDI Out 4"
+        "CV 1",
+        "CV 2",
+        "Gate 1",
+        "Gate 2",
+        "CV 3",
+        "CV 4",
+        "Gate 3",
+        "Gate 4",
+        "CV 5",
+        "CV 6",
+        "Gate 5",
+        "Gate 6",
+        "CV 7",
+        "CV 8",
+        "Gate 7",
+        "Gate 8"
       ],
       "parameters": [
         "Channel",
@@ -3435,7 +3456,7 @@
       ]
     },
     {
-      "name": "Enamel",
+      "name": "Beehive",
       "manufacturer": "After Later Audio",
       "type": "Oscillator",
       "description": "Plaits clone - macro oscillator with 16 models",
@@ -3507,6 +3528,35 @@
         "Param 2",
         "Param 3",
         "Param 4"
+      ]
+    },
+    {
+      "name": "Caixa 104",
+      "manufacturer": "Nano Modules",
+      "type": "Eurorack Case with Utilities",
+      "description": "104hp case with built-in power supply, audio interface, buffered multiples, precision adder, LFOs, Sample & Hold, dual channel mixer",
+      "inputs": [
+        "Mult in 1",
+        "Mult in 2",
+        "Add X",
+        "Add Y",
+        "S&H In",
+        "S&H Trigger",
+        "Mix In 1L",
+        "Mix In 1R",
+        "Mix In 2L",
+        "Mix In 2R",
+        "Audio Out 1L",
+        "Audio Out 1R"
+      ],
+      "outputs": [
+        "Out"
+      ],
+      "parameters": [
+        "Freq",
+        "Morph",
+        "Bank",
+        "Fine"
       ]
     },
     {
@@ -3737,6 +3787,30 @@
       "parameters": [
         "Rate",
         "Shape"
+      ]
+    },
+    {
+      "name": "A-145-4",
+      "manufacturer": "Doepfer",
+      "type": "LFO",
+      "description": "Quad LFO with multiple waveshapes",
+      "inputs": [
+      ],
+      "outputs": [
+        "Triangle 1",
+        "Square 1",
+        "Triangle 2",
+        "Square 2",
+        "Triangle 3",
+        "Square 3",
+        "Triangle 4",
+        "Square 4"
+      ],
+      "parameters": [
+        "Freq 1",
+        "Freq 2",
+        "Freq 3",
+        "Freq 4"
       ]
     },
     {
