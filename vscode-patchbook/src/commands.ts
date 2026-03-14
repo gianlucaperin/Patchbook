@@ -305,24 +305,19 @@ class PdfDoc {
     // 2: Pages (placeholder)
     this.addObj("PLACEHOLDER");
 
-    // Embed Source Code Pro TTF fonts
+    // ── F1: Source Code Pro Regular (TrueType) ──
     const regularTtf = this.loadFont(extensionPath, "SourceCodePro-Regular.ttf");
-    const boldTtf = this.loadFont(extensionPath, "SourceCodePro-Bold.ttf");
-
-    // 3: F1 - Regular font file stream
     const f1FileId = this.objs.length + 1;
     this.objs.push({
       text: `<< /Length ${regularTtf.length} /Length1 ${regularTtf.length} >>`,
       binary: regularTtf,
     });
-    // 4: F1 - Font descriptor
     const f1DescId = this.objs.length + 1;
     this.addObj(
       `<< /Type /FontDescriptor /FontName /SourceCodePro-Regular /Flags 33 ` +
       `/FontBBox [-200 -300 1200 1000] /ItalicAngle 0 /Ascent 984 /Descent -273 ` +
       `/CapHeight 700 /StemV 80 /FontFile2 ${f1FileId} 0 R >>`
     );
-    // 5: F1 - Font dict (monospace: all widths = 600)
     const w600 = new Array(95).fill("600").join(" ");
     const f1Id = this.objs.length + 1;
     this.addObj(
@@ -331,28 +326,53 @@ class PdfDoc {
       `/FontDescriptor ${f1DescId} 0 R /Encoding /WinAnsiEncoding >>`
     );
 
-    // 6: F2 - Bold font file stream
+    // ── F2: Source Code Pro Bold (TrueType) ──
+    const boldTtf = this.loadFont(extensionPath, "SourceCodePro-Bold.ttf");
     const f2FileId = this.objs.length + 1;
     this.objs.push({
       text: `<< /Length ${boldTtf.length} /Length1 ${boldTtf.length} >>`,
       binary: boldTtf,
     });
-    // 7: F2 - Font descriptor
     const f2DescId = this.objs.length + 1;
     this.addObj(
       `<< /Type /FontDescriptor /FontName /SourceCodePro-Bold /Flags 33 ` +
       `/FontBBox [-200 -300 1200 1000] /ItalicAngle 0 /Ascent 984 /Descent -273 ` +
       `/CapHeight 700 /StemV 120 /FontFile2 ${f2FileId} 0 R >>`
     );
-    // 8: F2 - Font dict
     const f2Id = this.objs.length + 1;
     this.addObj(
       `<< /Type /Font /Subtype /TrueType /BaseFont /SourceCodePro-Bold ` +
       `/FirstChar 32 /LastChar 126 /Widths [${w600}] ` +
       `/FontDescriptor ${f2DescId} 0 R /Encoding /WinAnsiEncoding >>`
-    );;
+    );
 
-    // 5: Image XObject (if present)
+    // ── F3: Artypa Regular (CFF / Type1C) ──
+    const artypaCff = this.loadFont(extensionPath, "Artypa-Regular.cff");
+    const f3FileId = this.objs.length + 1;
+    this.objs.push({
+      text: `<< /Length ${artypaCff.length} /Subtype /Type1C >>`,
+      binary: artypaCff,
+    });
+    const f3DescId = this.objs.length + 1;
+    this.addObj(
+      `<< /Type /FontDescriptor /FontName /Artypa-Regular /Flags 32 ` +
+      `/FontBBox [-100 -200 1400 1100] /ItalicAngle 0 /Ascent 1100 /Descent -200 ` +
+      `/CapHeight 1100 /StemV 80 /FontFile3 ${f3FileId} 0 R >>`
+    );
+    const artypaWidths = "500 299 600 600 500 500 500 600 500 500 600 500 253 500 299 600 " +
+      "500 500 500 500 500 500 500 500 500 500 600 600 500 500 500 692 500 " +
+      "949 1018 849 956 864 844 1053 1205 423 606 976 825 1230 910 1024 824 1044 958 853 1108 928 951 1352 832 981 1008 " +
+      "500 600 500 600 600 500 " +
+      "1124 1018 849 956 864 844 1053 1205 423 606 976 825 1230 910 1024 824 1044 958 853 1108 928 951 1352 832 981 1008 " +
+      "500 500 500 500";
+    const f3Id = this.objs.length + 1;
+    this.addObj(
+      `<< /Type /Font /Subtype /Type1 /BaseFont /Artypa-Regular ` +
+      `/FirstChar 32 /LastChar 126 /Widths [${artypaWidths}] ` +
+      `/FontDescriptor ${f3DescId} 0 R /Encoding /WinAnsiEncoding >>`
+    );
+
+    // ── Image XObject (if present) ──
     if (this.imgData) {
       this.imgObjId = this.objs.length + 1;
       this.objs.push({
@@ -362,14 +382,14 @@ class PdfDoc {
       });
     }
 
-    // Pages
+    // ── Pages ──
     const pids: number[] = [];
     for (const pg of this.pageList) {
       const streamBuf = Buffer.from(pg.stream, "binary");
       const cid = this.objs.length + 1;
       this.objs.push({ text: `<< /Length ${streamBuf.length} >>`, binary: streamBuf });
 
-      let res = `/Resources << /Font << /F1 ${f1Id} 0 R /F2 ${f2Id} 0 R >>`;
+      let res = `/Resources << /Font << /F1 ${f1Id} 0 R /F2 ${f2Id} 0 R /F3 ${f3Id} 0 R >>`;
       if (pg.hasImage && this.imgObjId) {
         res += ` /XObject << /Img1 ${this.imgObjId} 0 R >>`;
       }
@@ -446,8 +466,11 @@ class Pg {
   hr(lw = 0.5): void {
     this.ops.push(`q 0.80 0.80 0.80 RG ${n2(lw)} w ${n2(PM)} ${n2(this.y)} m ${n2(PW - PM)} ${n2(this.y)} l S Q`);
   }
-  room(): number { return this.y - PM - 10; }
+  room(): number { return this.y - PM - 20; }
   ok(pts: number): boolean { return this.room() >= pts; }
+  footer(pageNum: number): void {
+    this.ops.push(`BT /F1 7 Tf 0.55 0.55 0.55 rg ${n2(PW / 2)} ${n2(PM / 2)} Td (${esc(String(pageNum))}) Tj ET`);
+  }
   out(): string { return this.ops.join("\n"); }
 }
 
@@ -578,17 +601,51 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
 
   const pdf = new PdfDoc();
 
-  // ── PAGE 1: Graph image ────────────────────────────────────────
+  // ── COVER PAGE ─────────────────────────────────────────────────
+  {
+    const ops: string[] = [];
+    // "PATCHBOOK" in Artypa, centered
+    const titleFontSize = 60;
+    // Artypa widths for PATCHBOOK: P=824 A=949 T=1108 C=849 H=1205 B=1018 O=1024 K=976
+    const artypaW: Record<string, number> = {
+      P: 824, A: 949, T: 1108, C: 849, H: 1205, B: 1018, O: 1024, K: 976,
+    };
+    const titleText = "PATCHBOOK";
+    let titleW = 0;
+    for (const ch of titleText) { titleW += (artypaW[ch] || 600) / 1000 * titleFontSize; }
+    const titleX = (PW - titleW) / 2;
+    const titleY = PH / 2 + 30;
+    ops.push(`BT /F3 ${titleFontSize} Tf 0.15 0.15 0.15 rg ${n2(titleX)} ${n2(titleY)} Td (${esc(titleText)}) Tj ET`);
+
+    // Patch name in Source Code Pro Regular, centered below
+    const subFontSize = 14;
+    const subW = patchName.length * 600 / 1000 * subFontSize;
+    const subX = (PW - subW) / 2;
+    const subY = titleY - 40;
+    ops.push(`BT /F1 ${subFontSize} Tf 0.4 0.4 0.4 rg ${n2(subX)} ${n2(subY)} Td (${esc(patchName)}) Tj ET`);
+
+    // Thin line between title and subtitle
+    const lineW = 120;
+    ops.push(`q 0.75 0.75 0.75 RG 0.5 w ${n2((PW - lineW) / 2)} ${n2(subY + 18)} m ${n2((PW + lineW) / 2)} ${n2(subY + 18)} l S Q`);
+
+    pdf.addPage(ops.join("\n"));
+  }
+
+  // ── Collect content pages first (to build TOC) ─────────────────
+  // We need to know page assignments before writing the TOC.
+  // Strategy: build all content streams, then insert TOC, then add footers.
+
   // Ensure graph panel is open and rendered
   await graphView.ensurePanelReady(doc.uri);
 
   let img: { jpeg: Buffer; width: number; height: number } | null = null;
   try { img = await graphView.requestGraphImage(); } catch { /* panel not open */ }
 
+  // -- Graph page stream(s) --
+  const graphPages: { stream: string; hasImage: boolean }[] = [];
   if (img && img.jpeg.length > 0) {
     pdf.setImage(img.jpeg, img.width, img.height);
 
-    // Compute display size to fit A4 with margins, preserving aspect ratio
     const titleH = 50;
     const areaW = PW - 2 * PM;
     const areaH = PH - 2 * PM - titleH;
@@ -598,36 +655,27 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
     const dx = PM + (areaW - dw) / 2;
     const dy = PM + (areaH - dh) / 2;
 
-    // Build page 1 content stream
     const ops: string[] = [];
-    // Title
     ops.push(`BT /F2 18 Tf ${n2(PM)} ${n2(PH - PM)} Td (${esc(patchName)}) Tj ET`);
     ops.push(`BT /F1 8 Tf 0.5 0.5 0.5 rg ${n2(PM)} ${n2(PH - PM - 16)} Td (${esc("Patchbook - Signal Flow Graph")}) Tj ET`);
     ops.push(`q 0.7 0.7 0.7 RG 0.4 w ${n2(PM)} ${n2(PH - PM - 22)} m ${n2(PW - PM)} ${n2(PH - PM - 22)} l S Q`);
-    // Image: scale matrix then draw
     ops.push(`q ${n2(dw)} 0 0 ${n2(dh)} ${n2(dx)} ${n2(dy)} cm /Img1 Do Q`);
-
-    pdf.addPage(ops.join("\n"), true);
+    graphPages.push({ stream: ops.join("\n"), hasImage: true });
   } else {
-    // Fallback text page
     const pg = new Pg();
     pg.txt(patchName, PM, 18, "F2");
     pg.dn(22);
     pg.txtC("Patchbook - Signal Flow (open graph panel for visual export)", PM, 8, 0.5, 0.5, 0.5);
     pg.dn(8);
     pg.hr();
-    pg.dn(16);
-    pg.txt("Modules", PM, 11, "F2");
-    pg.dn(16);
-    for (const modName of moduleNames) {
-      if (!pg.ok(14)) { pdf.addPage(pg.out()); pg.ops = []; pg.y = PH - PM; }
-      pg.txt(modName, PM + 4, 9);
-      pg.dn(14);
-    }
-    pdf.addPage(pg.out());
+    graphPages.push({ stream: pg.out(), hasImage: false });
   }
 
-  // ── PAGES 2+: Module details ───────────────────────────────────
+  // -- Module detail page streams --
+  // Track which page each module starts on (relative to detail pages)
+  const detailStreams: string[] = [];
+  const modulePageMap: { name: string; pageIdx: number }[] = [];
+
   let pg = new Pg();
   pg.txt("MODULE DETAILS", PM, 14, "F2");
   pg.dn(24);
@@ -637,14 +685,82 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
     const cat = getModuleByName(modName) || getModuleByName(modName.replace(/\s+#?\d+\s*$/, "").trim());
     const bh = blockH(mod, cat);
 
-    // New page if block won't fit (but not if we're at the top of a fresh page)
     if (!pg.ok(bh) && pg.y < PH - PM - 5) {
-      pdf.addPage(pg.out());
+      detailStreams.push(pg.out());
       pg = new Pg();
     }
+    modulePageMap.push({ name: modName, pageIdx: detailStreams.length });
     drawBlock(pg, modName, mod, cat);
   }
-  pdf.addPage(pg.out());
+  detailStreams.push(pg.out());
+
+  // ── Compute absolute page numbers ──────────────────────────────
+  // Page 1: Cover (no page number)
+  // Page 2: TOC
+  // Page 3+: Graph page(s)
+  // After graph: Detail pages
+  const tocPageNum = 2;
+  const graphStartPage = 3; // TOC is always 1 page
+  const detailStartPage = graphStartPage + graphPages.length;
+  const totalPages = 1 + 1 + graphPages.length + detailStreams.length; // cover + toc + graph + details
+
+  // ── Build TOC page ─────────────────────────────────────────────
+  {
+    const tp = new Pg();
+    tp.txt("TABLE OF CONTENTS", PM, 14, "F2");
+    tp.dn(30);
+
+    // Graph section
+    tp.txtC("Signal Flow Graph", PM + 10, 10, 0.2, 0.2, 0.2, "F2");
+    tp.ops.push(`BT /F1 10 Tf 0.4 0.4 0.4 rg ${n2(PW - PM - 20)} ${n2(tp.y)} Td (${esc(String(graphStartPage))}) Tj ET`);
+    tp.dn(20);
+
+    // Module details header
+    tp.txtC("Module Details", PM + 10, 10, 0.2, 0.2, 0.2, "F2");
+    tp.ops.push(`BT /F1 10 Tf 0.4 0.4 0.4 rg ${n2(PW - PM - 20)} ${n2(tp.y)} Td (${esc(String(detailStartPage))}) Tj ET`);
+    tp.dn(18);
+
+    // Dotted leader helper
+    const leaderX1 = PM + 30;
+    const leaderX2 = PW - PM - 30;
+
+    for (const entry of modulePageMap) {
+      if (!tp.ok(14)) {
+        // TOC shouldn't overflow one page normally, but handle it
+        break;
+      }
+      const absPage = detailStartPage + entry.pageIdx;
+      tp.txtC(entry.name, PM + 20, 9, 0.35, 0.35, 0.35);
+      // Dotted leader line
+      const nameW = entry.name.length * 600 / 1000 * 9;
+      const dotStart = PM + 20 + nameW + 4;
+      const dotEnd = PW - PM - 30;
+      if (dotEnd > dotStart + 10) {
+        tp.ops.push(`q 0.75 0.75 0.75 RG 0.3 w [1 3] 0 d ${n2(dotStart)} ${n2(tp.y + 3)} m ${n2(dotEnd)} ${n2(tp.y + 3)} l S Q`);
+      }
+      // Page number right-aligned
+      tp.ops.push(`BT /F1 9 Tf 0.4 0.4 0.4 rg ${n2(PW - PM - 20)} ${n2(tp.y)} Td (${esc(String(absPage))}) Tj ET`);
+      tp.dn(16);
+    }
+
+    tp.footer(tocPageNum);
+    pdf.addPage(tp.out());
+  }
+
+  // ── Add graph pages with footers ───────────────────────────────
+  for (let i = 0; i < graphPages.length; i++) {
+    const gpNum = graphStartPage + i;
+    const footer = `BT /F1 7 Tf 0.55 0.55 0.55 rg ${n2(PW / 2)} ${n2(PM / 2)} Td (${esc(String(gpNum))}) Tj ET`;
+    const stream = graphPages[i].stream + "\n" + footer;
+    pdf.addPage(stream, graphPages[i].hasImage);
+  }
+
+  // ── Add detail pages with footers ──────────────────────────────
+  for (let i = 0; i < detailStreams.length; i++) {
+    const dpNum = detailStartPage + i;
+    const footer = `BT /F1 7 Tf 0.55 0.55 0.55 rg ${n2(PW / 2)} ${n2(PM / 2)} Td (${esc(String(dpNum))}) Tj ET`;
+    pdf.addPage(detailStreams[i] + "\n" + footer);
+  }
 
   // ── Save ───────────────────────────────────────────────────────
   const fileName = path.basename(doc.fileName, path.extname(doc.fileName));
