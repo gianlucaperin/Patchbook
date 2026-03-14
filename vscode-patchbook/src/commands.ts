@@ -265,6 +265,133 @@ function hexRgb(hex: string): [number, number, number] {
   ];
 }
 
+// ── Corner decorations (circuit symbols) ─────────────────────────
+
+function cornerDecorations(pageNum: number): string {
+  const ops: string[] = [];
+  const c = "0.78 0.78 0.78"; // light gray stroke
+  const lw = "0.6";
+  const m = 12; // margin inset
+  const s = 28; // symbol area size
+
+  // On even pages, swap left/right symbols for binding symmetry
+  const even = pageNum % 2 === 0;
+
+  // ── Resistor zigzag (horizontal wire + zigzag) ──
+  function resistor(ox: number, oy: number, flipX: boolean) {
+    const d = flipX ? -1 : 1;
+    ops.push(`q ${c} RG ${lw} w`);
+    // lead-in wire
+    ops.push(`${n2(ox)} ${n2(oy)} m ${n2(ox + d * 8)} ${n2(oy)} l S`);
+    // zigzag (4 teeth)
+    let x = ox + d * 8;
+    for (let i = 0; i < 4; i++) {
+      ops.push(`${n2(x)} ${n2(oy)} m ${n2(x + d * 2)} ${n2(oy + 3)} l ${n2(x + d * 4)} ${n2(oy - 3)} l ${n2(x + d * 6)} ${n2(oy)} l S`);
+      x += d * 6;
+    }
+    // lead-out wire
+    ops.push(`${n2(x)} ${n2(oy)} m ${n2(x + d * 6)} ${n2(oy)} l S`);
+    ops.push("Q");
+  }
+
+  // ── Capacitor (two parallel plates with wires) ──
+  function capacitor(ox: number, oy: number, flipX: boolean) {
+    const d = flipX ? -1 : 1;
+    ops.push(`q ${c} RG ${lw} w`);
+    // wire in
+    ops.push(`${n2(ox)} ${n2(oy)} m ${n2(ox + d * 12)} ${n2(oy)} l S`);
+    // plate 1 (vertical)
+    ops.push(`${n2(ox + d * 12)} ${n2(oy - 5)} m ${n2(ox + d * 12)} ${n2(oy + 5)} l S`);
+    // plate 2
+    ops.push(`${n2(ox + d * 15)} ${n2(oy - 5)} m ${n2(ox + d * 15)} ${n2(oy + 5)} l S`);
+    // wire out
+    ops.push(`${n2(ox + d * 15)} ${n2(oy)} m ${n2(ox + d * 27)} ${n2(oy)} l S`);
+    ops.push("Q");
+  }
+
+  // ── Ground (vertical line + 3 horizontal lines shrinking) ──
+  function ground(ox: number, oy: number) {
+    ops.push(`q ${c} RG ${lw} w`);
+    // vertical stem
+    ops.push(`${n2(ox)} ${n2(oy)} m ${n2(ox)} ${n2(oy - 7)} l S`);
+    // 3 horizontal bars
+    ops.push(`${n2(ox - 6)} ${n2(oy - 7)} m ${n2(ox + 6)} ${n2(oy - 7)} l S`);
+    ops.push(`${n2(ox - 4)} ${n2(oy - 10)} m ${n2(ox + 4)} ${n2(oy - 10)} l S`);
+    ops.push(`${n2(ox - 2)} ${n2(oy - 13)} m ${n2(ox + 2)} ${n2(oy - 13)} l S`);
+    ops.push("Q");
+  }
+
+  // ── Op-amp triangle (small triangle with +/- labels) ──
+  function opamp(ox: number, oy: number, flipX: boolean) {
+    const d = flipX ? -1 : 1;
+    ops.push(`q ${c} RG ${lw} w`);
+    // triangle: tip pointing right (or left if flipped)
+    ops.push(`${n2(ox)} ${n2(oy + 8)} m ${n2(ox)} ${n2(oy - 8)} l ${n2(ox + d * 16)} ${n2(oy)} l h S`);
+    // input wires
+    ops.push(`${n2(ox - d * 6)} ${n2(oy + 4)} m ${n2(ox)} ${n2(oy + 4)} l S`);
+    ops.push(`${n2(ox - d * 6)} ${n2(oy - 4)} m ${n2(ox)} ${n2(oy - 4)} l S`);
+    // output wire
+    ops.push(`${n2(ox + d * 16)} ${n2(oy)} m ${n2(ox + d * 22)} ${n2(oy)} l S`);
+    ops.push("Q");
+  }
+
+  // ── Diode (triangle + bar) ──
+  function diode(ox: number, oy: number, flipX: boolean) {
+    const d = flipX ? -1 : 1;
+    ops.push(`q ${c} RG ${lw} w`);
+    // wire in
+    ops.push(`${n2(ox)} ${n2(oy)} m ${n2(ox + d * 6)} ${n2(oy)} l S`);
+    // triangle (filled lightly)
+    ops.push(`q 0.90 0.90 0.90 rg`);
+    ops.push(`${n2(ox + d * 6)} ${n2(oy + 5)} m ${n2(ox + d * 6)} ${n2(oy - 5)} l ${n2(ox + d * 14)} ${n2(oy)} l h B`);
+    ops.push("Q");
+    // bar at tip
+    ops.push(`${n2(ox + d * 14)} ${n2(oy - 5)} m ${n2(ox + d * 14)} ${n2(oy + 5)} l S`);
+    // wire out
+    ops.push(`${n2(ox + d * 14)} ${n2(oy)} m ${n2(ox + d * 22)} ${n2(oy)} l S`);
+    ops.push("Q");
+  }
+
+  // Corner positions
+  const TL = { x: m, y: PH - m };           // top-left
+  const TR = { x: PW - m, y: PH - m };      // top-right
+  const BL = { x: m, y: m };                 // bottom-left
+  const BR = { x: PW - m, y: m };            // bottom-right
+
+  if (!even) {
+    // Odd pages: resistor TL, capacitor TR, ground BL, opamp BR
+    resistor(TL.x, TL.y - 4, false);
+    capacitor(TR.x - 27, TR.y - 4, true);
+    ground(BL.x + 10, BL.y + 18);
+    diode(BR.x - 22, BR.y + 6, true);
+  } else {
+    // Even pages: mirror — capacitor TL, resistor TR, opamp BL, ground BR
+    capacitor(TL.x, TL.y - 4, false);
+    resistor(TR.x - s, TR.y - 4, true);
+    diode(BL.x, BL.y + 6, false);
+    ground(BR.x - 10, BR.y + 18);
+  }
+
+  // Small L-shaped corner marks (thin lines framing the corners)
+  const cl = 10; // corner line length
+  ops.push(`q 0.85 0.85 0.85 RG 0.3 w`);
+  // TL
+  ops.push(`${n2(m)} ${n2(PH - m + 6)} m ${n2(m)} ${n2(PH - m + 6)} l ${n2(m)} ${n2(PH - m - cl)} l S`);
+  ops.push(`${n2(m - 1)} ${n2(PH - m + 6)} m ${n2(m + cl)} ${n2(PH - m + 6)} l S`);
+  // TR
+  ops.push(`${n2(PW - m)} ${n2(PH - m + 6)} m ${n2(PW - m)} ${n2(PH - m - cl)} l S`);
+  ops.push(`${n2(PW - m + 1)} ${n2(PH - m + 6)} m ${n2(PW - m - cl)} ${n2(PH - m + 6)} l S`);
+  // BL
+  ops.push(`${n2(m)} ${n2(m - 6)} m ${n2(m)} ${n2(m + cl)} l S`);
+  ops.push(`${n2(m - 1)} ${n2(m - 6)} m ${n2(m + cl)} ${n2(m - 6)} l S`);
+  // BR
+  ops.push(`${n2(PW - m)} ${n2(m - 6)} m ${n2(PW - m)} ${n2(m + cl)} l S`);
+  ops.push(`${n2(PW - m + 1)} ${n2(m - 6)} m ${n2(PW - m - cl)} ${n2(m - 6)} l S`);
+  ops.push("Q");
+
+  return ops.join("\n");
+}
+
 const TYPE_COLORS: Record<string, string> = {
   "Oscillator": "#2e5c8a", "Voice": "#2e5c8a", "Filter": "#8a4a2e",
   "Low Pass Gate": "#8a5e2e", "VCA": "#6b5b2e", "Mixer": "#5c6b2e",
@@ -744,6 +871,7 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
     }
 
     tp.footer(tocPageNum);
+    tp.ops.push(cornerDecorations(tocPageNum));
     pdf.addPage(tp.out());
   }
 
@@ -751,7 +879,7 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
   for (let i = 0; i < graphPages.length; i++) {
     const gpNum = graphStartPage + i;
     const footer = `BT /F1 7 Tf 0.55 0.55 0.55 rg ${n2(PW / 2)} ${n2(PM / 2)} Td (${esc(String(gpNum))}) Tj ET`;
-    const stream = graphPages[i].stream + "\n" + footer;
+    const stream = graphPages[i].stream + "\n" + footer + "\n" + cornerDecorations(gpNum);
     pdf.addPage(stream, graphPages[i].hasImage);
   }
 
@@ -759,7 +887,7 @@ export async function exportPDF(graphView: GraphViewProvider, extensionPath: str
   for (let i = 0; i < detailStreams.length; i++) {
     const dpNum = detailStartPage + i;
     const footer = `BT /F1 7 Tf 0.55 0.55 0.55 rg ${n2(PW / 2)} ${n2(PM / 2)} Td (${esc(String(dpNum))}) Tj ET`;
-    pdf.addPage(detailStreams[i] + "\n" + footer);
+    pdf.addPage(detailStreams[i] + "\n" + footer + "\n" + cornerDecorations(dpNum));
   }
 
   // ── Save ───────────────────────────────────────────────────────
