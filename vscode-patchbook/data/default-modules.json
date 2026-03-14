@@ -3607,11 +3607,10 @@
       "type": "Quantizer",
       "description": "Quad quantizer with scale selection",
       "inputs": [
-        "In 1",
-        "In 2",
-        "In 3",
-        "In 4",
-        "Trigger"
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4"
       ],
       "outputs": [
         "Out 1",
@@ -3620,8 +3619,18 @@
         "Out 4"
       ],
       "parameters": [
-        "Scale",
-        "Root"
+        "Rate 1",
+        "Rate 2",
+        "Rate 3",
+        "Rate 4",
+        "Rise 1",
+        "Rise 2",
+        "Rise 3",
+        "Rise 4",
+        "Fall 1",
+        "Fall 2",
+        "Fall 3",
+        "Fall 4"
       ]
     },
     {
@@ -3633,20 +3642,27 @@
         "In 1",
         "In 2",
         "In 3",
-        "In 4"
+        "In 4",
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4"
       ],
       "outputs": [
         "Out 1",
         "Out 2",
         "Out 3",
-        "Out 4",
-        "Mix"
+        "Out 4"
       ],
       "parameters": [
         "Level 1",
         "Level 2",
         "Level 3",
-        "Level 4"
+        "Level 4",
+        "Att 1",
+        "Att 2",
+        "Att 3",
+        "Att 4"
       ]
     },
     {
@@ -4217,19 +4233,30 @@
       "type": "Effect",
       "description": "Multi-dimensional signal processor - filter, decimator, delay",
       "inputs": [
-        "In",
-        "FM CV",
+        "In 1",
+        "In 2",
+        "Cutoff CV",
         "Decimate CV",
-        "Phase CV"
+        "Filter type (clock or CV)",
+        "Freeze",
+        "Comb CV",
+        "Res CV",
+        "Time CV"
       ],
       "outputs": [
-        "Out"
+        "Out 1",
+        "Out 2"
       ],
       "parameters": [
-        "Filter",
+        "Frequency",
+        "Cutoff Att",
+        "Time",
         "Decimate",
-        "Phase",
-        "Mode"
+        "Resonance",
+        "Comb",
+        "Freeze",
+        "Mode",
+        "lp/hp/bp"
       ]
     },
     {
@@ -4437,26 +4464,24 @@
       ]
     },
     {
-      "name": "Black VCF",
+      "name": "Black DJ VCF",
       "manufacturer": "Erica Synths",
       "type": "Filter",
       "description": "Dual multimode filter with series/parallel routing",
       "inputs": [
         "Input",
         "Freq CV 1",
-        "Freq CV 2",
-        "Resonance CV"
+        "Freq CV 2"
       ],
       "outputs": [
-        "LPF",
-        "HPF",
-        "BPF"
+        "Output"
       ],
       "parameters": [
-        "Freq",
+        "Cutoff",
         "Resonance",
-        "Mode",
-        "Drive"
+        "Audio Level",
+        "CV1 Level",
+        "CV2 Level"
       ]
     },
     {

@@ -69,6 +69,36 @@
         "command": "patchbook.removeModule",
         "title": "Patchbook: Remove Module",
         "icon": "$(trash)"
+      },
+      {
+        "command": "patchbook.graph.zoomIn",
+        "title": "Patchbook Graph: Zoom In",
+        "icon": "$(zoom-in)"
+      },
+      {
+        "command": "patchbook.graph.zoomOut",
+        "title": "Patchbook Graph: Zoom Out",
+        "icon": "$(zoom-out)"
+      },
+      {
+        "command": "patchbook.graph.fit",
+        "title": "Patchbook Graph: Fit to View",
+        "icon": "$(screen-full)"
+      },
+      {
+        "command": "patchbook.graph.reset",
+        "title": "Patchbook Graph: Reset View",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "patchbook.graph.addModule",
+        "title": "Patchbook Graph: Add Module",
+        "icon": "$(add)"
+      },
+      {
+        "command": "patchbook.graph.removeModule",
+        "title": "Patchbook Graph: Remove Module",
+        "icon": "$(trash)"
       }
     ],
     "menus": {
@@ -98,6 +128,36 @@
           "command": "patchbook.showGraph",
           "when": "editorLangId == patchbook",
           "group": "navigation"
+        },
+        {
+          "command": "patchbook.graph.zoomIn",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@1"
+        },
+        {
+          "command": "patchbook.graph.zoomOut",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@2"
+        },
+        {
+          "command": "patchbook.graph.fit",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@3"
+        },
+        {
+          "command": "patchbook.graph.reset",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@4"
+        },
+        {
+          "command": "patchbook.graph.addModule",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@5"
+        },
+        {
+          "command": "patchbook.graph.removeModule",
+          "when": "activeWebviewPanelId == patchbookGraph && patchbook.graph.hasSelection",
+          "group": "navigation@6"
         }
       ],
       "editor/context": [

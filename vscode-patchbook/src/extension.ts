@@ -56,6 +56,36 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.commands.registerCommand("patchbook.removeModule", () => removeModule())
   );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.zoomIn", () =>
+      graphView.executeCommand("zoomIn")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.zoomOut", () =>
+      graphView.executeCommand("zoomOut")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.fit", () =>
+      graphView.executeCommand("fit")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.reset", () =>
+      graphView.executeCommand("reset")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.addModule", () =>
+      graphView.executeCommand("addModule")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.graph.removeModule", () =>
+      graphView.executeCommand("removeModule")
+    )
+  );
 }
 
 export function deactivate(): void {

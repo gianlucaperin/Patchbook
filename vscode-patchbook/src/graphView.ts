@@ -9,6 +9,12 @@ export class GraphViewProvider {
 
   constructor(private readonly extensionUri: vscode.Uri) {}
 
+  /** Send a command from the VS Code toolbar to the webview */
+  executeCommand(command: string): void {
+    if (!this.panel) { return; }
+    this.panel.webview.postMessage({ type: "command", command });
+  }
+
   show(): void {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.languageId !== "patchbook") {
@@ -35,6 +41,7 @@ export class GraphViewProvider {
         this.panel = undefined;
         this.changeListener?.dispose();
         this.changeListener = undefined;
+        vscode.commands.executeCommand("setContext", "patchbook.graph.hasSelection", false);
       });
       this.setupMessageHandler();
       this.setupDocListener();
@@ -83,6 +90,9 @@ export class GraphViewProvider {
           break;
         case "removeModule":
           await this.handleRemoveModule(msg.moduleName);
+          break;
+        case "selectionChanged":
+          vscode.commands.executeCommand("setContext", "patchbook.graph.hasSelection", !!msg.hasSelection);
           break;
       }
     });
@@ -409,18 +419,9 @@ export class GraphViewProvider {
   .legend-text { fill: #aaa; font-size: 10px; }
   .legend-line { stroke-width: 2; }
 
-  #toolbar { position: fixed; top: 8px; left: 8px; z-index: 10; display: flex; gap: 4px; }
-  #toolbar button {
-    background: #333; color: #ccc; border: 1px solid #555;
-    border-radius: 4px; padding: 5px 12px; cursor: pointer; font-size: 13px;
-  }
-  #toolbar button:hover { background: #444; }
-  #toolbar button:disabled { opacity: 0.4; cursor: default; background: #333; }
-  #toolbar .sep { width: 1px; height: 20px; background: #555; margin: 0 4px; align-self: center; }
-
   #inspector {
-    position: fixed; right: 10px; top: 50px; z-index: 20;
-    width: 280px; max-height: calc(100vh - 60px); overflow-y: auto;
+    position: fixed; right: 10px; top: 10px; z-index: 20;
+    width: 280px; max-height: calc(100vh - 20px); overflow-y: auto;
     background: #252526; border: 1px solid #444; border-radius: 6px;
     display: none; font-size: 12px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.4);
@@ -486,15 +487,6 @@ export class GraphViewProvider {
 </style>
 </head>
 <body>
-<div id="toolbar">
-  <button onclick="zoomIn()" title="Zoom In">+</button>
-  <button onclick="zoomOut()" title="Zoom Out">\u2212</button>
-  <button onclick="fitAll()" title="Fit to View">Fit</button>
-  <button onclick="resetView()" title="Reset View">Reset</button>
-  <span class="sep"></span>
-  <button onclick="requestAddModule()" title="Add Module">+ Module</button>
-  <button onclick="requestRemoveModule()" title="Remove Selected Module" id="btn-rm" disabled>\u2212 Module</button>
-</div>
 <div id="inspector">
   <div id="inspector-header">
     <h3 id="inspector-title">Module</h3>
@@ -1109,16 +1101,14 @@ function showConnTypeSelector(x, y, from, fromPort, to, toPort) {
 // ================================================================
 function selectModule(id) {
   selectedModuleId = id;
-  const rmBtn = document.getElementById('btn-rm');
-  if (rmBtn) rmBtn.disabled = false;
+  vscodeApi.postMessage({ type: 'selectionChanged', hasSelection: true });
   renderAll();
   vscodeApi.postMessage({ type: 'inspectModule', moduleName: id });
 }
 
 function closeInspector() {
   selectedModuleId = null;
-  const rmBtn = document.getElementById('btn-rm');
-  if (rmBtn) rmBtn.disabled = true;
+  vscodeApi.postMessage({ type: 'selectionChanged', hasSelection: false });
   document.getElementById('inspector').classList.remove('visible');
   renderAll();
 }
@@ -1319,6 +1309,15 @@ window.addEventListener('message', event => {
   const msg = event.data;
   if (msg.type === 'moduleInfo' && msg.moduleName === selectedModuleId) {
     showInspector(msg.moduleName, msg.catalog);
+  } else if (msg.type === 'command') {
+    switch (msg.command) {
+      case 'zoomIn':  zoomIn(); break;
+      case 'zoomOut': zoomOut(); break;
+      case 'fit':     fitAll(); break;
+      case 'reset':   resetView(); break;
+      case 'addModule':    requestAddModule(); break;
+      case 'removeModule': requestRemoveModule(); break;
+    }
   } else if (msg.type === 'update') {
     // Preserve manual positions if possible
     const oldPositions = {};
