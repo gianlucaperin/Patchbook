@@ -15,6 +15,54 @@ export class GraphViewProvider {
     this.panel.webview.postMessage({ type: "command", command });
   }
 
+  /** Get the source document URI */
+  getSourceUri(): vscode.Uri | undefined {
+    return this.sourceUri;
+  }
+
+  /** Ensure the graph panel is open and rendered for the given document URI.
+   *  If the panel is already open, this resolves immediately. */
+  ensurePanelReady(docUri: vscode.Uri): Promise<void> {
+    return new Promise(async (resolve) => {
+      if (this.panel) { resolve(); return; }
+      // Need to open the panel – open the document first to make it the active editor
+      const doc = await vscode.workspace.openTextDocument(docUri);
+      await vscode.window.showTextDocument(doc, vscode.ViewColumn.One, false);
+      // Now call show() which reads from activeTextEditor
+      this.show();
+      // After show(), panel may have been created
+      const p = this.panel as vscode.WebviewPanel | undefined;
+      if (!p) { resolve(); return; }
+      // Wait for the webview to signal it's ready
+      const timeout = setTimeout(() => { dispose.dispose(); resolve(); }, 8000);
+      const dispose = p.webview.onDidReceiveMessage((msg: { type: string }) => {
+        if (msg.type === "ready") {
+          clearTimeout(timeout);
+          dispose.dispose();
+          resolve();
+        }
+      });
+    });
+  }
+
+  /** Request a JPEG screenshot of the graph from the webview */
+  requestGraphImage(): Promise<{ jpeg: Buffer; width: number; height: number } | null> {
+    return new Promise((resolve) => {
+      if (!this.panel) { resolve(null); return; }
+      const timeout = setTimeout(() => { dispose.dispose(); resolve(null); }, 10000);
+      const dispose = this.panel.webview.onDidReceiveMessage((msg) => {
+        if (msg.type === "graphImage") {
+          clearTimeout(timeout);
+          dispose.dispose();
+          if (!msg.dataUrl) { resolve(null); return; }
+          const b64 = msg.dataUrl.replace(/^data:image\/jpeg;base64,/, "");
+          resolve({ jpeg: Buffer.from(b64, "base64"), width: msg.width, height: msg.height });
+        }
+      });
+      this.panel.webview.postMessage({ type: "command", command: "exportImage" });
+    });
+  }
+
   show(): void {
     const editor = vscode.window.activeTextEditor;
     if (!editor || editor.document.languageId !== "patchbook") {
@@ -391,9 +439,9 @@ export class GraphViewProvider {
   }
   svg { width: 100%; height: 100%; display: block; }
 
-  .module-box { fill: #2d2d2d; stroke: #555; stroke-width: 1.5; rx: 6; ry: 6; cursor: grab; }
+  .module-box { stroke: #555; stroke-width: 1.5; rx: 6; ry: 6; cursor: grab; }
   .module-box:hover { stroke: #0af; stroke-width: 2; }
-  .module-box.selected { stroke: #0af; stroke-width: 2.5; fill: #333; }
+  .module-box.selected { stroke: #0af; stroke-width: 2.5; }
   .module-box.dragging { cursor: grabbing; stroke: #0f0; stroke-width: 2; }
   .module-name { fill: #fff; font-size: 13px; font-weight: 600; text-anchor: middle; pointer-events: none; }
   .port-label { fill: #aaa; font-size: 10px; pointer-events: none; }
@@ -415,9 +463,26 @@ export class GraphViewProvider {
   .edge.clock    { stroke: #aa44ff; stroke-dasharray: 6 3; }
   .edge.pending  { stroke: #0af; stroke-width: 2; stroke-dasharray: 4 4; opacity: 0.7; pointer-events: none; }
 
-  .legend { fill: #252526; stroke: #444; rx: 4; }
-  .legend-text { fill: #aaa; font-size: 10px; }
-  .legend-line { stroke-width: 2; }
+  #select-rect {
+    fill: rgba(0, 170, 255, 0.08); stroke: #0af; stroke-width: 1;
+    stroke-dasharray: 4 3; pointer-events: none;
+  }
+
+  #legend {
+    position: fixed; top: 8px; left: 8px; z-index: 10;
+    background: rgba(30, 30, 30, 0.55); border: 1px solid rgba(68, 68, 68, 0.5); border-radius: 6px;
+    padding: 10px 14px; font-size: 11px; color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    max-height: calc(100vh - 16px); overflow-y: auto;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  #legend h4 { font-size: 10px; text-transform: uppercase; color: #666;
+    letter-spacing: 0.5px; margin: 0 0 6px 0; }
+  #legend h4:not(:first-child) { margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; }
+  .legend-row { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; border: 1px solid #555; }
+  .legend-line-sample { width: 20px; height: 0; flex-shrink: 0; }
+  .legend-label { color: #ccc; white-space: nowrap; }
 
   #inspector {
     position: fixed; right: 10px; top: 10px; z-index: 20;
@@ -487,6 +552,7 @@ export class GraphViewProvider {
 </style>
 </head>
 <body>
+<div id="legend"></div>
 <div id="inspector">
   <div id="inspector-header">
     <h3 id="inspector-title">Module</h3>
@@ -501,6 +567,61 @@ const vscodeApi = acquireVsCodeApi();
 let DATA = ${JSON.stringify(graphData)};
 const DIR = "${config}";
 
+// Module type color palette
+const MODULE_TYPE_COLORS = {
+  'Oscillator':       '#2e5c8a',
+  'Voice':            '#2e5c8a',
+  'Filter':           '#8a4a2e',
+  'Low Pass Gate':    '#8a5e2e',
+  'VCA':              '#6b5b2e',
+  'Mixer':            '#5c6b2e',
+  'Envelope Generator':'#2e7a5a',
+  'Function Generator':'#2e7a6b',
+  'LFO':              '#2e6b7a',
+  'Sequencer':        '#6b2e7a',
+  'Clock':            '#7a2e6b',
+  'Effect':           '#7a2e4a',
+  'Resonator':        '#7a3a3a',
+  'Quantizer':        '#4a2e7a',
+  'Random Source':    '#2e4a6b',
+  'Sampler':          '#5a3a6b',
+  'Utility':          '#4a4a4a',
+  'Controller':       '#3a5a3a',
+  'Audio Interface':  '#3a4a5a',
+  'Eurorack Case with Utilities': '#4a4a4a',
+  'Unknown':          '#2d2d2d',
+};
+function moduleColor(type) {
+  return MODULE_TYPE_COLORS[type] || MODULE_TYPE_COLORS['Unknown'];
+}
+
+// Build legend HTML
+function buildLegend() {
+  const el = document.getElementById('legend');
+  let html = '<h4>Module Types</h4>';
+  // Collect types actually used in the graph
+  const usedTypes = new Set();
+  DATA.nodes.forEach(n => { usedTypes.add(n.moduleType); });
+  const sortedTypes = Object.keys(MODULE_TYPE_COLORS).filter(t => usedTypes.has(t)).sort();
+  sortedTypes.forEach(t => {
+    html += '<div class="legend-row"><div class="legend-swatch" style="background:' + moduleColor(t) + '"></div><span class="legend-label">' + esc(t) + '</span></div>';
+  });
+  html += '<h4>Connection Types</h4>';
+  const connTypes = [
+    { name: 'Audio',   style: 'border-top: 2.5px solid #e8e8e8' },
+    { name: 'CV',      style: 'border-top: 2px solid #888' },
+    { name: 'Pitch',   style: 'border-top: 2px solid #4488ff' },
+    { name: 'Gate',    style: 'border-top: 2px dashed #ff4444' },
+    { name: 'Trigger', style: 'border-top: 2px dashed #ff8800' },
+    { name: 'Clock',   style: 'border-top: 2px dashed #aa44ff' },
+  ];
+  connTypes.forEach(ct => {
+    html += '<div class="legend-row"><div class="legend-line-sample" style="' + ct.style + '"></div><span class="legend-label">' + ct.name + '</span></div>';
+  });
+  el.innerHTML = html;
+}
+buildLegend();
+
 // ================================================================
 //  CONSTANTS
 // ================================================================
@@ -509,17 +630,19 @@ const PORT_PAD     = 14;
 const MOD_MIN_W    = 150;
 const MOD_NAME_H   = 28;
 const PARAM_LINE_H = 14;
-const LAYER_GAP    = 280;   // gap between layers
-const NODE_GAP     = 36;    // gap between sibling nodes
+const LAYER_GAP    = 280;
+const NODE_GAP     = 40;
 
 // ================================================================
-//  SUGIYAMA LAYERED LAYOUT  (Eclipse GEF / Zest style)
-//  Phase 1: Layer assignment (longest-path)
-//  Phase 2: Crossing minimisation (barycenter heuristic, multi-pass)
-//  Phase 3: Coordinate assignment (median positioning with compaction)
+//  ELK LAYERED LAYOUT
+//  Based on Eclipse ELK's layered algorithm (Sugiyama framework):
+//   1. Cycle breaking (DFS-based)
+//   2. Layer assignment (longest path + node promotion)
+//   3. Crossing minimisation (barycenter + sifting)
+//   4. Node placement (linear segments / Brandes-Köpf)
 // ================================================================
 
-function sugiyamaLayout(data) {
+function elkLayout(data) {
   const nodes = data.nodes;
   const edges = data.edges;
   const nodeMap = {};
@@ -527,14 +650,13 @@ function sugiyamaLayout(data) {
 
   // --- Compute node sizes ---
   nodes.forEach(n => {
-    const maxPorts  = Math.max(n.inputs.length, n.outputs.length, 1);
-    // All params: set + unset catalog
+    const maxPorts = Math.max(n.inputs.length, n.outputs.length, 1);
     const setKeys = Object.keys(n.params);
     const setLower = new Set(setKeys.map(k => k.toLowerCase()));
     const unsetCat = (n.catalogParams || []).filter(cp => !setLower.has(cp.toLowerCase()));
     const totalParams = setKeys.length + unsetCat.length;
-    const bodyH     = maxPorts * PORT_H + PORT_PAD * 2;
-    const paramH    = totalParams * PARAM_LINE_H;
+    const bodyH = maxPorts * PORT_H + PORT_PAD * 2;
+    const paramH = totalParams * PARAM_LINE_H;
     n._h = MOD_NAME_H + bodyH + (paramH > 0 ? paramH + 8 : 0);
     n._allParamKeys = setKeys;
     n._unsetCatParams = unsetCat;
@@ -545,140 +667,273 @@ function sugiyamaLayout(data) {
     n._w = Math.max(MOD_MIN_W, maxLen * 7 + 80, n.name.length * 9 + 40);
   });
 
-  // --- Build adjacency ---
+  if (nodes.length === 0) {
+    return { nodes, edges, nodeMap, maxW: 100, maxH: 100 };
+  }
+
+  // --- Build adjacency (deduplicated) ---
   const succ = {}, pred = {};
-  nodes.forEach(n => { succ[n.id] = []; pred[n.id] = []; });
+  nodes.forEach(n => { succ[n.id] = new Set(); pred[n.id] = new Set(); });
   edges.forEach(e => {
-    if (succ[e.from]) succ[e.from].push(e.to);
-    if (pred[e.to])   pred[e.to].push(e.from);
+    if (succ[e.from]) succ[e.from].add(e.to);
+    if (pred[e.to])   pred[e.to].add(e.from);
+  });
+  // Convert to arrays
+  const succArr = {}, predArr = {};
+  nodes.forEach(n => {
+    succArr[n.id] = [...(succ[n.id] || [])];
+    predArr[n.id] = [...(pred[n.id] || [])];
   });
 
-  // --- Phase 1: Layer assignment (longest-path from sources) ---
-  const layerOf = {};
-  const inDeg = {};
-  nodes.forEach(n => { inDeg[n.id] = (pred[n.id] || []).length; });
-  const queue = nodes.filter(n => inDeg[n.id] === 0).map(n => n.id);
-  if (queue.length === 0 && nodes.length > 0) queue.push(nodes[0].id); // handle cycles
-  queue.forEach(id => { layerOf[id] = 0; });
-  const vis = new Set(queue);
+  // ---- PHASE 1: LAYER ASSIGNMENT ----
+  // Topological sort (Kahn's algorithm)
+  const inDegree = {};
+  nodes.forEach(n => { inDegree[n.id] = predArr[n.id].length; });
+  const sources = nodes.filter(n => inDegree[n.id] === 0).map(n => n.id);
+  if (sources.length === 0) sources.push(nodes[0].id);
+  const topoOrder = [];
+  const topoVis = new Set(sources);
   let qi = 0;
-  while (qi < queue.length) {
-    const cur = queue[qi++];
-    for (const nxt of (succ[cur] || [])) {
-      layerOf[nxt] = Math.max(layerOf[nxt] || 0, layerOf[cur] + 1);
-      if (!vis.has(nxt)) { vis.add(nxt); queue.push(nxt); }
+  const topoQ = [...sources];
+  while (qi < topoQ.length) {
+    const cur = topoQ[qi++];
+    topoOrder.push(cur);
+    for (const nxt of succArr[cur]) {
+      if (!topoVis.has(nxt)) { topoVis.add(nxt); topoQ.push(nxt); }
     }
   }
-  nodes.forEach(n => { if (layerOf[n.id] === undefined) layerOf[n.id] = 0; });
+  // Any nodes not visited (cycles) get appended
+  nodes.forEach(n => { if (!topoVis.has(n.id)) topoOrder.push(n.id); });
 
-  // Group by layer
+  // Longest path layer assignment
+  const layerOf = {};
+  topoOrder.forEach(id => {
+    const preds = predArr[id] || [];
+    layerOf[id] = preds.length === 0 ? 0 : Math.max(...preds.map(p => (layerOf[p] || 0) + 1));
+  });
+
+  // Node promotion: push nodes as close to their successors as possible
+  // (minimises long edges — ELK's "network simplex" lite)
+  const revTopo = [...topoOrder].reverse();
+  for (let pass = 0; pass < 3; pass++) {
+    revTopo.forEach(id => {
+      const succs = succArr[id] || [];
+      if (succs.length > 0) {
+        const maxAllowed = Math.min(...succs.map(s => layerOf[s])) - 1;
+        if (maxAllowed > layerOf[id]) layerOf[id] = maxAllowed;
+      }
+    });
+  }
+
+  // Build layer groups
   const layers = {};
   nodes.forEach(n => {
     const l = layerOf[n.id];
     if (!layers[l]) layers[l] = [];
     layers[l].push(n);
   });
-  const layerKeys = Object.keys(layers).map(Number).sort((a_,b_) => a_ - b_);
+  const layerKeys = Object.keys(layers).map(Number).sort((a, b) => a - b);
 
-  // --- Phase 2: Crossing minimisation (barycenter, 4 sweeps) ---
-  function barycenter(layerArr, neighbourFn) {
-    const bc = layerArr.map(n => {
-      const nbrs = neighbourFn(n.id);
-      if (nbrs.length === 0) return { n, val: Infinity };
-      // Get positions of neighbours in their layer
-      let sum = 0;
-      for (const nbrId of nbrs) {
-        const nbrNode = nodeMap[nbrId];
-        if (nbrNode && nbrNode._order !== undefined) sum += nbrNode._order;
-      }
-      return { n, val: sum / nbrs.length };
-    });
-    bc.sort((a, b) => a.val - b.val);
-    bc.forEach((item, idx) => { item.n._order = idx; });
-    return bc.map(item => item.n);
-  }
-
-  // Initial ordering: as-is
+  // ---- PHASE 2: CROSSING MINIMISATION ----
+  // Initial ordering by connectivity
   layerKeys.forEach(lk => {
     layers[lk].forEach((n, i) => { n._order = i; });
   });
 
-  // Sweep down then up, 4 full iterations
-  for (let iter = 0; iter < 4; iter++) {
-    // Down sweep
-    for (let li = 1; li < layerKeys.length; li++) {
-      const lk = layerKeys[li];
-      layers[lk] = barycenter(layers[lk], id => pred[id] || []);
+  function getBarycenter(nodeId, neighbourIds) {
+    const nbrs = neighbourIds.filter(id => nodeMap[id] && nodeMap[id]._order !== undefined);
+    if (nbrs.length === 0) return -1;
+    let sum = 0;
+    for (const id of nbrs) sum += nodeMap[id]._order;
+    return sum / nbrs.length;
+  }
+
+  // Barycenter ordering
+  function barySort(layer, getNeighbours) {
+    const scored = layer.map(n => ({
+      n,
+      bc: getBarycenter(n.id, getNeighbours(n.id))
+    }));
+    // Stable sort: nodes without connections keep their position
+    scored.sort((a, b) => {
+      if (a.bc < 0 && b.bc < 0) return 0;
+      if (a.bc < 0) return 0;
+      if (b.bc < 0) return 0;
+      return a.bc - b.bc;
+    });
+    const result = scored.map(s => s.n);
+    result.forEach((n, i) => { n._order = i; });
+    return result;
+  }
+
+  // Count edge crossings between adjacent layers
+  function countCrossings(upper, lower) {
+    const lowerPos = {};
+    lower.forEach((n, i) => { lowerPos[n.id] = i; });
+    const segments = [];
+    upper.forEach((n, ui) => {
+      for (const s of succArr[n.id]) {
+        if (lowerPos[s] !== undefined) segments.push([ui, lowerPos[s]]);
+      }
+    });
+    let c = 0;
+    for (let i = 0; i < segments.length; i++) {
+      for (let j = i + 1; j < segments.length; j++) {
+        if ((segments[i][0] - segments[j][0]) * (segments[i][1] - segments[j][1]) < 0) c++;
+      }
     }
-    // Up sweep
+    return c;
+  }
+
+  // Sifting: try moving each node to every position in its layer
+  function sift(layer, layerIdx) {
+    for (let ni = 0; ni < layer.length; ni++) {
+      const node = layer[ni];
+      let bestPos = ni;
+      // Remove node
+      const without = layer.filter((_, i) => i !== ni);
+      let bestCost = Infinity;
+      for (let pos = 0; pos <= without.length; pos++) {
+        const trial = [...without];
+        trial.splice(pos, 0, node);
+        trial.forEach((n, i) => { n._order = i; });
+        let cost = 0;
+        if (layerIdx > 0) cost += countCrossings(layers[layerKeys[layerIdx - 1]], trial);
+        if (layerIdx < layerKeys.length - 1) cost += countCrossings(trial, layers[layerKeys[layerIdx + 1]]);
+        if (cost < bestCost) { bestCost = cost; bestPos = pos; }
+      }
+      // Place at best position
+      const final_ = without;
+      final_.splice(bestPos, 0, node);
+      final_.forEach((n, i) => { n._order = i; });
+      layers[layerKeys[layerIdx]] = final_;
+    }
+    return layers[layerKeys[layerIdx]];
+  }
+
+  // Run 8 sweeps of barycenter + 2 final sifting passes
+  for (let iter = 0; iter < 8; iter++) {
+    for (let li = 1; li < layerKeys.length; li++) {
+      layers[layerKeys[li]] = barySort(layers[layerKeys[li]], id => predArr[id] || []);
+    }
     for (let li = layerKeys.length - 2; li >= 0; li--) {
-      const lk = layerKeys[li];
-      layers[lk] = barycenter(layers[lk], id => succ[id] || []);
+      layers[layerKeys[li]] = barySort(layers[layerKeys[li]], id => succArr[id] || []);
+    }
+  }
+  // Sifting passes for fine-tuning
+  for (let si = 0; si < 2; si++) {
+    for (let li = 1; li < layerKeys.length; li++) {
+      layers[layerKeys[li]] = sift(layers[layerKeys[li]], li);
     }
   }
 
-  // --- Phase 3: Coordinate assignment ---
+  // ---- PHASE 3: NODE PLACEMENT ----
+  // ELK-style: place nodes in each layer, then align to median of connected
+  // nodes using iterative displacement with full overlap resolution.
   const isLR = DIR === 'LR';
-  let maxW = 0, maxH = 0;
 
+  function nodeSize(n) { return isLR ? n._h : n._w; }
+  function getPos(n) { return isLR ? n._y : n._x; }
+  function setPos(n, v) { if (isLR) n._y = v; else n._x = v; }
+  function setFixed(n, li) {
+    if (isLR) n._x = 40 + li * LAYER_GAP;
+    else n._y = 40 + li * LAYER_GAP;
+  }
+
+  // Initial compact placement
   layerKeys.forEach((lk, li) => {
     const group = layers[lk];
-    // Median-based initial positions: center each layer
-    let offset = 40;
+    let offset = 0;
     group.forEach(n => {
-      if (isLR) {
-        n._x = 40 + li * LAYER_GAP;
-        n._y = offset;
-      } else {
-        n._x = offset;
-        n._y = 40 + li * LAYER_GAP;
-      }
-      offset += (isLR ? n._h : n._w) + NODE_GAP;
-      maxW = Math.max(maxW, n._x + n._w + 40);
-      maxH = Math.max(maxH, n._y + n._h + 40);
+      setFixed(n, li);
+      setPos(n, offset);
+      offset += nodeSize(n) + NODE_GAP;
     });
   });
 
-  // Median improvement: shift nodes toward their connected neighbours (3 passes)
-  for (let pass = 0; pass < 3; pass++) {
-    layerKeys.forEach(lk => {
+  // Compute median position of connected nodes in adjacent layers
+  function medianOf(nodeId, neighbourIds) {
+    const positions = [];
+    for (const id of neighbourIds) {
+      const nb = nodeMap[id];
+      if (nb) positions.push(getPos(nb) + nodeSize(nb) / 2);
+    }
+    if (positions.length === 0) return null;
+    positions.sort((a, b) => a - b);
+    const mid = Math.floor(positions.length / 2);
+    if (positions.length % 2 === 1) return positions[mid];
+    return (positions[mid - 1] + positions[mid]) / 2;
+  }
+
+  // Resolve overlaps in a layer by pushing nodes apart
+  function resolveOverlaps(group) {
+    group.sort((a, b) => getPos(a) - getPos(b));
+    for (let i = 1; i < group.length; i++) {
+      const prev = group[i - 1];
+      const cur = group[i];
+      const minStart = getPos(prev) + nodeSize(prev) + NODE_GAP;
+      if (getPos(cur) < minStart) setPos(cur, minStart);
+    }
+  }
+
+  // Iterative median alignment (the core of ELK's Brandes-Köpf)
+  // Do many passes alternating direction, with decreasing shift factor
+  for (let iter = 0; iter < 20; iter++) {
+    const downward = iter % 2 === 0;
+    const keys = downward ? layerKeys.slice() : layerKeys.slice().reverse();
+
+    keys.forEach(lk => {
       const group = layers[lk];
       group.forEach(n => {
-        const allNbrs = [...(pred[n.id] || []), ...(succ[n.id] || [])];
-        if (allNbrs.length === 0) return;
-        const coords = allNbrs.map(id => {
-          const nb = nodeMap[id];
-          return nb ? (isLR ? nb._y + nb._h / 2 : nb._x + nb._w / 2) : 0;
-        }).sort((a, b) => a - b);
-        const median = coords[Math.floor(coords.length / 2)];
-        const current = isLR ? n._y + n._h / 2 : n._x + n._w / 2;
-        const shift = (median - current) * 0.3;
-        if (isLR) n._y += shift; else n._x += shift;
+        const nbrs = downward ? (predArr[n.id] || []) : (succArr[n.id] || []);
+        const med = medianOf(n.id, nbrs);
+        if (med === null) return;
+        const current = getPos(n) + nodeSize(n) / 2;
+        const diff = med - current;
+        // Move the full distance — overlaps resolved after
+        setPos(n, getPos(n) + diff);
       });
-      // Resolve overlaps
-      group.sort((a, b) => (isLR ? a._y - b._y : a._x - b._x));
-      for (let i = 1; i < group.length; i++) {
-        const prev = group[i - 1];
-        const cur = group[i];
-        const prevEnd = isLR ? prev._y + prev._h + NODE_GAP : prev._x + prev._w + NODE_GAP;
-        const curStart = isLR ? cur._y : cur._x;
-        if (curStart < prevEnd) {
-          if (isLR) cur._y = prevEnd; else cur._x = prevEnd;
-        }
-      }
+      resolveOverlaps(group);
     });
   }
 
-  // Recompute bounds
-  maxW = 0; maxH = 0;
+  // Final centering: center the entire graph around the widest layer
+  let globalMin = Infinity, globalMax = -Infinity;
+  layerKeys.forEach(lk => {
+    const group = layers[lk];
+    if (group.length === 0) return;
+    const first = getPos(group[0]);
+    const last = getPos(group[group.length - 1]) + nodeSize(group[group.length - 1]);
+    globalMin = Math.min(globalMin, first);
+    globalMax = Math.max(globalMax, last);
+  });
+  const globalMid = (globalMin + globalMax) / 2;
+
+  layerKeys.forEach(lk => {
+    const group = layers[lk];
+    if (group.length === 0) return;
+    const first = getPos(group[0]);
+    const last = getPos(group[group.length - 1]) + nodeSize(group[group.length - 1]);
+    const layerMid = (first + last) / 2;
+    const shift = globalMid - layerMid;
+    group.forEach(n => setPos(n, getPos(n) + shift));
+  });
+
+  // Ensure no negative coordinates
+  let minX = Infinity, minY = Infinity;
+  nodes.forEach(n => { minX = Math.min(minX, n._x); minY = Math.min(minY, n._y); });
+  const dx = minX < 30 ? 30 - minX : 0;
+  const dy = minY < 30 ? 30 - minY : 0;
+  if (dx > 0 || dy > 0) nodes.forEach(n => { n._x += dx; n._y += dy; });
+
+  // Compute bounds
+  let maxW = 0, maxH = 0;
   nodes.forEach(n => {
     maxW = Math.max(maxW, n._x + n._w + 40);
     maxH = Math.max(maxH, n._y + n._h + 40);
   });
 
-  // Port positions
   computePortPositions(nodes);
-
   return { nodes, edges, nodeMap, maxW, maxH };
 }
 
@@ -699,16 +954,18 @@ function computePortPositions(nodes) {
 // ================================================================
 //  STATE
 // ================================================================
-let layoutResult = sugiyamaLayout(DATA);
+let layoutResult = elkLayout(DATA);
 const svgEl = document.getElementById('canvas');
 const rootEl = document.getElementById('root');
 let scale = 1, tx = 0, ty = 0;
 let selectedModuleId = null;
+let selectedModules = new Set();  // multi-select
 
 // Interaction modes
-let dragModule = null;      // { node, startMX, startMY, origX, origY }
+let dragModule = null;      // { node, startMX, startMY, origPositions: Map }
 let dragConn   = null;      // { nodeId, port, isOutput, x, y }
-let panning    = null;      // { lastX, lastY }
+let rubberBand = null;      // { startX, startY, rect: SVGRect }
+let rubberBandJustFinished = false;
 let pendingLine = null;
 
 // ================================================================
@@ -747,7 +1004,8 @@ function renderAll() {
     rect.setAttribute('y', n._y);
     rect.setAttribute('width', n._w);
     rect.setAttribute('height', n._h);
-    rect.setAttribute('class', 'module-box' + (selectedModuleId === n.id ? ' selected' : ''));
+    rect.setAttribute('class', 'module-box' + (selectedModules.has(n.id) || selectedModuleId === n.id ? ' selected' : ''));
+    rect.setAttribute('fill', moduleColor(n.moduleType));
     rect.addEventListener('pointerdown', ev => onModulePointerDown(ev, n));
     g.appendChild(rect);
 
@@ -822,32 +1080,6 @@ function renderAll() {
     rootEl.appendChild(g);
   });
 
-  // --- Legend ---
-  const ltypes = [
-    { name: 'Audio', cls: 'audio' }, { name: 'CV', cls: 'cv' },
-    { name: 'Pitch', cls: 'pitch' }, { name: 'Gate', cls: 'gate' },
-    { name: 'Trigger', cls: 'trigger' }, { name: 'Clock', cls: 'clock' },
-  ];
-  const lx = 20, ly = maxH + 20;
-  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  bg.setAttribute('x', lx); bg.setAttribute('y', ly);
-  bg.setAttribute('width', 360); bg.setAttribute('height', 30);
-  bg.setAttribute('class', 'legend');
-  rootEl.appendChild(bg);
-  ltypes.forEach((lt, i) => {
-    const ex = lx + 10 + i * 58;
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', ex); line.setAttribute('y1', ly + 15);
-    line.setAttribute('x2', ex + 16); line.setAttribute('y2', ly + 15);
-    line.setAttribute('class', 'edge legend-line ' + lt.cls);
-    rootEl.appendChild(line);
-    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    txt.setAttribute('x', ex + 20); txt.setAttribute('y', ly + 19);
-    txt.setAttribute('class', 'legend-text');
-    txt.textContent = lt.name;
-    rootEl.appendChild(txt);
-  });
-
   applyTransform();
 }
 
@@ -891,7 +1123,12 @@ function zoomAt(clientX, clientY, factor) {
 
 function zoomIn()  { zoomAt(svgEl.clientWidth / 2, svgEl.clientHeight / 2, 1.25); }
 function zoomOut() { zoomAt(svgEl.clientWidth / 2, svgEl.clientHeight / 2, 0.8); }
-function resetView() { scale = 1; tx = 0; ty = 0; applyTransform(); }
+function resetView() {
+  layoutResult = elkLayout(DATA);
+  scale = 1; tx = 0; ty = 0;
+  renderAll();
+  setTimeout(fitAll, 20);
+}
 
 function fitAll() {
   const nodes = layoutResult.nodes;
@@ -911,37 +1148,66 @@ function fitAll() {
   applyTransform();
 }
 
-// Wheel zoom toward cursor — continuous factor based on deltaY magnitude
+// Wheel: Cmd/Ctrl+scroll = zoom, plain scroll = pan
 svgEl.addEventListener('wheel', ev => {
   ev.preventDefault();
-  // Normalise: trackpad gives small deltas (~1-10), mouse wheel gives large (~100)
-  const raw = ev.deltaMode === 1 ? ev.deltaY * 40 : ev.deltaY; // line mode
-  const clamped = Math.max(-300, Math.min(300, raw));
-  const f = Math.pow(2, -clamped / 300);
-  zoomAt(ev.clientX, ev.clientY, f);
+  if (ev.metaKey || ev.ctrlKey) {
+    // Zoom toward cursor
+    const raw = ev.deltaMode === 1 ? ev.deltaY * 40 : ev.deltaY;
+    const clamped = Math.max(-300, Math.min(300, raw));
+    const f = Math.pow(2, -clamped / 300);
+    zoomAt(ev.clientX, ev.clientY, f);
+  } else {
+    // Pan
+    const dx = ev.deltaMode === 1 ? ev.deltaX * 40 : ev.deltaX;
+    const dy = ev.deltaMode === 1 ? ev.deltaY * 40 : ev.deltaY;
+    tx -= dx;
+    ty -= dy;
+    applyTransform();
+  }
 }, { passive: false });
 
 // ================================================================
-//  MODULE DRAGGING
+//  MODULE DRAGGING & RUBBER-BAND SELECTION
 // ================================================================
 function onModulePointerDown(ev, node) {
   if (ev.button !== 0) return;
   ev.stopPropagation();
   const pt = clientToWorld(ev.clientX, ev.clientY);
-  dragModule = { node, startMX: pt.x, startMY: pt.y, origX: node._x, origY: node._y, moved: false };
+  // If clicking a module not in selection, select only it (unless Shift)
+  if (!ev.shiftKey && !selectedModules.has(node.id)) {
+    selectedModules.clear();
+    selectedModules.add(node.id);
+  } else if (ev.shiftKey) {
+    // Toggle selection
+    if (selectedModules.has(node.id)) selectedModules.delete(node.id);
+    else selectedModules.add(node.id);
+  }
+  // If not in selection yet, add it
+  if (!selectedModules.has(node.id)) selectedModules.add(node.id);
+  // Save original positions of all selected modules
+  const origPositions = new Map();
+  selectedModules.forEach(id => {
+    const n = layoutResult.nodeMap[id];
+    if (n) origPositions.set(id, { x: n._x, y: n._y });
+  });
+  dragModule = { node, startMX: pt.x, startMY: pt.y, origPositions, moved: false };
+  renderAll();
 }
 
 let rafPending = false;
 svgEl.addEventListener('pointermove', ev => {
-  // --- Module drag ---
+  // --- Module drag (moves all selected) ---
   if (dragModule) {
     const pt = clientToWorld(ev.clientX, ev.clientY);
     const dx = pt.x - dragModule.startMX;
     const dy = pt.y - dragModule.startMY;
     if (Math.abs(dx) > 2 || Math.abs(dy) > 2) dragModule.moved = true;
-    dragModule.node._x = dragModule.origX + dx;
-    dragModule.node._y = dragModule.origY + dy;
-    computePortPositions([dragModule.node]);
+    dragModule.origPositions.forEach((orig, id) => {
+      const n = layoutResult.nodeMap[id];
+      if (n) { n._x = orig.x + dx; n._y = orig.y + dy; }
+    });
+    computePortPositions(layoutResult.nodes.filter(n => selectedModules.has(n.id)));
     if (!rafPending) { rafPending = true; requestAnimationFrame(() => { rafPending = false; renderAll(); }); }
     return;
   }
@@ -954,38 +1220,86 @@ svgEl.addEventListener('pointermove', ev => {
     return;
   }
 
-  // --- Pan ---
-  if (panning) {
-    tx += ev.clientX - panning.lastX;
-    ty += ev.clientY - panning.lastY;
-    panning.lastX = ev.clientX;
-    panning.lastY = ev.clientY;
-    applyTransform();
+  // --- Rubber-band selection ---
+  if (rubberBand) {
+    const pt = clientToWorld(ev.clientX, ev.clientY);
+    const x = Math.min(rubberBand.startX, pt.x);
+    const y = Math.min(rubberBand.startY, pt.y);
+    const w = Math.abs(pt.x - rubberBand.startX);
+    const h = Math.abs(pt.y - rubberBand.startY);
+    rubberBand.rect.setAttribute('x', x);
+    rubberBand.rect.setAttribute('y', y);
+    rubberBand.rect.setAttribute('width', w);
+    rubberBand.rect.setAttribute('height', h);
+    return;
   }
 });
 
 svgEl.addEventListener('pointerup', ev => {
   if (dragModule) {
-    if (!dragModule.moved) { selectModule(dragModule.node.id); }
-    dragModule = null; return;
+    if (!dragModule.moved) {
+      // Click without move: select single module
+      if (!ev.shiftKey) {
+        selectedModules.clear();
+        selectedModules.add(dragModule.node.id);
+      }
+      selectModule(dragModule.node.id);
+    }
+    dragModule = null;
+    return;
   }
   if (dragConn) {
-    // Hit-test: find the nearest compatible port within threshold
     tryFinishConnection(ev.clientX, ev.clientY);
     cleanupConnDrag();
     return;
   }
-  if (panning)    { panning = null; }
+  if (rubberBand) {
+    // Find all modules inside the rubber-band rectangle
+    const pt = clientToWorld(ev.clientX, ev.clientY);
+    const rx1 = Math.min(rubberBand.startX, pt.x);
+    const ry1 = Math.min(rubberBand.startY, pt.y);
+    const rx2 = Math.max(rubberBand.startX, pt.x);
+    const ry2 = Math.max(rubberBand.startY, pt.y);
+    if (!ev.shiftKey) selectedModules.clear();
+    layoutResult.nodes.forEach(n => {
+      // Module is inside if it overlaps the selection rect
+      if (n._x + n._w >= rx1 && n._x <= rx2 && n._y + n._h >= ry1 && n._y <= ry2) {
+        selectedModules.add(n.id);
+      }
+    });
+    // Remove the rubber-band rect
+    if (rubberBand.rect.parentNode) rubberBand.rect.parentNode.removeChild(rubberBand.rect);
+    rubberBand = null;
+    rubberBandJustFinished = true;
+    selectedModuleId = null;
+    vscodeApi.postMessage({ type: 'selectionChanged', hasSelection: selectedModules.size > 0 });
+    renderAll();
+    return;
+  }
 });
 
 svgEl.addEventListener('pointerdown', ev => {
   if (ev.target === svgEl || ev.target === rootEl) {
-    // Background click → start pan
-    panning = { lastX: ev.clientX, lastY: ev.clientY };
+    if (ev.button !== 0) return;
+    // Start rubber-band selection on background
+    const pt = clientToWorld(ev.clientX, ev.clientY);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('id', 'select-rect');
+    rect.setAttribute('x', pt.x);
+    rect.setAttribute('y', pt.y);
+    rect.setAttribute('width', 0);
+    rect.setAttribute('height', 0);
+    rootEl.appendChild(rect);
+    rubberBand = { startX: pt.x, startY: pt.y, rect };
   }
 });
 
-svgEl.addEventListener('pointerleave', () => { panning = null; });
+svgEl.addEventListener('pointerleave', () => {
+  if (rubberBand) {
+    if (rubberBand.rect.parentNode) rubberBand.rect.parentNode.removeChild(rubberBand.rect);
+    rubberBand = null;
+  }
+});
 
 function clientToWorld(cx, cy) {
   const r = svgEl.getBoundingClientRect();
@@ -1067,6 +1381,220 @@ function requestRemoveModule() {
   }
 }
 
+function exportGraphImage() {
+  var nodes = layoutResult.nodes;
+  var edges = layoutResult.edges;
+  var nodeMap = layoutResult.nodeMap;
+  if (nodes.length === 0) {
+    vscodeApi.postMessage({ type: 'graphImage', dataUrl: null, width: 0, height: 0 });
+    return;
+  }
+
+  // Compute graph bounds
+  var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  nodes.forEach(function(n) {
+    x0 = Math.min(x0, n._x); y0 = Math.min(y0, n._y);
+    x1 = Math.max(x1, n._x + n._w); y1 = Math.max(y1, n._y + n._h);
+  });
+  var pad = 40;
+  var ox = -x0 + pad;
+  var oy = -y0 + pad;
+  var gw = Math.ceil(x1 - x0 + pad * 2);
+  var gh = Math.ceil(y1 - y0 + pad * 2);
+
+  // Legend sizing
+  var legendW = 190;
+  var usedTypes = {};
+  nodes.forEach(function(n) { usedTypes[n.moduleType] = true; });
+  var sortedTypes = Object.keys(usedTypes).sort();
+  var legendItemH = 20;
+  var legendH = 40 + sortedTypes.length * legendItemH + 30 + 6 * legendItemH + 20;
+
+  var totalW = gw + legendW + 20;
+  var totalH = Math.max(gh, legendH + 40);
+
+  var dpr = 2;
+  var canvas = document.createElement('canvas');
+  canvas.width = totalW * dpr;
+  canvas.height = totalH * dpr;
+  var ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // White background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, totalW, totalH);
+
+  // Light gray graph area
+  ctx.fillStyle = '#f0f0f0';
+  ctx.fillRect(0, 0, gw, totalH);
+
+  // Edge colors for light background
+  var edgeColors = {
+    audio: '#333333', cv: '#666666', gate: '#cc2222',
+    trigger: '#cc6600', pitch: '#2266cc', clock: '#7733bb'
+  };
+  var edgeDashed = { gate: true, trigger: true, clock: true };
+
+  // Draw edges (bezier curves)
+  edges.forEach(function(e) {
+    var fn = nodeMap[e.from], tn = nodeMap[e.to];
+    if (!fn || !tn) return;
+    var src = fn._outPorts && fn._outPorts[e.fromPort];
+    var dst = tn._inPorts && tn._inPorts[e.toPort];
+    if (!src || !dst) return;
+
+    var sx = src.x + ox, sy = src.y + oy;
+    var dx = dst.x + ox, dy = dst.y + oy;
+    var cx = Math.abs(dx - sx) * 0.55;
+
+    ctx.save();
+    ctx.strokeStyle = edgeColors[e.type] || '#888888';
+    ctx.lineWidth = e.type === 'audio' ? 2.5 : 2;
+    if (edgeDashed[e.type]) ctx.setLineDash([6, 3]);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.bezierCurveTo(sx + cx, sy, dx - cx, dy, dx, dy);
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  // Draw nodes
+  nodes.forEach(function(n) {
+    var nx = n._x + ox, ny = n._y + oy;
+    var nw = n._w, nh = n._h;
+    var r = 6;
+
+    // Rounded rect fill
+    ctx.save();
+    ctx.fillStyle = moduleColor(n.moduleType);
+    ctx.beginPath();
+    ctx.moveTo(nx + r, ny);
+    ctx.lineTo(nx + nw - r, ny);
+    ctx.arcTo(nx + nw, ny, nx + nw, ny + r, r);
+    ctx.lineTo(nx + nw, ny + nh - r);
+    ctx.arcTo(nx + nw, ny + nh, nx + nw - r, ny + nh, r);
+    ctx.lineTo(nx + r, ny + nh);
+    ctx.arcTo(nx, ny + nh, nx, ny + nh - r, r);
+    ctx.lineTo(nx, ny + r);
+    ctx.arcTo(nx, ny, nx + r, ny, r);
+    ctx.closePath();
+    ctx.fill();
+
+    // Stroke
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // Module name
+    ctx.save();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(n.name.toUpperCase(), nx + nw / 2, ny + 14);
+    ctx.restore();
+
+    // Header separator
+    ctx.save();
+    ctx.strokeStyle = '#999';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(nx, ny + 28);
+    ctx.lineTo(nx + nw, ny + 28);
+    ctx.stroke();
+    ctx.restore();
+
+    // Port dots and labels
+    ctx.save();
+    ctx.font = '10px sans-serif';
+    ctx.textBaseline = 'middle';
+    n.inputs.forEach(function(p) {
+      var pos = n._inPorts[p];
+      if (!pos) return;
+      var px = pos.x + ox, py = pos.y + oy;
+      // Dot
+      ctx.fillStyle = '#3a3a3a';
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke();
+      // Label
+      ctx.fillStyle = '#ddd';
+      ctx.textAlign = 'left';
+      ctx.fillText(p, px + 10, py);
+    });
+    n.outputs.forEach(function(p) {
+      var pos = n._outPorts[p];
+      if (!pos) return;
+      var px = pos.x + ox, py = pos.y + oy;
+      // Dot
+      ctx.fillStyle = '#4a4a4a';
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke();
+      // Label
+      ctx.fillStyle = '#ddd';
+      ctx.textAlign = 'right';
+      ctx.fillText(p, px - 10, py);
+    });
+    ctx.restore();
+  });
+
+  // Legend (right side, white background)
+  var lx = gw + 14;
+  var ly = 24;
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillText('MODULE TYPES', lx, ly);
+  ly += 8;
+
+  ctx.font = '11px sans-serif';
+  sortedTypes.forEach(function(t) {
+    ly += legendItemH;
+    ctx.fillStyle = moduleColor(t);
+    ctx.fillRect(lx, ly - 12, 14, 14);
+    ctx.strokeStyle = '#bbb';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(lx, ly - 12, 14, 14);
+    ctx.fillStyle = '#333';
+    ctx.fillText(t, lx + 20, ly);
+  });
+
+  ly += 24;
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillStyle = '#333';
+  ctx.fillText('CONNECTION TYPES', lx, ly);
+  ly += 8;
+
+  var connDefs = [
+    { name: 'Audio',   color: '#666',    dash: false, w: 2.5 },
+    { name: 'CV',      color: '#888',    dash: false, w: 2 },
+    { name: 'Pitch',   color: '#4488ff', dash: false, w: 2 },
+    { name: 'Gate',    color: '#ff4444', dash: true,  w: 2 },
+    { name: 'Trigger', color: '#ff8800', dash: true,  w: 2 },
+    { name: 'Clock',   color: '#aa44ff', dash: true,  w: 2 },
+  ];
+  ctx.font = '11px sans-serif';
+  connDefs.forEach(function(ct) {
+    ly += legendItemH;
+    ctx.strokeStyle = ct.color;
+    ctx.lineWidth = ct.w;
+    ctx.beginPath();
+    if (ct.dash) ctx.setLineDash([5, 3]);
+    else ctx.setLineDash([]);
+    ctx.moveTo(lx, ly - 5);
+    ctx.lineTo(lx + 22, ly - 5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#333';
+    ctx.fillText(ct.name, lx + 28, ly);
+  });
+
+  var jpegUrl = canvas.toDataURL('image/jpeg', 0.95);
+  vscodeApi.postMessage({ type: 'graphImage', dataUrl: jpegUrl, width: totalW * dpr, height: totalH * dpr });
+}
 function showConnTypeSelector(x, y, from, fromPort, to, toPort) {
   const sel = document.getElementById('conn-type-selector');
   sel.style.left = x + 'px';
@@ -1101,6 +1629,10 @@ function showConnTypeSelector(x, y, from, fromPort, to, toPort) {
 // ================================================================
 function selectModule(id) {
   selectedModuleId = id;
+  if (!selectedModules.has(id)) {
+    selectedModules.clear();
+    selectedModules.add(id);
+  }
   vscodeApi.postMessage({ type: 'selectionChanged', hasSelection: true });
   renderAll();
   vscodeApi.postMessage({ type: 'inspectModule', moduleName: id });
@@ -1108,6 +1640,7 @@ function selectModule(id) {
 
 function closeInspector() {
   selectedModuleId = null;
+  selectedModules.clear();
   vscodeApi.postMessage({ type: 'selectionChanged', hasSelection: false });
   document.getElementById('inspector').classList.remove('visible');
   renderAll();
@@ -1298,7 +1831,10 @@ function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot
 
 // Close selector / inspector on background click
 svgEl.addEventListener('click', ev => {
-  if (ev.target === svgEl || ev.target === rootEl) { closeInspector(); }
+  if (rubberBandJustFinished) { rubberBandJustFinished = false; return; }
+  if (ev.target === svgEl || ev.target === rootEl) {
+    if (!rubberBand) closeInspector();
+  }
   document.getElementById('conn-type-selector').style.display = 'none';
 });
 
@@ -1317,13 +1853,15 @@ window.addEventListener('message', event => {
       case 'reset':   resetView(); break;
       case 'addModule':    requestAddModule(); break;
       case 'removeModule': requestRemoveModule(); break;
+      case 'exportImage': exportGraphImage(); break;
     }
   } else if (msg.type === 'update') {
     // Preserve manual positions if possible
     const oldPositions = {};
     layoutResult.nodes.forEach(n => { oldPositions[n.id] = { x: n._x, y: n._y }; });
     DATA = msg.data;
-    layoutResult = sugiyamaLayout(DATA);
+    buildLegend();
+    layoutResult = elkLayout(DATA);
     // Restore positions for nodes that still exist and were manually moved
     layoutResult.nodes.forEach(n => {
       if (oldPositions[n.id]) {
@@ -1343,7 +1881,7 @@ window.addEventListener('message', event => {
 
 // Initial render + auto-fit
 renderAll();
-setTimeout(fitAll, 50);
+setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 100);
 </script>
 </body>
 </html>`;
@@ -1354,6 +1892,7 @@ setTimeout(fitAll, 50);
     nodes: {
       id: string;
       name: string;
+      moduleType: string;
       inputs: string[];
       outputs: string[];
       allInputs: string[];
@@ -1383,6 +1922,7 @@ setTimeout(fitAll, 50);
       return {
         id: key,
         name: key,
+        moduleType: catalog ? catalog.type : 'Unknown',
         inputs: parsedInputs,
         outputs: parsedOutputs,
         allInputs,

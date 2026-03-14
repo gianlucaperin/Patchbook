@@ -99,6 +99,11 @@
         "command": "patchbook.graph.removeModule",
         "title": "Patchbook Graph: Remove Module",
         "icon": "$(trash)"
+      },
+      {
+        "command": "patchbook.exportPDF",
+        "title": "Patchbook: Export to PDF",
+        "icon": "$(file-pdf)"
       }
     ],
     "menus": {
@@ -126,6 +131,11 @@
         },
         {
           "command": "patchbook.showGraph",
+          "when": "editorLangId == patchbook",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.exportPDF",
           "when": "editorLangId == patchbook",
           "group": "navigation"
         },
@@ -158,6 +168,11 @@
           "command": "patchbook.graph.removeModule",
           "when": "activeWebviewPanelId == patchbookGraph && patchbook.graph.hasSelection",
           "group": "navigation@6"
+        },
+        {
+          "command": "patchbook.exportPDF",
+          "when": "activeWebviewPanelId == patchbookGraph",
+          "group": "navigation@7"
         }
       ],
       "editor/context": [

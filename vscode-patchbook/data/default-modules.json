@@ -4106,6 +4106,24 @@
       ]
     },
     {
+      "name": "ZeroScope",
+      "manufacturer": "vpme.de",
+      "type": "Utility",
+      "description": "Oscilloscope and tuner",
+      "inputs": [
+        "Input 1",
+        "Input 2",
+        "Tuner input"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Tuner out"
+      ],
+      "parameters": [
+      ]
+    },
+    {
       "name": "QD",
       "manufacturer": "vpme.de",
       "type": "Envelope Generator",
@@ -4230,7 +4248,7 @@
     {
       "name": "Prism",
       "manufacturer": "Qu-Bit",
-      "type": "Effect",
+      "type": "Filter",
       "description": "Multi-dimensional signal processor - filter, decimator, delay",
       "inputs": [
         "In 1",

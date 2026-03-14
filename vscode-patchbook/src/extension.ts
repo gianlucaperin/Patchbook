@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { PatchbookCompletionProvider } from "./completionProvider";
 import { loadModules, openModulesFile } from "./moduleDatabase";
-import { exportJSON, newPatch, addModule, removeModule } from "./commands";
+import { exportJSON, exportPDF, newPatch, addModule, removeModule } from "./commands";
 import { GraphViewProvider } from "./graphView";
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -84,6 +84,11 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     vscode.commands.registerCommand("patchbook.graph.removeModule", () =>
       graphView.executeCommand("removeModule")
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.exportPDF", () =>
+      exportPDF(graphView, context.extensionPath)
     )
   );
 }
