@@ -210,8 +210,21 @@ export class GraphViewProvider {
     const arrow = typeMap[msg.connType] || "->";
     const line = `- ${msg.from} (${msg.fromPort}) ${arrow} ${msg.to} (${msg.toPort})`;
     await this.applyEdit((doc, edit) => {
-      const lastLine = doc.lineAt(doc.lineCount - 1);
-      edit.insert(this.sourceUri!, lastLine.range.end, "\n" + line);
+      // Find the last connection line (starts with "- ") and insert after it
+      let lastConnIdx = -1;
+      for (let i = 0; i < doc.lineCount; i++) {
+        if (doc.lineAt(i).text.trim().startsWith("- ")) {
+          lastConnIdx = i;
+        }
+      }
+      if (lastConnIdx >= 0) {
+        const endOfLastConn = doc.lineAt(lastConnIdx).range.end;
+        edit.insert(this.sourceUri!, endOfLastConn, "\n" + line);
+      } else {
+        // No existing connections — append at end of file
+        const lastLine = doc.lineAt(doc.lineCount - 1);
+        edit.insert(this.sourceUri!, lastLine.range.end, "\n" + line);
+      }
     });
   }
 
@@ -1231,6 +1244,19 @@ svgEl.addEventListener('pointermove', ev => {
     rubberBand.rect.setAttribute('y', y);
     rubberBand.rect.setAttribute('width', w);
     rubberBand.rect.setAttribute('height', h);
+    // Highlight modules inside the rubber-band in real-time
+    const rx1 = x, ry1 = y, rx2 = x + w, ry2 = y + h;
+    layoutResult.nodes.forEach(n => {
+      const inside = n._x + n._w >= rx1 && n._x <= rx2 && n._y + n._h >= ry1 && n._y <= ry2;
+      const shouldSelect = inside || selectedModules.has(n.id);
+      const g = rootEl.querySelector('g[data-module="' + n.id.replace(/"/g, '\\\\"') + '"]');
+      if (g && g.firstElementChild) {
+        const cls = 'module-box' + (shouldSelect ? ' selected' : '');
+        if (g.firstElementChild.getAttribute('class') !== cls) {
+          g.firstElementChild.setAttribute('class', cls);
+        }
+      }
+    });
     return;
   }
 });
