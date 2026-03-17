@@ -2284,6 +2284,38 @@
       ]
     },
     {
+      "name": "Zadar",
+      "manufacturer": "Xaoc Devices",
+      "type": "Envelope Generator",
+      "description": "Quad envelope generator with 1000+ shapes and chaining",
+      "inputs": [
+        "Trig 1",
+        "Trig 2",
+        "Trig 3",
+        "Trig 4",
+        "CV 1",
+        "CV 2",
+        "CV 3",
+        "CV 4"
+      ],
+      "outputs": [
+        "Out 1",
+        "Out 2",
+        "Out 3",
+        "Out 4"
+      ],
+      "parameters": [
+        "Shape 1",
+        "Shape 2",
+        "Shape 3",
+        "Shape 4",
+        "Duration 1",
+        "Duration 2",
+        "Duration 3",
+        "Duration 4"
+      ]
+    },
+    {
       "name": "Rample",
       "manufacturer": "Squarp",
       "type": "Sampler",
