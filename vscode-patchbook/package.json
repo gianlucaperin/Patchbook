@@ -50,7 +50,7 @@
       {
         "command": "patchbook.showGraph",
         "title": "Patchbook: Show Signal Flow Graph",
-        "icon": "$(graph)"
+        "icon": "$(circuit-board)"
       },
       {
         "command": "patchbook.editModules",

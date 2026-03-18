@@ -452,22 +452,39 @@ export class GraphViewProvider {
   }
   svg { width: 100%; height: 100%; display: block; }
 
-  .module-box { stroke: #555; stroke-width: 1.5; rx: 6; ry: 6; cursor: grab; }
-  .module-box:hover { stroke: #0af; stroke-width: 2; }
-  .module-box.selected { stroke: #0af; stroke-width: 2.5; }
+  .module-box { stroke: #666; stroke-width: 1; cursor: grab; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+  .module-box:hover { stroke: #0af; stroke-width: 1.5; }
+  .module-box.selected { stroke: #0af; stroke-width: 2; }
   .module-box.dragging { cursor: grabbing; stroke: #0f0; stroke-width: 2; }
-  .module-name { fill: #fff; font-size: 13px; font-weight: 600; text-anchor: middle; pointer-events: none; }
-  .port-label { fill: #aaa; font-size: 10px; pointer-events: none; }
-  .port-dot { r: 5; stroke-width: 1.5; cursor: crosshair; transition: r 0.15s, fill 0.15s; }
-  .port-dot:hover { r: 8; }
-  .port-dot.in  { fill: #3a3a3a; stroke: #888; }
-  .port-dot.out { fill: #4a4a4a; stroke: #aaa; }
-  .port-dot.drag-target { fill: #0af; stroke: #fff; r: 8; }
-  .param-text { fill: #888; font-size: 9px; text-anchor: middle; cursor: pointer; pointer-events: all; }
-  .param-text:hover { fill: #ccc; }
+  .module-highlight { pointer-events: none; }
+  .module-name { fill: #fff; font-size: 13px; font-weight: 700; text-anchor: middle; pointer-events: none; letter-spacing: 1.5px; }
+  .module-manufacturer { fill: rgba(255,255,255,0.45); font-size: 8px; font-weight: 400; text-anchor: middle; pointer-events: none; letter-spacing: 0.5px; }
+  .module-screw { fill: #222; stroke: #555; stroke-width: 0.5; pointer-events: none; }
+  .screw-slot { stroke: #444; stroke-width: 0.8; pointer-events: none; }
+  .port-label { fill: #bbb; font-size: 8px; pointer-events: none; letter-spacing: 0.3px; }
+  .port-section-label { fill: rgba(255,255,255,0.3); font-size: 8px; font-weight: 600; text-anchor: middle; pointer-events: none; letter-spacing: 2px; text-transform: uppercase; }
+  .port-ring { fill: none; stroke-width: 1.5; pointer-events: none; }
+  .port-ring.in  { stroke: #666; }
+  .port-ring.out { stroke: #999; }
+  .port-hole { cursor: crosshair; transition: r 0.15s; }
+  .port-hole.in  { fill: #111; stroke: #555; stroke-width: 1; }
+  .port-hole.out { fill: #1a1a1a; stroke: #777; stroke-width: 1; }
+  .port-hole:hover { r: 7; }
+  .port-hole.drag-target { fill: #0af; stroke: #fff; r: 7; }
+  .param-label { fill: #aaa; font-size: 8px; text-anchor: middle; pointer-events: none; letter-spacing: 0.3px; }
+  .param-value { fill: #ddd; font-size: 7px; text-anchor: middle; cursor: pointer; pointer-events: all; }
+  .param-value:hover { fill: #fff; }
+  .param-value.unset { fill: #555; }
+  .knob-body { fill: #1a1a1a; stroke: #555; stroke-width: 1.5; cursor: pointer; }
+  .knob-body:hover { stroke: #888; }
+  .knob-cap { fill: #2a2a2a; stroke: #444; stroke-width: 0.5; pointer-events: none; }
+  .knob-track { fill: none; stroke: #333; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+  .knob-indicator { fill: none; stroke: #0af; stroke-width: 2.5; stroke-linecap: round; pointer-events: none; }
+  .knob-pointer { stroke: #ddd; stroke-width: 1.5; stroke-linecap: round; pointer-events: none; }
 
-  .edge { fill: none; stroke-width: 2; cursor: pointer; pointer-events: stroke; }
-  .edge:hover { stroke-width: 4; filter: brightness(1.4); }
+  .edge { fill: none; stroke-width: 2; cursor: pointer; pointer-events: stroke; opacity: 0.35; transition: opacity 0.15s, stroke-width 0.15s; }
+  .edge:hover { stroke-width: 4; filter: brightness(1.4); opacity: 1; }
+  #edge-tooltip { position: fixed; pointer-events: none; z-index: 100; background: rgba(30,30,30,0.92); color: #ddd; font-size: 11px; padding: 4px 8px; border-radius: 4px; border: 1px solid #555; white-space: nowrap; display: none; font-family: var(--vscode-font-family, sans-serif); }
   .edge.audio    { stroke: #e8e8e8; stroke-width: 2.5; }
   .edge.cv       { stroke: #888; }
   .edge.gate     { stroke: #ff4444; stroke-dasharray: 6 3; }
@@ -574,6 +591,7 @@ export class GraphViewProvider {
   <div id="inspector-body"></div>
 </div>
 <div id="conn-type-selector"></div>
+<div id="edge-tooltip"></div>
 <svg id="canvas"><g id="root"></g></svg>
 <script>
 const vscodeApi = acquireVsCodeApi();
@@ -608,6 +626,32 @@ function moduleColor(type) {
   return MODULE_TYPE_COLORS[type] || MODULE_TYPE_COLORS['Unknown'];
 }
 
+// Color utilities for Eurorack panel gradients
+function lightenColor(hex, percent) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  const amt = Math.round(2.55 * percent);
+  return '#' + (
+    (1 << 24) +
+    (Math.min(255, r + amt) << 16) +
+    (Math.min(255, g + amt) << 8) +
+    Math.min(255, b + amt)
+  ).toString(16).slice(1);
+}
+function darkenColor(hex, percent) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  const amt = Math.round(2.55 * percent);
+  return '#' + (
+    (1 << 24) +
+    (Math.max(0, r - amt) << 16) +
+    (Math.max(0, g - amt) << 8) +
+    Math.max(0, b - amt)
+  ).toString(16).slice(1);
+}
+
 // Build legend HTML
 function buildLegend() {
   const el = document.getElementById('legend');
@@ -640,9 +684,15 @@ buildLegend();
 // ================================================================
 const PORT_H       = 20;
 const PORT_PAD     = 14;
-const MOD_MIN_W    = 150;
-const MOD_NAME_H   = 28;
-const PARAM_LINE_H = 14;
+const MOD_MIN_W    = 160;
+const MOD_NAME_H   = 38;
+const KNOB_R       = 10;
+const KNOB_CELL_H  = 46;
+const KNOB_CELL_W  = 50;
+const JACK_R       = 6;
+const JACK_CELL_H  = 30;
+const JACK_CELL_W  = 50;
+const PORT_LABEL_H = 14;
 const LAYER_GAP    = 280;
 const NODE_GAP     = 40;
 
@@ -663,14 +713,10 @@ function elkLayout(data) {
 
   // --- Compute node sizes ---
   nodes.forEach(n => {
-    const maxPorts = Math.max(n.inputs.length, n.outputs.length, 1);
     const setKeys = Object.keys(n.params);
     const setLower = new Set(setKeys.map(k => k.toLowerCase()));
     const unsetCat = (n.catalogParams || []).filter(cp => !setLower.has(cp.toLowerCase()));
     const totalParams = setKeys.length + unsetCat.length;
-    const bodyH = maxPorts * PORT_H + PORT_PAD * 2;
-    const paramH = totalParams * PARAM_LINE_H;
-    n._h = MOD_NAME_H + bodyH + (paramH > 0 ? paramH + 8 : 0);
     n._allParamKeys = setKeys;
     n._unsetCatParams = unsetCat;
     const maxLen = Math.max(
@@ -678,6 +724,35 @@ function elkLayout(data) {
       ...n.outputs.map(p => p.length), 4
     );
     n._w = Math.max(MOD_MIN_W, maxLen * 7 + 80, n.name.length * 9 + 40);
+    // Knob grid layout
+    const knobCols = totalParams > 0 ? Math.max(1, Math.min(3, totalParams)) : 0;
+    const knobRows = totalParams > 0 ? Math.ceil(totalParams / knobCols) : 0;
+    const paramH = knobRows > 0 ? knobRows * KNOB_CELL_H + 8 : 0;
+    if (knobCols > 0) {
+      n._w = Math.max(n._w, knobCols * KNOB_CELL_W + 16);
+    }
+    n._knobCols = knobCols;
+    n._knobRows = knobRows;
+    n._paramH = paramH;
+    // Jack grid layout for ports
+    const inCount = n.inputs.length;
+    const outCount = n.outputs.length;
+    const inCols = inCount > 0 ? Math.max(1, Math.min(4, inCount)) : 0;
+    const inRows = inCount > 0 ? Math.ceil(inCount / inCols) : 0;
+    const outCols = outCount > 0 ? Math.max(1, Math.min(4, outCount)) : 0;
+    const outRows = outCount > 0 ? Math.ceil(outCount / outCols) : 0;
+    n._inCols = inCols; n._inRows = inRows;
+    n._outCols = outCols; n._outRows = outRows;
+    // Ensure width fits the jack grids
+    if (inCols > 0) n._w = Math.max(n._w, inCols * JACK_CELL_W + 16);
+    if (outCols > 0) n._w = Math.max(n._w, outCols * JACK_CELL_W + 16);
+    // Port section height
+    let portH = 4;
+    if (inRows > 0) portH += PORT_LABEL_H + inRows * JACK_CELL_H;
+    if (outRows > 0) portH += PORT_LABEL_H + outRows * JACK_CELL_H;
+    if (inRows === 0 && outRows === 0) portH = 20;
+    n._portH = portH;
+    n._h = MOD_NAME_H + paramH + portH;
   });
 
   if (nodes.length === 0) {
@@ -952,15 +1027,43 @@ function elkLayout(data) {
 
 function computePortPositions(nodes) {
   nodes.forEach(n => {
-    n._inPorts = {};
+    n._inPorts = {};  // edge connection points (at module boundary)
     n._outPorts = {};
-    const bodyStart = n._y + MOD_NAME_H;
-    n.inputs.forEach((p, i) => {
-      n._inPorts[p] = { x: n._x, y: bodyStart + PORT_PAD + i * PORT_H + PORT_H / 2 };
-    });
-    n.outputs.forEach((p, i) => {
-      n._outPorts[p] = { x: n._x + n._w, y: bodyStart + PORT_PAD + i * PORT_H + PORT_H / 2 };
-    });
+    n._inJacks = {};  // visual jack positions (inside module)
+    n._outJacks = {};
+    const portStart = n._y + MOD_NAME_H + (n._paramH || 0);
+    let curY = portStart;
+    // Input jacks grid
+    if (n.inputs.length > 0) {
+      curY += PORT_LABEL_H;
+      const cols = n._inCols || 1;
+      const gridW = cols * JACK_CELL_W;
+      const gx = n._x + (n._w - gridW) / 2;
+      n.inputs.forEach((p, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const jx = gx + col * JACK_CELL_W + JACK_CELL_W / 2;
+        const jy = curY + row * JACK_CELL_H + JACK_R + 2;
+        n._inJacks[p] = { x: jx, y: jy };
+        n._inPorts[p] = { x: n._x, y: jy };
+      });
+      curY += (n._inRows || 1) * JACK_CELL_H;
+    }
+    // Output jacks grid
+    if (n.outputs.length > 0) {
+      curY += PORT_LABEL_H;
+      const cols = n._outCols || 1;
+      const gridW = cols * JACK_CELL_W;
+      const gx = n._x + (n._w - gridW) / 2;
+      n.outputs.forEach((p, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const jx = gx + col * JACK_CELL_W + JACK_CELL_W / 2;
+        const jy = curY + row * JACK_CELL_H + JACK_R + 2;
+        n._outJacks[p] = { x: jx, y: jy };
+        n._outPorts[p] = { x: n._x + n._w, y: jy };
+      });
+    }
   });
 }
 
@@ -988,109 +1091,313 @@ function renderAll() {
   const { nodes, edges, nodeMap, maxW, maxH } = layoutResult;
   rootEl.innerHTML = '';
 
-  // --- Edges ---
-  edges.forEach((e, ei) => {
-    const fn = nodeMap[e.from], tn = nodeMap[e.to];
-    if (!fn || !tn) return;
-    const src = fn._outPorts && fn._outPorts[e.fromPort];
-    const dst = tn._inPorts  && tn._inPorts[e.toPort];
-    if (!src || !dst) return;
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', bezier(src.x, src.y, dst.x, dst.y));
-    path.setAttribute('class', 'edge ' + e.type);
-    path.addEventListener('click', ev => {
-      ev.stopPropagation();
-      selectModule(e.from);
-    });
-    rootEl.appendChild(path);
-  });
-
-  // --- Nodes ---
+  // --- Nodes (drawn first, below edges) ---
   nodes.forEach(n => {
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     g.setAttribute('data-module', n.id);
+    const baseColor = moduleColor(n.moduleType);
 
-    // Box
+    // SVG defs for this module (gradient)
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const gradId = 'grad-' + n.id.replace(/[^a-zA-Z0-9]/g, '_');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    grad.setAttribute('id', gradId);
+    grad.setAttribute('x1', '0%'); grad.setAttribute('y1', '0%');
+    grad.setAttribute('x2', '100%'); grad.setAttribute('y2', '100%');
+    const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop1.setAttribute('offset', '0%'); stop1.setAttribute('stop-color', lightenColor(baseColor, 20));
+    const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+    stop2.setAttribute('offset', '100%'); stop2.setAttribute('stop-color', darkenColor(baseColor, 15));
+    grad.appendChild(stop1); grad.appendChild(stop2);
+    defs.appendChild(grad);
+    g.appendChild(defs);
+
+    // Panel body (rounded rect)
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('x', n._x);
     rect.setAttribute('y', n._y);
     rect.setAttribute('width', n._w);
     rect.setAttribute('height', n._h);
+    rect.setAttribute('rx', '4'); rect.setAttribute('ry', '4');
     rect.setAttribute('class', 'module-box' + (selectedModules.has(n.id) || selectedModuleId === n.id ? ' selected' : ''));
-    rect.setAttribute('fill', moduleColor(n.moduleType));
+    rect.setAttribute('fill', 'url(#' + gradId + ')');
     rect.addEventListener('pointerdown', ev => onModulePointerDown(ev, n));
     g.appendChild(rect);
 
-    // Name
+    // Top edge highlight (subtle 3D bevel)
+    const hl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    hl.setAttribute('x', n._x + 1); hl.setAttribute('y', n._y + 1);
+    hl.setAttribute('width', n._w - 2); hl.setAttribute('height', 2);
+    hl.setAttribute('rx', '3'); hl.setAttribute('fill', 'rgba(255,255,255,0.08)');
+    hl.setAttribute('class', 'module-highlight');
+    g.appendChild(hl);
+
+    // Screw holes (4 corners)
+    const screwR = 3.5;
+    const screwInset = 8;
+    const screwPositions = [
+      [n._x + screwInset, n._y + screwInset],
+      [n._x + n._w - screwInset, n._y + screwInset],
+      [n._x + screwInset, n._y + n._h - screwInset],
+      [n._x + n._w - screwInset, n._y + n._h - screwInset]
+    ];
+    screwPositions.forEach(([sx, sy]) => {
+      const sc = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      sc.setAttribute('cx', sx); sc.setAttribute('cy', sy);
+      sc.setAttribute('r', screwR); sc.setAttribute('class', 'module-screw');
+      g.appendChild(sc);
+      // Cross slot on screw
+      const sl = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      sl.setAttribute('x1', sx - 2); sl.setAttribute('y1', sy);
+      sl.setAttribute('x2', sx + 2); sl.setAttribute('y2', sy);
+      sl.setAttribute('class', 'screw-slot');
+      g.appendChild(sl);
+    });
+
+    // Module name
     const nameEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     nameEl.setAttribute('x', n._x + n._w / 2);
-    nameEl.setAttribute('y', n._y + 18);
+    nameEl.setAttribute('y', n._y + 22);
     nameEl.setAttribute('class', 'module-name');
     nameEl.textContent = n.name.toUpperCase();
     g.appendChild(nameEl);
 
-    // Header separator
+    // Manufacturer
+    if (n.manufacturer) {
+      const mfr = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      mfr.setAttribute('x', n._x + n._w / 2);
+      mfr.setAttribute('y', n._y + 33);
+      mfr.setAttribute('class', 'module-manufacturer');
+      mfr.textContent = n.manufacturer;
+      g.appendChild(mfr);
+    }
+
+    // Header separator (engraved line)
     const sep = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    sep.setAttribute('x1', n._x); sep.setAttribute('y1', n._y + MOD_NAME_H);
-    sep.setAttribute('x2', n._x + n._w); sep.setAttribute('y2', n._y + MOD_NAME_H);
-    sep.setAttribute('stroke', '#555'); sep.setAttribute('stroke-width', '1');
+    sep.setAttribute('x1', n._x + 12); sep.setAttribute('y1', n._y + MOD_NAME_H);
+    sep.setAttribute('x2', n._x + n._w - 12); sep.setAttribute('y2', n._y + MOD_NAME_H);
+    sep.setAttribute('stroke', 'rgba(0,0,0,0.3)'); sep.setAttribute('stroke-width', '1');
     g.appendChild(sep);
+    const sep2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    sep2.setAttribute('x1', n._x + 12); sep2.setAttribute('y1', n._y + MOD_NAME_H + 1);
+    sep2.setAttribute('x2', n._x + n._w - 12); sep2.setAttribute('y2', n._y + MOD_NAME_H + 1);
+    sep2.setAttribute('stroke', 'rgba(255,255,255,0.06)'); sep2.setAttribute('stroke-width', '1');
+    g.appendChild(sep2);
 
-    // Input ports
-    n.inputs.forEach(p => {
-      const pos = n._inPorts[p];
-      const dot = makePortDot(pos.x, pos.y, 'in', n.id, p);
-      g.appendChild(dot);
-      const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      lbl.setAttribute('x', pos.x + 10); lbl.setAttribute('y', pos.y + 3);
-      lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'start');
-      lbl.textContent = p;
-      g.appendChild(lbl);
-    });
-
-    // Output ports
-    n.outputs.forEach(p => {
-      const pos = n._outPorts[p];
-      const dot = makePortDot(pos.x, pos.y, 'out', n.id, p);
-      g.appendChild(dot);
-      const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      lbl.setAttribute('x', pos.x - 10); lbl.setAttribute('y', pos.y + 3);
-      lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'end');
-      lbl.textContent = p;
-      g.appendChild(lbl);
-    });
-
-    // Parameters (set + unset catalog)
+    // Parameters (knob grid — above ports)
     const allP = [
       ...n._allParamKeys.map(pk => ({ key: pk, val: n.params[pk], isSet: true })),
       ...n._unsetCatParams.map(cp => ({ key: cp, val: null, isSet: false }))
     ];
     if (allP.length > 0) {
-      const maxP = Math.max(n.inputs.length, n.outputs.length, 1);
-      const pStartY = n._y + MOD_NAME_H + maxP * PORT_H + PORT_PAD * 2 + 4;
-      const s2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-      s2.setAttribute('x1', n._x); s2.setAttribute('y1', pStartY - 4);
-      s2.setAttribute('x2', n._x + n._w); s2.setAttribute('y2', pStartY - 4);
-      s2.setAttribute('stroke', '#444'); s2.setAttribute('stroke-width', '1');
-      g.appendChild(s2);
+      const cols = n._knobCols || 2;
+      const gridW = cols * KNOB_CELL_W;
+      const gridOffsetX = n._x + (n._w - gridW) / 2;
+      const gridStartY = n._y + MOD_NAME_H + 6;
+
       allP.forEach((p, pi) => {
-        const pt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        pt.setAttribute('x', n._x + n._w / 2);
-        pt.setAttribute('y', pStartY + pi * PARAM_LINE_H + 10);
-        pt.setAttribute('class', 'param-text');
+        const col = pi % cols;
+        const row = Math.floor(pi / cols);
+        const cx = gridOffsetX + col * KNOB_CELL_W + KNOB_CELL_W / 2;
+        const cy = gridStartY + row * KNOB_CELL_H + KNOB_R + 2;
+
+        // Track arc (background arc from 135° to 405° = 225° sweep)
+        const trackArc = describeArc(cx, cy, KNOB_R + 2, 135, 405);
+        const track = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        track.setAttribute('d', trackArc);
+        track.setAttribute('class', 'knob-track');
+        g.appendChild(track);
+
+        // Value arc (indicator — shows value position)
         if (p.isSet) {
-          pt.textContent = p.key + ' = ' + p.val;
-        } else {
-          pt.textContent = p.key + ' = —';
-          pt.setAttribute('fill', '#555');
+          const knobPos = parseKnobValue(p.val);
+          const valAngle = 135 + 270 * knobPos;
+          const valArc = describeArc(cx, cy, KNOB_R + 2, 135, valAngle);
+          const vArc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          vArc.setAttribute('d', valArc);
+          vArc.setAttribute('class', 'knob-indicator');
+          g.appendChild(vArc);
         }
-        pt.addEventListener('click', ev => { ev.stopPropagation(); selectModule(n.id); });
-        g.appendChild(pt);
+
+        // Knob body
+        const body = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        body.setAttribute('cx', cx); body.setAttribute('cy', cy);
+        body.setAttribute('r', KNOB_R);
+        body.setAttribute('class', 'knob-body');
+        body.addEventListener('click', ev => { ev.stopPropagation(); selectModule(n.id); });
+        g.appendChild(body);
+
+        // Knob cap (inner circle)
+        const cap = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        cap.setAttribute('cx', cx); cap.setAttribute('cy', cy);
+        cap.setAttribute('r', KNOB_R - 3);
+        cap.setAttribute('class', 'knob-cap');
+        g.appendChild(cap);
+
+        // Pointer line
+        if (p.isSet) {
+          const knobPos2 = parseKnobValue(p.val);
+          const ptrAngle = (135 + 270 * knobPos2) * Math.PI / 180;
+          const px1 = cx + (KNOB_R - 6) * Math.cos(ptrAngle);
+          const py1 = cy + (KNOB_R - 6) * Math.sin(ptrAngle);
+          const px2 = cx + (KNOB_R - 1) * Math.cos(ptrAngle);
+          const py2 = cy + (KNOB_R - 1) * Math.sin(ptrAngle);
+          const ptr = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          ptr.setAttribute('x1', px1); ptr.setAttribute('y1', py1);
+          ptr.setAttribute('x2', px2); ptr.setAttribute('y2', py2);
+          ptr.setAttribute('class', 'knob-pointer');
+          g.appendChild(ptr);
+        }
+
+        // Label below knob
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        lbl.setAttribute('x', cx);
+        lbl.setAttribute('y', cy + KNOB_R + 11);
+        lbl.setAttribute('class', 'param-label');
+        lbl.textContent = p.key;
+        g.appendChild(lbl);
+
+        // Value below label (only if set)
+        if (p.isSet && p.val) {
+          const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          val.setAttribute('x', cx);
+          val.setAttribute('y', cy + KNOB_R + 19);
+          val.setAttribute('class', 'param-value');
+          val.textContent = p.val;
+          val.addEventListener('click', ev => { ev.stopPropagation(); selectModule(n.id); });
+          g.appendChild(val);
+        }
+      });
+
+      // Separator between params and ports
+      const sepY = n._y + MOD_NAME_H + n._paramH;
+      const s3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      s3.setAttribute('x1', n._x + 12); s3.setAttribute('y1', sepY - 2);
+      s3.setAttribute('x2', n._x + n._w - 12); s3.setAttribute('y2', sepY - 2);
+      s3.setAttribute('stroke', 'rgba(0,0,0,0.25)'); s3.setAttribute('stroke-width', '1');
+      g.appendChild(s3);
+    }
+
+    // Input ports (jack grid)
+    if (n.inputs.length > 0) {
+      const portStart = n._y + MOD_NAME_H + (n._paramH || 0);
+      // Section label
+      const inLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      inLabel.setAttribute('x', n._x + n._w / 2);
+      inLabel.setAttribute('y', portStart + 10);
+      inLabel.setAttribute('class', 'port-section-label');
+      inLabel.textContent = 'IN';
+      g.appendChild(inLabel);
+
+      n.inputs.forEach(p => {
+        const jack = n._inJacks[p];
+        if (!jack) return;
+        // Outer ring
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', jack.x); ring.setAttribute('cy', jack.y);
+        ring.setAttribute('r', JACK_R + 2); ring.setAttribute('class', 'port-ring in');
+        g.appendChild(ring);
+        // Inner hole (interactive)
+        const dot = makePortDot(jack.x, jack.y, 'in', n.id, p);
+        g.appendChild(dot);
+        // Label below jack
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        lbl.setAttribute('x', jack.x);
+        lbl.setAttribute('y', jack.y + JACK_R + 10);
+        lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'middle');
+        lbl.textContent = p;
+        g.appendChild(lbl);
+      });
+    }
+
+    // Output ports (jack grid)
+    if (n.outputs.length > 0) {
+      const portStart = n._y + MOD_NAME_H + (n._paramH || 0);
+      let outLabelY = portStart;
+      if (n.inputs.length > 0) {
+        outLabelY += PORT_LABEL_H + (n._inRows || 1) * JACK_CELL_H;
+      }
+      // Section label
+      const outLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      outLabel.setAttribute('x', n._x + n._w / 2);
+      outLabel.setAttribute('y', outLabelY + 10);
+      outLabel.setAttribute('class', 'port-section-label');
+      outLabel.textContent = 'OUT';
+      g.appendChild(outLabel);
+
+      n.outputs.forEach(p => {
+        const jack = n._outJacks[p];
+        if (!jack) return;
+        // Outer ring
+        const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        ring.setAttribute('cx', jack.x); ring.setAttribute('cy', jack.y);
+        ring.setAttribute('r', JACK_R + 2); ring.setAttribute('class', 'port-ring out');
+        g.appendChild(ring);
+        // Inner hole (interactive)
+        const dot = makePortDot(jack.x, jack.y, 'out', n.id, p);
+        g.appendChild(dot);
+        // Label below jack
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        lbl.setAttribute('x', jack.x);
+        lbl.setAttribute('y', jack.y + JACK_R + 10);
+        lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'middle');
+        lbl.textContent = p;
+        g.appendChild(lbl);
       });
     }
 
     rootEl.appendChild(g);
+  });
+
+  // --- Edges (drawn on top of modules) ---
+  var edgeTooltip = document.getElementById('edge-tooltip');
+  edges.forEach((e, ei) => {
+    const fn = nodeMap[e.from], tn = nodeMap[e.to];
+    if (!fn || !tn) return;
+    const src = fn._outJacks && fn._outJacks[e.fromPort];
+    const dst = tn._inJacks  && tn._inJacks[e.toPort];
+    if (!src || !dst) return;
+
+    // Invisible wider hit-area path for easier hover
+    const hitPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const d = bezier(src.x, src.y, dst.x, dst.y);
+    hitPath.setAttribute('d', d);
+    hitPath.setAttribute('fill', 'none');
+    hitPath.setAttribute('stroke', 'transparent');
+    hitPath.setAttribute('stroke-width', '16');
+    hitPath.setAttribute('cursor', 'pointer');
+    hitPath.setAttribute('pointer-events', 'stroke');
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('class', 'edge ' + e.type);
+    path.style.pointerEvents = 'none';
+
+    hitPath.addEventListener('click', ev => {
+      ev.stopPropagation();
+      selectModule(e.from);
+    });
+    hitPath.addEventListener('mouseenter', ev => {
+      path.style.opacity = '1';
+      path.style.strokeWidth = '4';
+      path.style.filter = 'brightness(1.4)';
+      edgeTooltip.textContent = fn.name + ' (' + e.fromPort + ') \u2192 ' + tn.name + ' (' + e.toPort + ')';
+      edgeTooltip.style.display = 'block';
+      edgeTooltip.style.left = ev.clientX + 12 + 'px';
+      edgeTooltip.style.top = ev.clientY + 12 + 'px';
+    });
+    hitPath.addEventListener('mousemove', ev => {
+      edgeTooltip.style.left = ev.clientX + 12 + 'px';
+      edgeTooltip.style.top = ev.clientY + 12 + 'px';
+    });
+    hitPath.addEventListener('mouseleave', () => {
+      path.style.opacity = '';
+      path.style.strokeWidth = '';
+      path.style.filter = '';
+      edgeTooltip.style.display = 'none';
+    });
+    rootEl.appendChild(path);
+    rootEl.appendChild(hitPath);
   });
 
   applyTransform();
@@ -1101,10 +1408,50 @@ function bezier(sx, sy, dx, dy) {
   return 'M'+sx+','+sy+' C'+(sx+cx)+','+sy+' '+(dx-cx)+','+dy+' '+dx+','+dy;
 }
 
+// SVG arc path for knob tracks/indicators
+function polarToCart(cx, cy, r, deg) {
+  const rad = deg * Math.PI / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function describeArc(cx, cy, r, startDeg, endDeg) {
+  const start = polarToCart(cx, cy, r, startDeg);
+  const end = polarToCart(cx, cy, r, endDeg);
+  const sweep = endDeg - startDeg;
+  const largeArc = Math.abs(sweep) > 180 ? 1 : 0;
+  return 'M ' + start.x + ' ' + start.y + ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + end.x + ' ' + end.y;
+}
+
+// Parse a parameter value string into a 0–1 knob position
+function parseKnobValue(val) {
+  if (val === null || val === undefined) return 0.5;
+  var s = String(val).trim();
+  // Percentage: "75%" → 0.75
+  var pctMatch = s.match(/^([\d.]+)\s*%$/);
+  if (pctMatch) {
+    var pct = parseFloat(pctMatch[1]);
+    if (!isNaN(pct)) return Math.max(0, Math.min(1, pct / 100));
+  }
+  // Number
+  var num = parseFloat(s);
+  if (!isNaN(num)) {
+    // 0–100 range (likely percentage without %) 
+    if (num >= 0 && num <= 100 && /^\d+$/.test(s) && num > 10) return Math.max(0, Math.min(1, num / 100));
+    // 0–10 range (common knob scale)
+    if (num >= 0 && num <= 10) return Math.max(0, Math.min(1, num / 10));
+    // Negative or large: clamp
+    if (num < 0) return 0;
+    if (num > 100) return 1;
+    return Math.max(0, Math.min(1, num / 100));
+  }
+  // Non-numeric (e.g. "LPF", "On") — center position
+  return 0.5;
+}
+
 function makePortDot(cx, cy, dir, modId, port) {
   const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
   dot.setAttribute('cx', cx); dot.setAttribute('cy', cy);
-  dot.setAttribute('class', 'port-dot ' + dir);
+  dot.setAttribute('r', '5');
+  dot.setAttribute('class', 'port-hole ' + dir);
   dot.setAttribute('data-module', modId);
   dot.setAttribute('data-port', port);
   dot.setAttribute('data-dir', dir);
@@ -1364,13 +1711,13 @@ function tryFinishConnection(clientX, clientY) {
   let bestMod = null, bestPort = null, bestDir = null;
 
   layoutResult.nodes.forEach(n => {
-    const ports = dragConn.isOutput ? n._inPorts : n._outPorts;
+    const jacks = dragConn.isOutput ? n._inJacks : n._outJacks;
     const dir   = dragConn.isOutput ? 'in' : 'out';
-    if (!ports) return;
-    for (const pName in ports) {
+    if (!jacks) return;
+    for (const pName in jacks) {
       // For self-connections, require a different port
       if (n.id === dragConn.nodeId && pName === dragConn.port) continue;
-      const pp = ports[pName];
+      const pp = jacks[pName];
       const d = Math.hypot(pp.x - dropPt.x, pp.y - dropPt.y);
       if (d < bestDist) {
         bestDist = d; bestMod = n.id; bestPort = pName; bestDir = dir;
@@ -1405,6 +1752,32 @@ function requestRemoveModule() {
     vscodeApi.postMessage({ type: 'removeModule', moduleName: selectedModuleId });
     closeInspector();
   }
+}
+
+// Canvas color utilities for export
+function lightenColorCanvas(hex, percent) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  var amt = Math.round(2.55 * percent);
+  return '#' + (
+    (1 << 24) +
+    (Math.min(255, r + amt) << 16) +
+    (Math.min(255, g + amt) << 8) +
+    Math.min(255, b + amt)
+  ).toString(16).slice(1);
+}
+function darkenColorCanvas(hex, percent) {
+  var r = parseInt(hex.slice(1,3), 16);
+  var g = parseInt(hex.slice(3,5), 16);
+  var b = parseInt(hex.slice(5,7), 16);
+  var amt = Math.round(2.55 * percent);
+  return '#' + (
+    (1 << 24) +
+    (Math.max(0, r - amt) << 16) +
+    (Math.max(0, g - amt) << 8) +
+    Math.max(0, b - amt)
+  ).toString(16).slice(1);
 }
 
 function exportGraphImage() {
@@ -1461,38 +1834,21 @@ function exportGraphImage() {
   };
   var edgeDashed = { gate: true, trigger: true, clock: true };
 
-  // Draw edges (bezier curves)
-  edges.forEach(function(e) {
-    var fn = nodeMap[e.from], tn = nodeMap[e.to];
-    if (!fn || !tn) return;
-    var src = fn._outPorts && fn._outPorts[e.fromPort];
-    var dst = tn._inPorts && tn._inPorts[e.toPort];
-    if (!src || !dst) return;
-
-    var sx = src.x + ox, sy = src.y + oy;
-    var dx = dst.x + ox, dy = dst.y + oy;
-    var cx = Math.abs(dx - sx) * 0.55;
-
-    ctx.save();
-    ctx.strokeStyle = edgeColors[e.type] || '#888888';
-    ctx.lineWidth = e.type === 'audio' ? 2.5 : 2;
-    if (edgeDashed[e.type]) ctx.setLineDash([6, 3]);
-    ctx.beginPath();
-    ctx.moveTo(sx, sy);
-    ctx.bezierCurveTo(sx + cx, sy, dx - cx, dy, dx, dy);
-    ctx.stroke();
-    ctx.restore();
-  });
-
-  // Draw nodes
+  // Draw nodes (Eurorack panel style)
   nodes.forEach(function(n) {
     var nx = n._x + ox, ny = n._y + oy;
     var nw = n._w, nh = n._h;
-    var r = 6;
+    var r = 4;
+    var bc = moduleColor(n.moduleType);
+
+    // Panel gradient
+    var panelGrad = ctx.createLinearGradient(nx, ny, nx + nw, ny + nh);
+    panelGrad.addColorStop(0, lightenColorCanvas(bc, 20));
+    panelGrad.addColorStop(1, darkenColorCanvas(bc, 15));
 
     // Rounded rect fill
     ctx.save();
-    ctx.fillStyle = moduleColor(n.moduleType);
+    ctx.fillStyle = panelGrad;
     ctx.beginPath();
     ctx.moveTo(nx + r, ny);
     ctx.lineTo(nx + nw - r, ny);
@@ -1508,9 +1864,28 @@ function exportGraphImage() {
 
     // Stroke
     ctx.strokeStyle = '#999';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.stroke();
     ctx.restore();
+
+    // Screw holes
+    var screwR = 3.5, screwInset = 8;
+    var screws = [
+      [nx + screwInset, ny + screwInset],
+      [nx + nw - screwInset, ny + screwInset],
+      [nx + screwInset, ny + nh - screwInset],
+      [nx + nw - screwInset, ny + nh - screwInset]
+    ];
+    screws.forEach(function(s) {
+      ctx.fillStyle = '#222';
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.arc(s[0], s[1], screwR, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      // Slot
+      ctx.strokeStyle = '#444';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath(); ctx.moveTo(s[0] - 2, s[1]); ctx.lineTo(s[0] + 2, s[1]); ctx.stroke();
+    });
 
     // Module name
     ctx.save();
@@ -1518,51 +1893,201 @@ function exportGraphImage() {
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(n.name.toUpperCase(), nx + nw / 2, ny + 14);
+    ctx.fillText(n.name.toUpperCase(), nx + nw / 2, ny + 16);
     ctx.restore();
+
+    // Manufacturer
+    if (n.manufacturer) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.font = '8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n.manufacturer, nx + nw / 2, ny + 28);
+      ctx.restore();
+    }
 
     // Header separator
     ctx.save();
-    ctx.strokeStyle = '#999';
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(nx, ny + 28);
-    ctx.lineTo(nx + nw, ny + 28);
+    ctx.moveTo(nx + 12, ny + 38);
+    ctx.lineTo(nx + nw - 12, ny + 38);
     ctx.stroke();
     ctx.restore();
 
-    // Port dots and labels
+    // Knob grid (parameters — above ports)
+    var allParams = [];
+    var setKeys = Object.keys(n.params);
+    var setLower2 = {};
+    setKeys.forEach(function(k) { setLower2[k.toLowerCase()] = true; });
+    setKeys.forEach(function(pk) { allParams.push({ key: pk, val: n.params[pk], isSet: true }); });
+    (n.catalogParams || []).forEach(function(cp) {
+      if (!setLower2[cp.toLowerCase()]) allParams.push({ key: cp, val: null, isSet: false });
+    });
+    if (allParams.length > 0) {
+      var kCols = n._knobCols || 2;
+      var kGridW = kCols * 50;
+      var kOffX = nx + (nw - kGridW) / 2;
+      var kStartY = ny + 38 + 6;
+
+      allParams.forEach(function(p, pi) {
+        var col = pi % kCols;
+        var row = Math.floor(pi / kCols);
+        var kcx = kOffX + col * 50 + 25;
+        var kcy = kStartY + row * 46 + 12;
+
+        // Track arc
+        ctx.save();
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(kcx, kcy, 12, 135 * Math.PI / 180, (135 + 270) * Math.PI / 180);
+        ctx.stroke();
+        ctx.restore();
+
+        // Value arc
+        if (p.isSet) {
+          var kPos = parseKnobValue(p.val);
+          ctx.save();
+          ctx.strokeStyle = '#0af';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.arc(kcx, kcy, 12, 135 * Math.PI / 180, (135 + 270 * kPos) * Math.PI / 180);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Knob body
+        ctx.fillStyle = '#1a1a1a';
+        ctx.strokeStyle = '#555';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(kcx, kcy, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Knob cap
+        ctx.fillStyle = '#2a2a2a';
+        ctx.strokeStyle = '#444';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.arc(kcx, kcy, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Pointer
+        if (p.isSet) {
+          var kPos2 = parseKnobValue(p.val);
+          var ptrA = (135 + 270 * kPos2) * Math.PI / 180;
+          ctx.strokeStyle = '#ddd';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(kcx + 4 * Math.cos(ptrA), kcy + 4 * Math.sin(ptrA));
+          ctx.lineTo(kcx + 9 * Math.cos(ptrA), kcy + 9 * Math.sin(ptrA));
+          ctx.stroke();
+        }
+
+        // Label
+        ctx.fillStyle = '#aaa';
+        ctx.font = '8px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(p.key, kcx, kcy + 22);
+
+        // Value
+        if (p.isSet && p.val) {
+          ctx.fillStyle = '#ddd';
+          ctx.font = '7px sans-serif';
+          ctx.fillText(p.val, kcx, kcy + 30);
+        }
+      });
+    }
+
+    // Port jacks (grid layout)
     ctx.save();
-    ctx.font = '10px sans-serif';
-    ctx.textBaseline = 'middle';
-    n.inputs.forEach(function(p) {
-      var pos = n._inPorts[p];
-      if (!pos) return;
-      var px = pos.x + ox, py = pos.y + oy;
-      // Dot
-      ctx.fillStyle = '#3a3a3a';
-      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#888'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke();
-      // Label
-      ctx.fillStyle = '#ddd';
-      ctx.textAlign = 'left';
-      ctx.fillText(p, px + 10, py);
-    });
-    n.outputs.forEach(function(p) {
-      var pos = n._outPorts[p];
-      if (!pos) return;
-      var px = pos.x + ox, py = pos.y + oy;
-      // Dot
-      ctx.fillStyle = '#4a4a4a';
-      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = '#aaa'; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke();
-      // Label
-      ctx.fillStyle = '#ddd';
-      ctx.textAlign = 'right';
-      ctx.fillText(p, px - 10, py);
-    });
+    // Input section
+    if (n.inputs && n.inputs.length > 0) {
+      var inJacks = n._inJacks || {};
+      // Section label
+      var portStart2 = ny + 38 + (n._paramH || 0);
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = 'bold 8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText('IN', nx + nw / 2, portStart2 + 10);
+
+      ctx.font = '8px sans-serif';
+      n.inputs.forEach(function(p) {
+        var jack = inJacks[p];
+        if (!jack) return;
+        var jx = jack.x + ox, jy = jack.y + oy;
+        // Outer ring
+        ctx.strokeStyle = '#666'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(jx, jy, 8, 0, Math.PI * 2); ctx.stroke();
+        // Inner hole
+        ctx.fillStyle = '#111';
+        ctx.beginPath(); ctx.arc(jx, jy, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#555'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(jx, jy, 6, 0, Math.PI * 2); ctx.stroke();
+        // Label
+        ctx.fillStyle = '#bbb';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(p, jx, jy + 16);
+      });
+    }
+    // Output section
+    if (n.outputs && n.outputs.length > 0) {
+      var outJacks = n._outJacks || {};
+      var outLabelY2 = ny + 38 + (n._paramH || 0);
+      if (n.inputs && n.inputs.length > 0) {
+        outLabelY2 += 14 + (n._inRows || 1) * 30;
+      }
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.font = 'bold 8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText('OUT', nx + nw / 2, outLabelY2 + 10);
+
+      ctx.font = '8px sans-serif';
+      n.outputs.forEach(function(p) {
+        var jack = outJacks[p];
+        if (!jack) return;
+        var jx = jack.x + ox, jy = jack.y + oy;
+        // Outer ring
+        ctx.strokeStyle = '#999'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(jx, jy, 8, 0, Math.PI * 2); ctx.stroke();
+        // Inner hole
+        ctx.fillStyle = '#1a1a1a';
+        ctx.beginPath(); ctx.arc(jx, jy, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#777'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(jx, jy, 6, 0, Math.PI * 2); ctx.stroke();
+        // Label
+        ctx.fillStyle = '#bbb';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(p, jx, jy + 16);
+      });
+    }
+    ctx.restore();
+  });
+
+  // Draw edges on top of nodes
+  edges.forEach(function(e) {
+    var fn = nodeMap[e.from], tn = nodeMap[e.to];
+    if (!fn || !tn) return;
+    var src = fn._outJacks && fn._outJacks[e.fromPort];
+    var dst = tn._inJacks && tn._inJacks[e.toPort];
+    if (!src || !dst) return;
+
+    var sx = src.x + ox, sy = src.y + oy;
+    var dx = dst.x + ox, dy = dst.y + oy;
+    var ecx = Math.abs(dx - sx) * 0.55;
+
+    ctx.save();
+    ctx.strokeStyle = edgeColors[e.type] || '#888888';
+    ctx.lineWidth = e.type === 'audio' ? 2.5 : 2;
+    if (edgeDashed[e.type]) ctx.setLineDash([6, 3]);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.bezierCurveTo(sx + ecx, sy, dx - ecx, dy, dx, dy);
+    ctx.stroke();
     ctx.restore();
   });
 
@@ -1919,6 +2444,7 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
       id: string;
       name: string;
       moduleType: string;
+      manufacturer: string;
       inputs: string[];
       outputs: string[];
       allInputs: string[];
@@ -1949,6 +2475,7 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
         id: key,
         name: key,
         moduleType: catalog ? catalog.type : 'Unknown',
+        manufacturer: catalog ? catalog.manufacturer : '',
         inputs: parsedInputs,
         outputs: parsedOutputs,
         allInputs,
