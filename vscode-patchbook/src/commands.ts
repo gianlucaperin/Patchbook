@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import { parse, PatchbookData } from "./parser";
-import { getModules, getModuleByName, ModuleInfo } from "./moduleDatabase";
+import { getModules, getModuleByName, ModuleInfo, parameterNames } from "./moduleDatabase";
 import { GraphViewProvider } from "./graphView";
 
 interface ModuleQuickPickItem extends vscode.QuickPickItem {
@@ -85,8 +85,8 @@ export async function newPatch(): Promise<void> {
   for (const mod of selectedMods) {
     if (mod.parameters.length > 0) {
       lines.push(`* ${mod.name}:`);
-      for (const param of mod.parameters) {
-        lines.push(`  | ${param} = `);
+      for (const p of mod.parameters) {
+        lines.push(`  | ${p.name} = `);
       }
     }
   }
@@ -179,7 +179,7 @@ export async function addModule(): Promise<void> {
   let block = `\n\n* ${modName}:`;
   if (catalog && catalog.parameters.length > 0) {
     for (const p of catalog.parameters) {
-      block += `\n| ${p} = `;
+      block += `\n| ${p.name} = `;
     }
   }
 
@@ -611,7 +611,7 @@ function blockH(
   let h = 30; // header bar + gap
   if (cat) { h += 14; if (cat.description) { h += 14; } }
   const pk = Object.keys(mod.parameters);
-  const pc = pk.length || (cat ? cat.parameters.length : 0);
+  const pc = pk.length || (cat ? parameterNames(cat).length : 0);
   if (pc > 0) { h += 16 + pc * L; }
   let cc = 0;
   for (const p of Object.keys(mod.connections.out)) { cc += mod.connections.out[p].length; }
@@ -663,7 +663,7 @@ function drawBlock(
     pg.txtC("Parameters (defaults)", X, 9, 0.2, 0.2, 0.2, "F2");
     pg.dn(L + 2);
     for (const cp of cat.parameters) {
-      pg.txtC(cp, X + 8, 8.5, 0.55, 0.55, 0.55);
+      pg.txtC(cp.name, X + 8, 8.5, 0.55, 0.55, 0.55);
       pg.txtC("--", VX, 8.5, 0.55, 0.55, 0.55);
       pg.dn(L);
     }

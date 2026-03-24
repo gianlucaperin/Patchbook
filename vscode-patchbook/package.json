@@ -14,6 +14,28 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "patchbook-modules",
+          "title": "Patchbook Modules",
+          "icon": "data/images/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "patchbook-modules": [
+        {
+          "id": "patchbookModuleDB",
+          "name": "Module Database"
+        },
+        {
+          "id": "patchbookFileExplorer",
+          "name": "Patchbook Files",
+          "type": "tree"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "patchbook",
@@ -104,6 +126,31 @@
         "command": "patchbook.exportPDF",
         "title": "Patchbook: Export to PDF",
         "icon": "$(file-pdf)"
+      },
+      {
+        "command": "patchbook.db.addModule",
+        "title": "Add Module to Database",
+        "icon": "$(add)"
+      },
+      {
+        "command": "patchbook.db.editModule",
+        "title": "Edit Module",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "patchbook.db.deleteModule",
+        "title": "Delete Module",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "patchbook.db.resetDefaults",
+        "title": "Reset Module Database to Defaults",
+        "icon": "$(discard)"
+      },
+      {
+        "command": "patchbook.files.newPatchbook",
+        "title": "New Patchbook File",
+        "icon": "$(new-file)"
       }
     ],
     "menus": {
@@ -185,6 +232,35 @@
           "command": "patchbook.showGraph",
           "when": "editorLangId == patchbook",
           "group": "patchbook"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "patchbook.db.addModule",
+          "when": "view == patchbookModuleDB",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.db.resetDefaults",
+          "when": "view == patchbookModuleDB",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.files.newPatchbook",
+          "when": "view == patchbookFileExplorer",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "patchbook.db.editModule",
+          "when": "view == patchbookModuleDB && viewItem == module",
+          "group": "inline"
+        },
+        {
+          "command": "patchbook.db.deleteModule",
+          "when": "view == patchbookModuleDB && viewItem == module",
+          "group": "inline"
         }
       ]
     },

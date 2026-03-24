@@ -3,6 +3,7 @@ import {
   getModules,
   getModuleByName,
   ModuleInfo,
+  parameterNames,
 } from "./moduleDatabase";
 
 export class PatchbookCompletionProvider
@@ -86,7 +87,7 @@ export class PatchbookCompletionProvider
     if (!mod) {
       return [];
     }
-    return mod.parameters.map((param) => {
+    return parameterNames(mod).map((param) => {
       const item = new vscode.CompletionItem(
         param,
         vscode.CompletionItemKind.Property
@@ -163,7 +164,7 @@ export class PatchbookCompletionProvider
       lines.push(`**Outputs:** ${mod.outputs.join(", ")}\n`);
     }
     if (mod.parameters.length) {
-      lines.push(`**Parameters:** ${mod.parameters.join(", ")}`);
+      lines.push(`**Parameters:** ${parameterNames(mod).join(", ")}`);
     }
     return lines.join("\n");
   }

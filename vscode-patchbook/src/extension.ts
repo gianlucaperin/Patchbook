@@ -3,6 +3,9 @@ import { PatchbookCompletionProvider } from "./completionProvider";
 import { loadModules, openModulesFile } from "./moduleDatabase";
 import { exportJSON, exportPDF, newPatch, addModule, removeModule } from "./commands";
 import { GraphViewProvider } from "./graphView";
+import { ModuleSidebarProvider } from "./moduleSidebar";
+import { FileExplorerProvider } from "./fileExplorer";
+import { openNewPatchbookFile } from "./newPatchFile";
 
 export function activate(context: vscode.ExtensionContext): void {
   // Load module database
@@ -24,6 +27,52 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Graph view
   const graphView = new GraphViewProvider(context.extensionUri);
+
+  // Module sidebar
+  const sidebarProvider = new ModuleSidebarProvider(context);
+  context.subscriptions.push(
+    vscode.window.registerTreeDataProvider("patchbookModuleDB", sidebarProvider)
+  );
+
+  // File explorer
+  const fileExplorer = new FileExplorerProvider();
+  context.subscriptions.push(
+    vscode.window.registerTreeDataProvider("patchbookFileExplorer", fileExplorer)
+  );
+
+  // New patchbook file command
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.files.newPatchbook", () =>
+      openNewPatchbookFile(context)
+    )
+  );
+
+  // Sidebar commands
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.viewModule", (item) =>
+      sidebarProvider.viewModule(item)
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.addModule", () =>
+      sidebarProvider.addModule()
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.editModule", (item) =>
+      sidebarProvider.editModule(item)
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.deleteModule", (item) =>
+      sidebarProvider.deleteModule(item)
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.resetDefaults", () =>
+      sidebarProvider.resetDefaults()
+    )
+  );
 
   // Commands
   context.subscriptions.push(

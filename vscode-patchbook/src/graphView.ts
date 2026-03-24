@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { parse, PatchbookData } from "./parser";
-import { getModuleByName, getModules, ModuleInfo } from "./moduleDatabase";
+import { getModuleByName, getModules, ModuleInfo, parameterNames } from "./moduleDatabase";
 
 export class GraphViewProvider {
   private panel: vscode.WebviewPanel | undefined;
@@ -170,7 +170,7 @@ export class GraphViewProvider {
             description: info.description,
             inputs: info.inputs,
             outputs: info.outputs,
-            parameters: info.parameters,
+            parameters: parameterNames(info),
           }
         : null,
     });
@@ -389,7 +389,7 @@ export class GraphViewProvider {
       let block = `\n\n* ${modName}:`;
       if (catalog && catalog.parameters.length > 0) {
         for (const p of catalog.parameters) {
-          block += `\n| ${p} = `;
+          block += `\n| ${p.name} = `;
         }
       }
       edit.insert(this.sourceUri!, lastLine.range.end, block);
@@ -2468,7 +2468,7 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
       const catalog = this.catalogLookup(key);
       const catIn = catalog ? catalog.inputs.map(p => p.toLowerCase()) : [];
       const catOut = catalog ? catalog.outputs.map(p => p.toLowerCase()) : [];
-      const catParams = catalog ? catalog.parameters.map(p => p.toLowerCase()) : [];
+      const catParams = catalog ? parameterNames(catalog).map(p => p.toLowerCase()) : [];
       const allInputs = [...new Set([...parsedInputs, ...catIn])].sort();
       const allOutputs = [...new Set([...parsedOutputs, ...catOut])].sort();
       return {
