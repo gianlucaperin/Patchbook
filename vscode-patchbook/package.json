@@ -18,7 +18,7 @@
       "activitybar": [
         {
           "id": "patchbook-modules",
-          "title": "PATCHBOOK",
+          "title": "Patchbook",
           "icon": "data/images/icon.svg"
         }
       ]
