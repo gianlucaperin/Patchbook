@@ -653,8 +653,8 @@ function getModuleFormHtml(webview: vscode.Webview, existing: ModuleInfo | undef
     function updateValPlaceholder(type, input) {
       const map = {
         '': '',
-        'integer': 'e.g. 0 — 127',
-        'percentage': 'e.g. 0 — 100',
+        'integer': 'e.g. 0..127 or -12..12',
+        'percentage': 'e.g. 0..100 or -100..100',
         'multichoice': 'e.g. Saw, Square, Tri',
         'string': 'e.g. default text'
       };

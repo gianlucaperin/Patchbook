@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { parse, PatchbookData } from "./parser";
-import { getModuleByName, getModules, ModuleInfo, parameterNames } from "./moduleDatabase";
+import { getModuleByName, getModules, ModuleInfo, ParameterInfo, parameterNames } from "./moduleDatabase";
 
 export class GraphViewProvider {
   private panel: vscode.WebviewPanel | undefined;
@@ -481,6 +481,12 @@ export class GraphViewProvider {
   .knob-track { fill: none; stroke: #333; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
   .knob-indicator { fill: none; stroke: #0af; stroke-width: 2.5; stroke-linecap: round; pointer-events: none; }
   .knob-pointer { stroke: #ddd; stroke-width: 1.5; stroke-linecap: round; pointer-events: none; }
+  .knob-scale-label { fill: #666; font-size: 6px; pointer-events: none; }
+  .display-bg { fill: #0a0a0a; stroke: #555; stroke-width: 1; rx: 2; ry: 2; cursor: pointer; }
+  .display-bg:hover { stroke: #888; }
+  .display-value { fill: #0f0; font-size: 9px; font-family: monospace; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .display-value.unset { fill: #333; }
+  .display-label { fill: #aaa; font-size: 7px; text-anchor: middle; pointer-events: none; letter-spacing: 0.3px; }
 
   .edge { fill: none; stroke-width: 2; cursor: pointer; pointer-events: stroke; opacity: 0.35; transition: opacity 0.15s, stroke-width 0.15s; }
   .edge:hover { stroke-width: 4; filter: brightness(1.4); opacity: 1; }
@@ -687,11 +693,13 @@ const PORT_PAD     = 14;
 const MOD_MIN_W    = 160;
 const MOD_NAME_H   = 38;
 const KNOB_R       = 10;
-const KNOB_CELL_H  = 46;
-const KNOB_CELL_W  = 50;
+const KNOB_CELL_H  = 54;
+const KNOB_CELL_W  = 76;
+const DISPLAY_CELL_H = 42;
+const DISPLAY_CELL_W = 100;
 const JACK_R       = 6;
 const JACK_CELL_H  = 30;
-const JACK_CELL_W  = 50;
+const JACK_CELL_W  = 64;
 const PORT_LABEL_H = 14;
 const LAYER_GAP    = 280;
 const NODE_GAP     = 40;
@@ -716,24 +724,65 @@ function elkLayout(data) {
     const setKeys = Object.keys(n.params);
     const setLower = new Set(setKeys.map(k => k.toLowerCase()));
     const unsetCat = (n.catalogParams || []).filter(cp => !setLower.has(cp.toLowerCase()));
-    const totalParams = setKeys.length + unsetCat.length;
     n._allParamKeys = setKeys;
     n._unsetCatParams = unsetCat;
+
+    // Build a lookup for parameter type info from catalog
+    const catInfoMap = {};
+    (n.catalogParamInfo || []).forEach(pi => { catInfoMap[pi.name.toLowerCase()] = pi; });
+
+    // Classify all params into knob-type (integer/percentage/unknown) and display-type (string/multichoice)
+    const allP = [
+      ...setKeys.map(pk => ({ key: pk, val: n.params[pk], isSet: true })),
+      ...unsetCat.map(cp => ({ key: cp, val: null, isSet: false }))
+    ];
+    const knobParams = [];
+    const displayParams = [];
+    allP.forEach(p => {
+      const info = catInfoMap[p.key.toLowerCase()];
+      const ptype = info ? info.type : undefined;
+      if (ptype === 'string' || ptype === 'multichoice') {
+        displayParams.push({ ...p, ptype, pinfo: info });
+      } else {
+        knobParams.push({ ...p, ptype, pinfo: info });
+      }
+    });
+    n._knobParams = knobParams;
+    n._displayParams = displayParams;
+    n._catInfoMap = catInfoMap;
+
     const maxLen = Math.max(
       ...n.inputs.map(p => p.length),
       ...n.outputs.map(p => p.length), 4
     );
     n._w = Math.max(MOD_MIN_W, maxLen * 7 + 80, n.name.length * 9 + 40);
-    // Knob grid layout
-    const knobCols = totalParams > 0 ? Math.max(1, Math.min(3, totalParams)) : 0;
-    const knobRows = totalParams > 0 ? Math.ceil(totalParams / knobCols) : 0;
-    const paramH = knobRows > 0 ? knobRows * KNOB_CELL_H + 8 : 0;
+
+    // Knob grid layout (integer, percentage, unknown types)
+    const knobCount = knobParams.length;
+    const knobCols = knobCount > 0 ? Math.max(1, Math.min(3, knobCount)) : 0;
+    const knobRows = knobCount > 0 ? Math.ceil(knobCount / knobCols) : 0;
+    const knobH = knobRows > 0 ? knobRows * KNOB_CELL_H + 8 : 0;
     if (knobCols > 0) {
       n._w = Math.max(n._w, knobCols * KNOB_CELL_W + 16);
     }
     n._knobCols = knobCols;
     n._knobRows = knobRows;
+
+    // Display grid layout (string, multichoice types)
+    const dispCount = displayParams.length;
+    const dispCols = dispCount > 0 ? Math.max(1, Math.min(2, dispCount)) : 0;
+    const dispRows = dispCount > 0 ? Math.ceil(dispCount / dispCols) : 0;
+    const dispH = dispRows > 0 ? dispRows * DISPLAY_CELL_H + 8 : 0;
+    if (dispCols > 0) {
+      n._w = Math.max(n._w, dispCols * DISPLAY_CELL_W + 16);
+    }
+    n._dispCols = dispCols;
+    n._dispRows = dispRows;
+
+    const paramH = knobH + dispH;
     n._paramH = paramH;
+    n._knobH = knobH;
+    n._dispH = dispH;
     // Jack grid layout for ports
     const inCount = n.inputs.length;
     const outCount = n.outputs.length;
@@ -1184,18 +1233,14 @@ function renderAll() {
     sep2.setAttribute('stroke', 'rgba(255,255,255,0.06)'); sep2.setAttribute('stroke-width', '1');
     g.appendChild(sep2);
 
-    // Parameters (knob grid — above ports)
-    const allP = [
-      ...n._allParamKeys.map(pk => ({ key: pk, val: n.params[pk], isSet: true })),
-      ...n._unsetCatParams.map(cp => ({ key: cp, val: null, isSet: false }))
-    ];
-    if (allP.length > 0) {
+    // Parameters — knob section (integer/percentage/default)
+    if (n._knobParams && n._knobParams.length > 0) {
       const cols = n._knobCols || 2;
       const gridW = cols * KNOB_CELL_W;
       const gridOffsetX = n._x + (n._w - gridW) / 2;
       const gridStartY = n._y + MOD_NAME_H + 6;
 
-      allP.forEach((p, pi) => {
+      n._knobParams.forEach((p, pi) => {
         const col = pi % cols;
         const row = Math.floor(pi / cols);
         const cx = gridOffsetX + col * KNOB_CELL_W + KNOB_CELL_W / 2;
@@ -1210,7 +1255,7 @@ function renderAll() {
 
         // Value arc (indicator — shows value position)
         if (p.isSet) {
-          const knobPos = parseKnobValue(p.val);
+          const knobPos = parseKnobValue(p.val, p.pinfo);
           const valAngle = 135 + 270 * knobPos;
           const valArc = describeArc(cx, cy, KNOB_R + 2, 135, valAngle);
           const vArc = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1236,7 +1281,7 @@ function renderAll() {
 
         // Pointer line
         if (p.isSet) {
-          const knobPos2 = parseKnobValue(p.val);
+          const knobPos2 = parseKnobValue(p.val, p.pinfo);
           const ptrAngle = (135 + 270 * knobPos2) * Math.PI / 180;
           const px1 = cx + (KNOB_R - 6) * Math.cos(ptrAngle);
           const py1 = cy + (KNOB_R - 6) * Math.sin(ptrAngle);
@@ -1249,27 +1294,110 @@ function renderAll() {
           g.appendChild(ptr);
         }
 
+        // Scale labels (min/max) for integer and percentage types
+        const scaleInfo = getKnobScale(p.ptype, p.pinfo);
+        if (scaleInfo) {
+          const minPos = polarToCart(cx, cy, KNOB_R + 8, 135);
+          const maxPos = polarToCart(cx, cy, KNOB_R + 8, 405);
+          const minLbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          minLbl.setAttribute('x', minPos.x - 2); minLbl.setAttribute('y', minPos.y + 3);
+          minLbl.setAttribute('class', 'knob-scale-label'); minLbl.setAttribute('text-anchor', 'end');
+          minLbl.textContent = scaleInfo.min;
+          g.appendChild(minLbl);
+          const maxLbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          maxLbl.setAttribute('x', maxPos.x + 2); maxLbl.setAttribute('y', maxPos.y + 3);
+          maxLbl.setAttribute('class', 'knob-scale-label'); maxLbl.setAttribute('text-anchor', 'start');
+          maxLbl.textContent = scaleInfo.max;
+          g.appendChild(maxLbl);
+        }
+
         // Label below knob
         const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         lbl.setAttribute('x', cx);
-        lbl.setAttribute('y', cy + KNOB_R + 11);
+        lbl.setAttribute('y', cy + KNOB_R + 14);
         lbl.setAttribute('class', 'param-label');
         lbl.textContent = p.key;
+        var maxKnobLblW = KNOB_CELL_W - 4;
+        if (p.key.length * 4.5 > maxKnobLblW) {
+          lbl.setAttribute('textLength', maxKnobLblW);
+          lbl.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+          var tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+          tip.textContent = p.key;
+          lbl.appendChild(tip);
+        }
         g.appendChild(lbl);
 
         // Value below label (only if set)
         if (p.isSet && p.val) {
           const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
           val.setAttribute('x', cx);
-          val.setAttribute('y', cy + KNOB_R + 19);
+          val.setAttribute('y', cy + KNOB_R + 23);
           val.setAttribute('class', 'param-value');
           val.textContent = p.val;
           val.addEventListener('click', ev => { ev.stopPropagation(); selectModule(n.id); });
           g.appendChild(val);
         }
       });
+    }
 
-      // Separator between params and ports
+    // Parameters — display section (string/multichoice)
+    if (n._displayParams && n._displayParams.length > 0) {
+      const cols = n._dispCols || 1;
+      const gridW = cols * DISPLAY_CELL_W;
+      const gridOffsetX = n._x + (n._w - gridW) / 2;
+      const gridStartY = n._y + MOD_NAME_H + (n._knobH || 0) + 4;
+
+      n._displayParams.forEach((p, pi) => {
+        const col = pi % cols;
+        const row = Math.floor(pi / cols);
+        const cx = gridOffsetX + col * DISPLAY_CELL_W + DISPLAY_CELL_W / 2;
+        const cy = gridStartY + row * DISPLAY_CELL_H + 4;
+        const dispW = DISPLAY_CELL_W - 8;
+        const dispH = 18;
+
+        // Display label (above the window)
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        lbl.setAttribute('x', cx);
+        lbl.setAttribute('y', cy + 4);
+        lbl.setAttribute('class', 'display-label');
+        lbl.textContent = p.key;
+        g.appendChild(lbl);
+
+        // Display window (dark rectangle)
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('x', cx - dispW / 2);
+        bg.setAttribute('y', cy + 7);
+        bg.setAttribute('width', dispW);
+        bg.setAttribute('height', dispH);
+        bg.setAttribute('class', 'display-bg');
+        bg.setAttribute('rx', '2'); bg.setAttribute('ry', '2');
+        bg.addEventListener('click', ev => { ev.stopPropagation(); selectModule(n.id); });
+        g.appendChild(bg);
+
+        // Display value text (clipped to window)
+        const clipId = 'clip-disp-' + n.id.replace(/[^a-zA-Z0-9]/g, '_') + '-' + pi;
+        const clipDef = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        clipDef.setAttribute('id', clipId);
+        const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        clipRect.setAttribute('x', cx - dispW / 2 + 2);
+        clipRect.setAttribute('y', cy + 7);
+        clipRect.setAttribute('width', dispW - 4);
+        clipRect.setAttribute('height', dispH);
+        clipDef.appendChild(clipRect);
+        g.appendChild(clipDef);
+
+        const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        val.setAttribute('x', cx);
+        val.setAttribute('y', cy + 7 + dispH / 2);
+        val.setAttribute('class', 'display-value' + (p.isSet ? '' : ' unset'));
+        val.setAttribute('clip-path', 'url(#' + clipId + ')');
+        val.textContent = p.isSet && p.val ? p.val : '—';
+        g.appendChild(val);
+      });
+    }
+
+    // Separator between params and ports
+    if ((n._knobParams && n._knobParams.length > 0) || (n._displayParams && n._displayParams.length > 0)) {
       const sepY = n._y + MOD_NAME_H + n._paramH;
       const s3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       s3.setAttribute('x1', n._x + 12); s3.setAttribute('y1', sepY - 2);
@@ -1306,6 +1434,14 @@ function renderAll() {
         lbl.setAttribute('y', jack.y + JACK_R + 10);
         lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'middle');
         lbl.textContent = p;
+        var maxLblW = JACK_CELL_W - 4;
+        if (p.length * 4.5 > maxLblW) {
+          lbl.setAttribute('textLength', maxLblW);
+          lbl.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+          var tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+          tip.textContent = p;
+          lbl.appendChild(tip);
+        }
         g.appendChild(lbl);
       });
     }
@@ -1342,6 +1478,14 @@ function renderAll() {
         lbl.setAttribute('y', jack.y + JACK_R + 10);
         lbl.setAttribute('class', 'port-label'); lbl.setAttribute('text-anchor', 'middle');
         lbl.textContent = p;
+        var maxLblW = JACK_CELL_W - 4;
+        if (p.length * 4.5 > maxLblW) {
+          lbl.setAttribute('textLength', maxLblW);
+          lbl.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+          var tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+          tip.textContent = p;
+          lbl.appendChild(tip);
+        }
         g.appendChild(lbl);
       });
     }
@@ -1421,30 +1565,74 @@ function describeArc(cx, cy, r, startDeg, endDeg) {
   return 'M ' + start.x + ' ' + start.y + ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + end.x + ' ' + end.y;
 }
 
+// Range separator regex: matches .., em-dash, en-dash, or hyphen (supports negative numbers)
+// NOTE: backslashes doubled because this code is inside a JS template literal
+var RANGE_RE = /^(-?[\\d.]+)\\s*(?:\\.\\.|\\u2014|\\u2013|-)\\s*(-?[\\d.]+)$/;
+
 // Parse a parameter value string into a 0–1 knob position
-function parseKnobValue(val) {
+// Accepts optional pinfo with type and values range
+function parseKnobValue(val, pinfo) {
   if (val === null || val === undefined) return 0.5;
   var s = String(val).trim();
+  var numericVal = parseFloat(s.replace(/%$/, ''));
+  // If we have range info from catalog, always use it for normalization
+  if (pinfo && pinfo.values) {
+    var rm = String(pinfo.values).match(RANGE_RE);
+    if (rm) {
+      var rMin = parseFloat(rm[1]), rMax = parseFloat(rm[2]);
+      if (!isNaN(numericVal) && rMax !== rMin) {
+        return Math.max(0, Math.min(1, (numericVal - rMin) / (rMax - rMin)));
+      }
+    }
+  }
+  // Percentage type without explicit range: assume 0..100
+  if (pinfo && pinfo.type === 'percentage') {
+    if (!isNaN(numericVal)) return Math.max(0, Math.min(1, numericVal / 100));
+  }
+  // Integer type without explicit range: assume 0..127
+  if (pinfo && pinfo.type === 'integer') {
+    if (!isNaN(numericVal)) return Math.max(0, Math.min(1, numericVal / 127));
+  }
   // Percentage: "75%" → 0.75
-  var pctMatch = s.match(/^([\d.]+)\s*%$/);
+  var pctMatch = s.match(/^(-?[\\d.]+)\\s*%$/);
   if (pctMatch) {
     var pct = parseFloat(pctMatch[1]);
     if (!isNaN(pct)) return Math.max(0, Math.min(1, pct / 100));
   }
-  // Number
+  // Number (fallback heuristics for untyped params)
   var num = parseFloat(s);
   if (!isNaN(num)) {
-    // 0–100 range (likely percentage without %) 
-    if (num >= 0 && num <= 100 && /^\d+$/.test(s) && num > 10) return Math.max(0, Math.min(1, num / 100));
-    // 0–10 range (common knob scale)
+    if (num >= 0 && num <= 100 && /^\\d+$/.test(s) && num > 10) return Math.max(0, Math.min(1, num / 100));
     if (num >= 0 && num <= 10) return Math.max(0, Math.min(1, num / 10));
-    // Negative or large: clamp
     if (num < 0) return 0;
     if (num > 100) return 1;
     return Math.max(0, Math.min(1, num / 100));
   }
-  // Non-numeric (e.g. "LPF", "On") — center position
+  // Non-numeric — center position
   return 0.5;
+}
+
+// Get knob scale labels based on parameter type
+function getKnobScale(ptype, pinfo) {
+  if (ptype === 'percentage') {
+    if (pinfo && pinfo.values) {
+      var rm = String(pinfo.values).match(RANGE_RE);
+      if (rm) return { min: rm[1] + '%', max: rm[2] + '%' };
+    }
+    return { min: '0%', max: '100%' };
+  }
+  if (ptype === 'integer' && pinfo && pinfo.values) {
+    var rangeMatch = String(pinfo.values).match(RANGE_RE);
+    if (rangeMatch) {
+      return { min: rangeMatch[1], max: rangeMatch[2] };
+    }
+    return { min: '0', max: pinfo.values };
+  }
+  if (ptype === 'integer') {
+    return { min: '0', max: '127' };
+  }
+  // No scale for untyped params (default/fallback)
+  return null;
 }
 
 function makePortDot(cx, cy, dir, modId, port) {
@@ -1917,44 +2105,36 @@ function exportGraphImage() {
     ctx.stroke();
     ctx.restore();
 
-    // Knob grid (parameters — above ports)
-    var allParams = [];
-    var setKeys = Object.keys(n.params);
-    var setLower2 = {};
-    setKeys.forEach(function(k) { setLower2[k.toLowerCase()] = true; });
-    setKeys.forEach(function(pk) { allParams.push({ key: pk, val: n.params[pk], isSet: true }); });
-    (n.catalogParams || []).forEach(function(cp) {
-      if (!setLower2[cp.toLowerCase()]) allParams.push({ key: cp, val: null, isSet: false });
-    });
-    if (allParams.length > 0) {
+    // Knob grid (parameters — knob section: integer/percentage/default)
+    if (n._knobParams && n._knobParams.length > 0) {
       var kCols = n._knobCols || 2;
-      var kGridW = kCols * 50;
+      var kGridW = kCols * KNOB_CELL_W;
       var kOffX = nx + (nw - kGridW) / 2;
       var kStartY = ny + 38 + 6;
 
-      allParams.forEach(function(p, pi) {
+      n._knobParams.forEach(function(p, pi) {
         var col = pi % kCols;
         var row = Math.floor(pi / kCols);
-        var kcx = kOffX + col * 50 + 25;
-        var kcy = kStartY + row * 46 + 12;
+        var kcx = kOffX + col * KNOB_CELL_W + KNOB_CELL_W / 2;
+        var kcy = kStartY + row * KNOB_CELL_H + KNOB_R + 2;
 
         // Track arc
         ctx.save();
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(kcx, kcy, 12, 135 * Math.PI / 180, (135 + 270) * Math.PI / 180);
+        ctx.arc(kcx, kcy, KNOB_R + 2, 135 * Math.PI / 180, (135 + 270) * Math.PI / 180);
         ctx.stroke();
         ctx.restore();
 
         // Value arc
         if (p.isSet) {
-          var kPos = parseKnobValue(p.val);
+          var kPos = parseKnobValue(p.val, p.pinfo);
           ctx.save();
           ctx.strokeStyle = '#0af';
           ctx.lineWidth = 2.5;
           ctx.beginPath();
-          ctx.arc(kcx, kcy, 12, 135 * Math.PI / 180, (135 + 270 * kPos) * Math.PI / 180);
+          ctx.arc(kcx, kcy, KNOB_R + 2, 135 * Math.PI / 180, (135 + 270 * kPos) * Math.PI / 180);
           ctx.stroke();
           ctx.restore();
         }
@@ -1963,24 +2143,38 @@ function exportGraphImage() {
         ctx.fillStyle = '#1a1a1a';
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(kcx, kcy, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(kcx, kcy, KNOB_R, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
         // Knob cap
         ctx.fillStyle = '#2a2a2a';
         ctx.strokeStyle = '#444';
         ctx.lineWidth = 0.5;
-        ctx.beginPath(); ctx.arc(kcx, kcy, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(kcx, kcy, KNOB_R - 3, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
         // Pointer
         if (p.isSet) {
-          var kPos2 = parseKnobValue(p.val);
+          var kPos2 = parseKnobValue(p.val, p.pinfo);
           var ptrA = (135 + 270 * kPos2) * Math.PI / 180;
           ctx.strokeStyle = '#ddd';
           ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.moveTo(kcx + 4 * Math.cos(ptrA), kcy + 4 * Math.sin(ptrA));
-          ctx.lineTo(kcx + 9 * Math.cos(ptrA), kcy + 9 * Math.sin(ptrA));
+          ctx.moveTo(kcx + (KNOB_R - 6) * Math.cos(ptrA), kcy + (KNOB_R - 6) * Math.sin(ptrA));
+          ctx.lineTo(kcx + (KNOB_R - 1) * Math.cos(ptrA), kcy + (KNOB_R - 1) * Math.sin(ptrA));
           ctx.stroke();
+        }
+
+        // Scale labels (min/max)
+        var scaleInfo = getKnobScale(p.ptype, p.pinfo);
+        if (scaleInfo) {
+          ctx.fillStyle = '#666';
+          ctx.font = '6px sans-serif';
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          var minA = 135 * Math.PI / 180;
+          ctx.fillText(scaleInfo.min, kcx + (KNOB_R + 8) * Math.cos(minA) - 2, kcy + (KNOB_R + 8) * Math.sin(minA) + 3);
+          ctx.textAlign = 'left';
+          var maxA = 405 * Math.PI / 180;
+          ctx.fillText(scaleInfo.max, kcx + (KNOB_R + 8) * Math.cos(maxA) + 2, kcy + (KNOB_R + 8) * Math.sin(maxA) + 3);
         }
 
         // Label
@@ -1988,14 +2182,66 @@ function exportGraphImage() {
         ctx.font = '8px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'alphabetic';
-        ctx.fillText(p.key, kcx, kcy + 22);
+        var knobLblText = p.key;
+        var knobLblMaxW = KNOB_CELL_W - 4;
+        while (ctx.measureText(knobLblText).width > knobLblMaxW && knobLblText.length > 1) {
+          knobLblText = knobLblText.slice(0, -1);
+        }
+        if (knobLblText !== p.key) knobLblText += '\u2026';
+        ctx.fillText(knobLblText, kcx, kcy + KNOB_R + 14);
 
         // Value
         if (p.isSet && p.val) {
           ctx.fillStyle = '#ddd';
           ctx.font = '7px sans-serif';
-          ctx.fillText(p.val, kcx, kcy + 30);
+          ctx.fillText(p.val, kcx, kcy + KNOB_R + 23);
         }
+      });
+    }
+
+    // Display section (string/multichoice)
+    if (n._displayParams && n._displayParams.length > 0) {
+      var dCols = n._dispCols || 1;
+      var dGridW = dCols * DISPLAY_CELL_W;
+      var dOffX = nx + (nw - dGridW) / 2;
+      var dStartY = ny + 38 + (n._knobH || 0) + 4;
+
+      n._displayParams.forEach(function(p, pi) {
+        var col = pi % dCols;
+        var row = Math.floor(pi / dCols);
+        var dcx = dOffX + col * DISPLAY_CELL_W + DISPLAY_CELL_W / 2;
+        var dcy = dStartY + row * DISPLAY_CELL_H + 4;
+        var dispW = DISPLAY_CELL_W - 8;
+        var dispH = 18;
+
+        // Display label
+        ctx.fillStyle = '#aaa';
+        ctx.font = '7px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(p.key, dcx, dcy + 4);
+
+        // Display window background
+        ctx.fillStyle = '#0a0a0a';
+        ctx.strokeStyle = '#555';
+        ctx.lineWidth = 1;
+        var rx = dcx - dispW / 2;
+        var ry = dcy + 7;
+        ctx.beginPath();
+        ctx.roundRect(rx, ry, dispW, dispH, 2);
+        ctx.fill(); ctx.stroke();
+
+        // Display value text
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(rx + 2, ry, dispW - 4, dispH);
+        ctx.clip();
+        ctx.fillStyle = p.isSet ? '#00ff00' : '#333';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.isSet && p.val ? p.val : '\u2014', dcx, ry + dispH / 2);
+        ctx.restore();
       });
     }
 
@@ -2029,7 +2275,13 @@ function exportGraphImage() {
         ctx.fillStyle = '#bbb';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'alphabetic';
-        ctx.fillText(p, jx, jy + 16);
+        var inLblText = p;
+        var inLblMaxW = JACK_CELL_W - 4;
+        while (ctx.measureText(inLblText).width > inLblMaxW && inLblText.length > 1) {
+          inLblText = inLblText.slice(0, -1);
+        }
+        if (inLblText !== p) inLblText += '\u2026';
+        ctx.fillText(inLblText, jx, jy + 16);
       });
     }
     // Output section
@@ -2062,7 +2314,13 @@ function exportGraphImage() {
         ctx.fillStyle = '#bbb';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'alphabetic';
-        ctx.fillText(p, jx, jy + 16);
+        var outLblText = p;
+        var outLblMaxW = JACK_CELL_W - 4;
+        while (ctx.measureText(outLblText).width > outLblMaxW && outLblText.length > 1) {
+          outLblText = outLblText.slice(0, -1);
+        }
+        if (outLblText !== p) outLblText += '\u2026';
+        ctx.fillText(outLblText, jx, jy + 16);
       });
     }
     ctx.restore();
@@ -2236,11 +2494,65 @@ function showInspector(moduleId, catalogInfo) {
   }
 
   // Parameters — show set params + unset catalog params
+  // Build param type lookup from catalogParamInfo
+  const catInfoMap = {};
+  (node.catalogParamInfo || []).forEach(pi => { catInfoMap[pi.name.toLowerCase()] = pi; });
+
   html += '<div class="insp-section"><h4>Parameters</h4>';
   const setParams = new Set(Object.keys(node.params).map(k => k.toLowerCase()));
+
+  function paramInputHtml(paramName, currentValue, dataAttr, isSet) {
+    const info = catInfoMap[paramName.toLowerCase()];
+    const ptype = info ? info.type : undefined;
+    const pvalues = info ? info.values : undefined;
+    const modAttr = 'data-module="'+escAttr(moduleId)+'"';
+    const pAttr = dataAttr;
+
+    if (ptype === 'multichoice' && pvalues) {
+      // Dropdown select with the choices
+      var choices = String(pvalues).split(',').map(function(c) { return c.trim(); });
+      var selectHtml = '<select class="param-input" '+modAttr+' '+pAttr+'>';
+      if (!isSet) selectHtml += '<option value="">— not set —</option>';
+      choices.forEach(function(ch) {
+        var sel = (currentValue && currentValue.toLowerCase() === ch.toLowerCase()) ? ' selected' : '';
+        selectHtml += '<option value="'+escAttr(ch)+'"'+sel+'>'+esc(ch)+'</option>';
+      });
+      selectHtml += '</select>';
+      return selectHtml;
+    }
+    if (ptype === 'integer' && pvalues) {
+      var rm = String(pvalues).match(RANGE_RE);
+      if (rm) {
+        var rMin = rm[1], rMax = rm[2];
+        return '<input type="number" class="param-input" min="'+escAttr(rMin)+'" max="'+escAttr(rMax)+'" step="1" '
+          + (isSet ? 'value="'+escAttr(currentValue)+'"' : 'placeholder="'+escAttr(rMin+'..'+rMax)+'"')
+          + ' '+modAttr+' '+pAttr+' />';
+      }
+    }
+    if (ptype === 'integer') {
+      return '<input type="number" class="param-input" step="1" '
+        + (isSet ? 'value="'+escAttr(currentValue)+'"' : 'placeholder="0..127"')
+        + ' '+modAttr+' '+pAttr+' />';
+    }
+    if (ptype === 'percentage') {
+      var pMin = '0', pMax = '100';
+      if (pvalues) {
+        var prm = String(pvalues).match(RANGE_RE);
+        if (prm) { pMin = prm[1]; pMax = prm[2]; }
+      }
+      return '<input type="number" class="param-input" min="'+escAttr(pMin)+'" max="'+escAttr(pMax)+'" step="1" '
+        + (isSet ? 'value="'+escAttr(String(currentValue).replace(/%$/, ''))+'"' : 'placeholder="'+escAttr(pMin+'..'+pMax+'%')+'"')
+        + ' '+modAttr+' '+pAttr+' />';
+    }
+    // string or unknown — free text
+    return '<input class="param-input" '
+      + (isSet ? 'value="'+escAttr(currentValue)+'"' : 'placeholder="not set"')
+      + ' '+modAttr+' '+pAttr+' />';
+  }
+
   Object.keys(node.params).forEach(pk => {
     html += '<div class="param-row"><span class="insp-label">'+ esc(pk)+'</span>';
-    html += '<input class="param-input" value="'+escAttr(node.params[pk])+'" data-module="'+escAttr(moduleId)+'" data-param="'+escAttr(pk)+'" />';
+    html += paramInputHtml(pk, node.params[pk], 'data-param="'+escAttr(pk)+'"', true);
     html += '<button class="param-btn danger" data-action="rmParam" data-module="'+escAttr(moduleId)+'" data-param="'+escAttr(pk)+'">\\u00d7</button></div>';
   });
   // Catalog params not yet set — show as placeholder rows
@@ -2249,7 +2561,7 @@ function showInspector(moduleId, catalogInfo) {
     if (unset.length > 0) {
       unset.forEach(cp => {
         html += '<div class="param-row"><span class="insp-label" style="color:#666">'+ esc(cp)+'</span>';
-        html += '<input class="param-input" placeholder="not set" data-module="'+escAttr(moduleId)+'" data-cparam="'+escAttr(cp)+'" />';
+        html += paramInputHtml(cp, '', 'data-cparam="'+escAttr(cp)+'"', false);
         html += '</div>';
       });
     }
@@ -2451,6 +2763,7 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
       allOutputs: string[];
       params: Record<string, string>;
       catalogParams: string[];
+      catalogParamInfo: { name: string; type?: string; values?: string }[];
     }[];
     edges: {
       from: string;
@@ -2469,6 +2782,11 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
       const catIn = catalog ? catalog.inputs.map(p => p.toLowerCase()) : [];
       const catOut = catalog ? catalog.outputs.map(p => p.toLowerCase()) : [];
       const catParams = catalog ? parameterNames(catalog).map(p => p.toLowerCase()) : [];
+      const catParamInfo = catalog ? catalog.parameters.map(p => ({
+        name: typeof p === 'string' ? p : p.name,
+        type: typeof p === 'string' ? undefined : p.type,
+        values: typeof p === 'string' ? undefined : p.values,
+      })) : [];
       const allInputs = [...new Set([...parsedInputs, ...catIn])].sort();
       const allOutputs = [...new Set([...parsedOutputs, ...catOut])].sort();
       return {
@@ -2482,6 +2800,7 @@ setTimeout(function() { fitAll(); vscodeApi.postMessage({ type: 'ready' }); }, 1
         allOutputs,
         params: { ...mod.parameters },
         catalogParams: catParams,
+        catalogParamInfo: catParamInfo,
       };
     });
 
