@@ -18,7 +18,7 @@
       "activitybar": [
         {
           "id": "patchbook-modules",
-          "title": "Patchbook Modules",
+          "title": "PATCHBOOK",
           "icon": "data/images/icon.svg"
         }
       ]
@@ -148,6 +148,16 @@
         "icon": "$(discard)"
       },
       {
+        "command": "patchbook.db.exportDB",
+        "title": "Export Module Database",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "patchbook.db.importDB",
+        "title": "Import Module Database",
+        "icon": "$(cloud-upload)"
+      },
+      {
         "command": "patchbook.files.newPatchbook",
         "title": "New Patchbook File",
         "icon": "$(new-file)"
@@ -242,6 +252,16 @@
         },
         {
           "command": "patchbook.db.resetDefaults",
+          "when": "view == patchbookModuleDB",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.db.exportDB",
+          "when": "view == patchbookModuleDB",
+          "group": "navigation"
+        },
+        {
+          "command": "patchbook.db.importDB",
           "when": "view == patchbookModuleDB",
           "group": "navigation"
         },

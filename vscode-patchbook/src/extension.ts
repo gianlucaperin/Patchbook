@@ -73,6 +73,16 @@ export function activate(context: vscode.ExtensionContext): void {
       sidebarProvider.resetDefaults()
     )
   );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.exportDB", () =>
+      sidebarProvider.exportDB()
+    )
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("patchbook.db.importDB", () =>
+      sidebarProvider.importDB()
+    )
+  );
 
   // Commands
   context.subscriptions.push(

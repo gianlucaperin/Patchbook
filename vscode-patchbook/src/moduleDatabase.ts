@@ -141,3 +141,56 @@ export function resetModulesToDefaults(context: vscode.ExtensionContext): void {
   modulesFilePath = userFile;
   loadModules(context);
 }
+
+export async function exportModuleDB(): Promise<void> {
+  const modules = Array.from(moduleMap.values());
+  if (modules.length === 0) {
+    vscode.window.showWarningMessage("Patchbook: Module database is empty, nothing to export.");
+    return;
+  }
+  const uri = await vscode.window.showSaveDialog({
+    filters: { "JSON": ["json"] },
+    defaultUri: vscode.Uri.file("patchbook-modules.json"),
+    title: "Export Module Database",
+  });
+  if (!uri) { return; }
+  const data: ModulesFile = { modules };
+  fs.writeFileSync(uri.fsPath, JSON.stringify(data, null, 2), "utf-8");
+  vscode.window.showInformationMessage(`Patchbook: Module database exported to ${path.basename(uri.fsPath)}.`);
+}
+
+export async function importModuleDB(context: vscode.ExtensionContext): Promise<void> {
+  const uris = await vscode.window.showOpenDialog({
+    filters: { "JSON": ["json"] },
+    canSelectMany: false,
+    title: "Import Module Database",
+  });
+  if (!uris || uris.length === 0) { return; }
+  try {
+    const raw = fs.readFileSync(uris[0].fsPath, "utf-8");
+    const data = JSON.parse(raw) as { modules?: any[] };
+    if (!data.modules || !Array.isArray(data.modules)) {
+      vscode.window.showErrorMessage("Patchbook: Invalid module database file (missing \"modules\" array).");
+      return;
+    }
+    // Validate basic structure
+    for (const mod of data.modules) {
+      if (!mod.name || typeof mod.name !== "string") {
+        vscode.window.showErrorMessage("Patchbook: Invalid module database file (module missing \"name\").");
+        return;
+      }
+    }
+    const confirm = await vscode.window.showWarningMessage(
+      `Import ${data.modules.length} module(s)? This will replace the current database.`,
+      { modal: true },
+      "Import"
+    );
+    if (confirm !== "Import") { return; }
+    const filePath = getModulesPath(context);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
+    loadModules(context);
+    vscode.window.showInformationMessage(`Patchbook: Imported ${data.modules.length} module(s).`);
+  } catch {
+    vscode.window.showErrorMessage("Patchbook: Failed to import module database.");
+  }
+}

@@ -8,6 +8,8 @@ import {
   updateModuleInDB,
   deleteModuleFromDB,
   resetModulesToDefaults,
+  exportModuleDB,
+  importModuleDB,
   parameterNames,
 } from "./moduleDatabase";
 
@@ -109,6 +111,14 @@ export class ModuleSidebarProvider implements vscode.TreeDataProvider<TreeItem> 
     if (confirm !== "Reset") { return; }
     resetModulesToDefaults(this.context);
     vscode.window.showInformationMessage("Patchbook: Module database reset to defaults.");
+  }
+
+  async exportDB(): Promise<void> {
+    await exportModuleDB();
+  }
+
+  async importDB(): Promise<void> {
+    await importModuleDB(this.context);
   }
 }
 
