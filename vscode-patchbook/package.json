@@ -12,6 +12,7 @@
     "Visualization"
   ],
   "activationEvents": [],
+  "icon": "data/images/icon.png",
   "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -27,12 +28,14 @@
       "patchbook-modules": [
         {
           "id": "patchbookModuleDB",
-          "name": "Module Database"
+          "name": "Module Database",
+          "icon": "$(database)"
         },
         {
           "id": "patchbookFileExplorer",
           "name": "Patchbook Files",
-          "type": "tree"
+          "type": "tree",
+          "icon": "$(files)"
         }
       ]
     },
